@@ -373,20 +373,31 @@ let priceData = []; // { cropName, marketName, avgPrice, date }
 let dataMode = "loading"; // loading / api / fallback
 
 async function fetchPriceData(){
-  // 嘗試從 API 取得最近一日資料
+  // 1. 優先讀取 GitHub Actions 每日產生的 prices.json
+  try{
+    const res = await fetch("./prices.json",{cache:"no-store"});
+    if(!res.ok) throw new Error("HTTP "+res.status);
+    const data = await res.json();
+    if(!Array.isArray(data) || !data.length) throw new Error("empty");
+    priceData = data.filter(d => d.cropName && d.marketName && d.avgPrice > 0);
+    if(!priceData.length) throw new Error("no valid rows");
+    dataMode = "api";
+    return;
+  }catch(e){
+    console.warn("prices.json 讀取失敗，改試直連 API:", e);
+  }
+  // 2. 備援：直連農業部 API（可能被 CORS 擋）
   try{
     const res = await fetch(API_BASE,{cache:"no-store"});
     if(!res.ok) throw new Error("HTTP "+res.status);
     const data = await res.json();
     if(!Array.isArray(data) || !data.length) throw new Error("empty");
-    // 標準化欄位
     priceData = data.map(d => ({
       cropName: d.CropName || d.作物名稱 || "",
       marketName: d.MarketName || d.市場名稱 || "",
       avgPrice: parseFloat(d.Avg_Price || d.平均價 || 0),
       date: d.TransDate || d.交易日期 || ""
     })).filter(d => d.cropName && d.marketName && d.avgPrice > 0);
-
     if(!priceData.length) throw new Error("no valid rows");
     dataMode = "api";
     return;

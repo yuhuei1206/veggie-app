@@ -1,0 +1,47 @@
+name: 每日更新菜價
+
+on:
+  schedule:
+    - cron: '0 2 * * *'  # 每天 UTC 02:00 = 台灣時間 10:00
+  workflow_dispatch:       # 允許手動觸發
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 抓取農業部菜價 API
+        run: |
+          curl -sf "https://data.moa.gov.tw/Service/OpenData/FromM/AgriProductsTransType.aspx" \
+            -o prices_raw.json || echo "[]" > prices_raw.json
+
+      - name: 處理資料
+        run: |
+          python3 - <<'EOF'
+          import json, sys
+          try:
+              with open("prices_raw.json") as f:
+                  data = json.load(f)
+          except:
+              data = []
+          rows = []
+          for d in data:
+              crop = d.get("CropName") or d.get("作物名稱","")
+              market = d.get("MarketName") or d.get("市場名稱","")
+              price = float(d.get("Avg_Price") or d.get("平均價") or 0)
+              date = d.get("TransDate") or d.get("交易日期","")
+              if crop and market and price > 0:
+                  rows.append({"cropName":crop,"marketName":market,"avgPrice":price,"date":date})
+          with open("prices.json","w",encoding="utf-8") as f:
+              json.dump(rows, f, ensure_ascii=False)
+          print(f"寫入 {len(rows)} 筆")
+          EOF
+
+      - name: Commit & push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add prices.json
+          git diff --cached --quiet || git commit -m "chore: 更新菜價 $(date '+%Y-%m-%d')"
+          git push
