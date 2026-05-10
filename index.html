@@ -800,8 +800,9 @@ function showVegDetail(cropName){
   const v = findVegByCropName(cropName);
   const ref = new Date().getMonth()+1;
   const inSeason = v ? v.months.includes(ref) : false;
-  const cat = getCropCategory(cropName);
-  const emoji = v ? v.emoji : cat==="花卉" ? "🌸" : cat==="水果" ? "🍎" : cat==="肉類" ? "🥩" : cat==="水產" ? "🐟" : "🌱";
+  const tcType = (priceData.find(p=>p.cropName===cropName)||{}).tcType||"";
+  const cat = getCropCategory(cropName, tcType);
+  const emoji = v ? v.emoji : cat==="花卉" ? "🌸" : cat==="水果" ? "🍎" : "🌱";
   const displayName = v ? v.key : cropName;
   const prices = v ? getPricesForVeg(v) : priceData.filter(p=>p.cropName===cropName);
 
@@ -877,19 +878,17 @@ document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeModal(); });
 /* ============================================================
    分類函式
    ============================================================ */
-function getCropCategory(name){
+function getCropCategory(name, tcType=""){
+  if(tcType === "N04") return "蔬菜";
+  if(tcType === "N05") return "水果";
+  if(tcType === "N06") return "花卉";
   if(!name) return "蔬菜";
-  // 先排除易被誤判的瓜類蔬菜
   const vegOverrides = ["扁蒲","梨子蒲","胡瓜","越瓜","冬瓜","節瓜","南瓜","金瓜","絲瓜","苦瓜","匏瓜","蒲瓜","稜角絲瓜"];
   for(const v of vegOverrides) if(name.includes(v)) return "蔬菜";
   const flowers = ["玫瑰","菊","百合","劍蘭","滿天星","文心蘭","火鶴","唐菖蒲","非洲菊","桔梗","石斛","蘭花","鬱金香","向日葵","康乃馨","洋桔梗","香水百合","孤挺花","繡球花","麒麟草"];
   const fruits = ["香蕉","鳳梨","芒果","西瓜","木瓜","蓮霧","釋迦","荔枝","龍眼","柚子","橘子","葡萄","草莓","紅棗","黑棗","芭樂","番石榴","椰子","柿子","水梨","西洋梨","蘋果","李子","桃子","水蜜桃","青梅","楊桃","火龍果","奇異果","百香果","酪梨","榴槤","枇杷","柑橘","檸檬","柳丁","金棗","番荔枝","無花果","葡萄柚","鳳梨釋迦","甜瓜","哈密瓜","洋香瓜"];
-  const meats = ["肉豬","黑豬","白豬","仔豬","母豬","種豬","土雞","肉雞","蛋雞","黑羽","白肉雞","仿土雞","肉鴨","菜鴨","蛋鴨","火雞","鵝","牛犢","肉牛","乳牛","羊犢","肉羊","豬肉","牛肉","羊肉","雞肉","鴨肉","鵝肉"];
-  const seafood = ["虱目魚","烏魚","吳郭魚","鱸魚","石斑","白帶魚","秋刀魚","竹筴魚","土魠","旗魚","鮪","紅目鰱","黑鯛","午仔","草魚","鯉魚","鯰魚","鱖魚","鮭魚","鱈魚","鯖魚","比目魚","鰻魚","鯛魚","白蝦","草蝦","斑節蝦","明蝦","龍蝦","蟹","蚵仔","牡蠣","文蛤","蛤仔","花枝","墨魚","魷魚","章魚","九孔","鮑魚","海參","扇貝","貽貝","螺"];
   for(const f of flowers) if(name.includes(f)) return "花卉";
   for(const f of fruits) if(name.includes(f)) return "水果";
-  for(const m of meats) if(name.includes(m)) return "肉類";
-  for(const s of seafood) if(name.includes(s)) return "水產";
   return "蔬菜";
 }
 
@@ -935,18 +934,21 @@ function renderRank(){
   const tbody = document.getElementById("rankTbody");
   let rows = priceData.filter(p => p.avgPrice > 0);
   if(rankMarket) rows = rows.filter(p => p.marketName === rankMarket);
-  if(rankCategory) rows = rows.filter(p => getCropCategory(p.cropName) === rankCategory);
+  if(rankCategory) rows = rows.filter(p => getCropCategory(p.cropName, p.tcType||"") === rankCategory);
   rows.sort((a,b)=> rankOrder==="asc" ? a.avgPrice - b.avgPrice : b.avgPrice - a.avgPrice);
   rows = rows.slice(0,80);
 
   if(!rows.length){
-    tbody.innerHTML = `<tr><td colspan="4" class="loading">沒有資料</td></tr>`;
+    const msg = (rankCategory==="肉類"||rankCategory==="水產")
+      ? `目前農業部 API 未提供${rankCategory}行情資料`
+      : "沒有資料";
+    tbody.innerHTML = `<tr><td colspan="4" class="loading">${msg}</td></tr>`;
     return;
   }
   tbody.innerHTML = rows.map((p,i)=>{
     const v = findVegByCropName(p.cropName);
-    const cat = getCropCategory(p.cropName);
-    const emoji = v ? v.emoji : cat==="花卉" ? "🌸" : cat==="水果" ? "🍎" : cat==="肉類" ? "🥩" : cat==="水產" ? "🐟" : "🌱";
+    const cat = getCropCategory(p.cropName, p.tcType||"");
+    const emoji = v ? v.emoji : cat==="花卉" ? "🌸" : cat==="水果" ? "🍎" : "🌱";
     const m = getMarketInfo(p.marketName);
     return `<tr onclick="showVegDetail('${escape(p.cropName)}')">
       <td class="rank-num">${i+1}</td>
