@@ -207,7 +207,8 @@
     width:32px;text-align:center;color:var(--muted);font-weight:600;
   }
   table.rank-table .price-cell{font-weight:600;color:var(--red);text-align:right}
-  table.rank-table tr:hover{background:#fafaf5}
+  table.rank-table tbody tr{cursor:pointer}
+  table.rank-table tbody tr:hover{background:#eef7ee}
   .rank-emoji{margin-right:6px}
 
   /* === 搜尋 === */
@@ -304,6 +305,14 @@
     </div>
   </section>
 </main>
+
+<!-- 蔬菜詳情 Modal -->
+<div class="modal-overlay" id="vegDetailModal" onclick="closeVegModal(event)">
+  <div class="modal-box" style="max-width:520px">
+    <button class="modal-close" onclick="closeVegModal()">✕</button>
+    <div id="vegDetailContent"></div>
+  </div>
+</div>
 
 <!-- 食譜 Modal -->
 <div class="modal-overlay" id="recipeModal" onclick="closeModal(event)">
@@ -758,6 +767,60 @@ function attachCardToggle(container){
 }
 
 /* ============================================================
+   蔬菜詳情 Modal（排行榜點擊用）
+   ============================================================ */
+function showVegDetail(cropName){
+  const v = findVegByCropName(cropName);
+  const ref = new Date().getMonth()+1;
+  const inSeason = v ? v.months.includes(ref) : false;
+  const emoji = v ? v.emoji : "🌱";
+  const displayName = v ? v.key : cropName;
+  const prices = v ? getPricesForVeg(v) : priceData.filter(p=>p.cropName===cropName);
+
+  const pricesHTML = prices.length
+    ? prices.slice(0,8).map(p=>{
+        const m = getMarketInfo(p.marketName);
+        return `<div class="price-row">
+          <div class="market">${escape(m.short)}<small>📍 ${escape(m.addr)}</small></div>
+          <div class="price">$${p.avgPrice.toFixed(1)}</div>
+        </div>`;
+      }).join("")
+    : `<div style="color:var(--muted);font-size:13px;padding:10px 0">今日尚無此蔬菜在各市場的成交資料。</div>`;
+
+  const monthsHTML = v ? Array.from({length:12},(_,i)=>{
+    const m=i+1;
+    return `<span class="month-pill ${v.months.includes(m)?"in-season":""}">${m}</span>`;
+  }).join("") : "";
+
+  const recipesHTML = v ? `<div class="veg-section">
+    <h4>推薦料理</h4>
+    <div class="recipe-list">
+      ${v.recipes.map(r=>`<button class="recipe-chip" onclick="showRecipe('${escape(r)}')">${escape(r)}</button>`).join("")}
+    </div>
+  </div>` : "";
+
+  document.getElementById("vegDetailContent").innerHTML = `
+    <div class="veg-card-head" style="margin:-24px -24px 16px;padding:16px 20px;border-radius:14px 14px 0 0">
+      <div class="veg-emoji">${emoji}</div>
+      <div>
+        <div class="veg-name">${escape(displayName)}</div>
+        ${v?`<span class="veg-tag ${inSeason?"":"off"}">${inSeason?"當季":"非當季"}</span>`:""}
+      </div>
+    </div>
+    ${v?`<div class="veg-section"><h4>當季月份</h4><div class="month-pills">${monthsHTML}</div></div>`:""}
+    <div class="veg-section"><h4>各市場價格 (元/公斤)</h4>${pricesHTML}</div>
+    ${recipesHTML}
+  `;
+  document.getElementById("vegDetailModal").classList.add("open");
+}
+function closeVegModal(e){
+  if(!e || e.target===document.getElementById("vegDetailModal") || e.currentTarget.tagName==="BUTTON"){
+    document.getElementById("vegDetailModal").classList.remove("open");
+  }
+}
+document.addEventListener("keydown",e=>{ if(e.key==="Escape"){ closeModal(); closeVegModal(); } });
+
+/* ============================================================
    食譜 Modal
    ============================================================ */
 function showRecipe(name){
@@ -787,8 +850,12 @@ document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeModal(); });
    ============================================================ */
 function getCropCategory(name){
   if(!name) return "蔬菜";
-  const flowers = ["玫瑰","菊","百合","劍蘭","滿天星","文心蘭","火鶴","唐菖蒲","非洲菊","桔梗","石斛","蘭","鬱金香","向日葵","康乃馨","洋桔梗","香水百合","孤挺花","繡球","麒麟草"];
-  const fruits = ["香蕉","鳳梨","芒果","西瓜","木瓜","蓮霧","釋迦","荔枝","龍眼","柚","橘","葡萄","草莓","棗","芭樂","番石榴","椰子","柿","梨","蘋果","李","桃","梅","楊桃","火龍果","奇異果","百香果","酪梨","榴槤","枇杷","柑","檸檬","柳丁","金棗","番荔枝","無花果"];
+  // 先排除易被誤判的瓜類蔬菜
+  const vegOverrides = ["扁蒲","梨子蒲","胡瓜","越瓜","冬瓜","節瓜","南瓜","金瓜","絲瓜","苦瓜","匏瓜","蒲瓜","稜角絲瓜"];
+  for(const v of vegOverrides) if(name.includes(v)) return "蔬菜";
+  const flowers = ["玫瑰","菊","百合","劍蘭","滿天星","文心蘭","火鶴","唐菖蒲","非洲菊","桔梗","石斛","蘭花","鬱金香","向日葵","康乃馨","洋桔梗","香水百合","孤挺花","繡球花","麒麟草"];
+  // 用較長詞避免誤判（如「梨子蒲」含「梨」）
+  const fruits = ["香蕉","鳳梨","芒果","西瓜","木瓜","蓮霧","釋迦","荔枝","龍眼","柚子","橘子","葡萄","草莓","紅棗","黑棗","芭樂","番石榴","椰子","柿子","水梨","西洋梨","蘋果","李子","桃子","水蜜桃","青梅","楊桃","火龍果","奇異果","百香果","酪梨","榴槤","枇杷","柑橘","檸檬","柳丁","金棗","番荔枝","無花果","葡萄柚","鳳梨釋迦","甜瓜","哈密瓜","洋香瓜"];
   for(const f of flowers) if(name.includes(f)) return "花卉";
   for(const f of fruits) if(name.includes(f)) return "水果";
   return "蔬菜";
@@ -848,7 +915,7 @@ function renderRank(){
     const v = findVegByCropName(p.cropName);
     const emoji = v ? v.emoji : "🌱";
     const m = getMarketInfo(p.marketName);
-    return `<tr>
+    return `<tr onclick="showVegDetail('${escape(p.cropName)}')">
       <td class="rank-num">${i+1}</td>
       <td><span class="rank-emoji">${emoji}</span>${escape(p.cropName)}</td>
       <td>${escape(m.short)}<br><small style="color:var(--muted)">📍 ${escape(m.addr)}</small></td>
