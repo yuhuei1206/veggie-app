@@ -13,20 +13,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: 抓取農業部菜價 API
         run: |
-          curl -sf "https://data.moa.gov.tw/Service/OpenData/FromM/AgriProductsTransType.aspx" \
-            -o prices_raw.json || echo "[]" > prices_raw.json
+          curl -sf "https://data.moa.gov.tw/Service/OpenData/FromM/AgriProductsTransType.aspx?\$top=2000&\$format=json" \
+            -o prices_raw.json \
+            -H "Accept: application/json" || echo "[]" > prices_raw.json
+          echo "原始資料大小: $(wc -c < prices_raw.json) bytes"
 
       - name: 處理資料
         run: |
           python3 - <<'EOF'
-          import json, sys
+          import json
           try:
-              with open("prices_raw.json") as f:
+              with open("prices_raw.json", encoding="utf-8") as f:
                   data = json.load(f)
-          except:
+              if isinstance(data, dict):
+                  data = data.get("value", data.get("data", []))
+          except Exception as e:
+              print(f"解析失敗: {e}")
               data = []
           rows = []
           for d in data:
@@ -45,7 +52,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          git pull --rebase origin main
           git add prices.json
           git diff --cached --quiet || git commit -m "chore: 更新菜價 $(date '+%Y-%m-%d')"
-          git pull --rebase origin main
           git push
