@@ -14,34 +14,41 @@ jobs:
     steps:
       - name: 抓取農業部菜價 API
         run: |
-          curl -sf "https://data.moa.gov.tw/Service/OpenData/FromM/AgriProductsTransType.aspx?\$top=2000&\$format=json" \
-            -o prices_raw.json \
-            -H "Accept: application/json" || echo "[]" > prices_raw.json
-          echo "原始資料大小: $(wc -c < prices_raw.json) bytes"
-
-      - name: 處理資料
-        run: |
           python3 - <<'EOF'
-          import json
-          try:
-              with open("prices_raw.json", encoding="utf-8") as f:
-                  data = json.load(f)
-              if isinstance(data, dict):
-                  data = data.get("value", data.get("data", []))
-          except Exception as e:
-              print(f"解析失敗: {e}")
-              data = []
+          import urllib.request, json, datetime
+
+          API = "https://data.moa.gov.tw/api/v1/AgriProductsTransType"
           rows = []
-          for d in data:
-              crop = d.get("CropName") or d.get("作物名稱","")
-              market = d.get("MarketName") or d.get("市場名稱","")
-              price = float(d.get("Avg_Price") or d.get("平均價") or 0)
-              date = d.get("TransDate") or d.get("交易日期","")
-              if crop and market and price > 0:
-                  rows.append({"cropName":crop,"marketName":market,"avgPrice":price,"date":date})
-          with open("prices.json","w",encoding="utf-8") as f:
+          # 往前最多找 7 天，跳過休市日
+          today = datetime.date.today()
+          for delta in range(7):
+              d = today - datetime.timedelta(days=delta)
+              roc_year = d.year - 1911
+              date_str = f"{roc_year}.{d.month:02d}.{d.day:02d}"
+              url = f"{API}?$top=2000&StartDate={date_str}&EndDate={date_str}"
+              try:
+                  req = urllib.request.Request(url, headers={"Accept": "application/json"})
+                  with urllib.request.urlopen(req, timeout=15) as r:
+                      payload = json.load(r)
+                  data = payload.get("Data", [])
+                  valid = [
+                      {"cropName": x["CropName"], "marketName": x["MarketName"],
+                       "avgPrice": float(x["Avg_Price"]), "date": x["TransDate"]}
+                      for x in data
+                      if x.get("CropName","") != "休市" and float(x.get("Avg_Price",0)) > 0
+                  ]
+                  if valid:
+                      rows = valid
+                      print(f"找到 {date_str} 的資料，共 {len(rows)} 筆")
+                      break
+                  else:
+                      print(f"{date_str} 休市或無資料，往前一天")
+              except Exception as e:
+                  print(f"{date_str} 抓取失敗: {e}")
+
+          with open("prices.json", "w", encoding="utf-8") as f:
               json.dump(rows, f, ensure_ascii=False)
-          print(f"寫入 {len(rows)} 筆")
+          print(f"最終寫入 {len(rows)} 筆")
           EOF
 
       - name: 上傳 prices.json 到 GitHub
