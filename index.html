@@ -266,9 +266,11 @@
   <section class="tab-panel" id="tab-rank">
     <div class="category-tabs" id="categoryTabs">
       <button class="category-tab active" data-cat="">全部</button>
-      <button class="category-tab" data-cat="蔬菜">蔬菜</button>
-      <button class="category-tab" data-cat="花卉">花卉</button>
-      <button class="category-tab" data-cat="水果">水果</button>
+      <button class="category-tab" data-cat="蔬菜">🥬 蔬菜</button>
+      <button class="category-tab" data-cat="花卉">🌸 花卉</button>
+      <button class="category-tab" data-cat="水果">🍎 水果</button>
+      <button class="category-tab" data-cat="肉類">🥩 肉類</button>
+      <button class="category-tab" data-cat="水產">🐟 水產</button>
     </div>
     <div class="rank-controls">
       <label>市場：</label>
@@ -283,7 +285,7 @@
       <thead>
         <tr>
           <th class="rank-num">#</th>
-          <th>蔬菜</th>
+          <th>品項</th>
           <th>市場</th>
           <th style="text-align:right">均價 (元/公斤)</th>
         </tr>
@@ -799,7 +801,7 @@ function showVegDetail(cropName){
   const ref = new Date().getMonth()+1;
   const inSeason = v ? v.months.includes(ref) : false;
   const cat = getCropCategory(cropName);
-  const emoji = v ? v.emoji : cat==="花卉" ? "🌸" : cat==="水果" ? "🍎" : "🌱";
+  const emoji = v ? v.emoji : cat==="花卉" ? "🌸" : cat==="水果" ? "🍎" : cat==="肉類" ? "🥩" : cat==="水產" ? "🐟" : "🌱";
   const displayName = v ? v.key : cropName;
   const prices = v ? getPricesForVeg(v) : priceData.filter(p=>p.cropName===cropName);
 
@@ -881,10 +883,13 @@ function getCropCategory(name){
   const vegOverrides = ["扁蒲","梨子蒲","胡瓜","越瓜","冬瓜","節瓜","南瓜","金瓜","絲瓜","苦瓜","匏瓜","蒲瓜","稜角絲瓜"];
   for(const v of vegOverrides) if(name.includes(v)) return "蔬菜";
   const flowers = ["玫瑰","菊","百合","劍蘭","滿天星","文心蘭","火鶴","唐菖蒲","非洲菊","桔梗","石斛","蘭花","鬱金香","向日葵","康乃馨","洋桔梗","香水百合","孤挺花","繡球花","麒麟草"];
-  // 用較長詞避免誤判（如「梨子蒲」含「梨」）
   const fruits = ["香蕉","鳳梨","芒果","西瓜","木瓜","蓮霧","釋迦","荔枝","龍眼","柚子","橘子","葡萄","草莓","紅棗","黑棗","芭樂","番石榴","椰子","柿子","水梨","西洋梨","蘋果","李子","桃子","水蜜桃","青梅","楊桃","火龍果","奇異果","百香果","酪梨","榴槤","枇杷","柑橘","檸檬","柳丁","金棗","番荔枝","無花果","葡萄柚","鳳梨釋迦","甜瓜","哈密瓜","洋香瓜"];
+  const meats = ["肉豬","黑豬","白豬","仔豬","母豬","種豬","土雞","肉雞","蛋雞","黑羽","白肉雞","仿土雞","肉鴨","菜鴨","蛋鴨","火雞","鵝","牛犢","肉牛","乳牛","羊犢","肉羊","豬肉","牛肉","羊肉","雞肉","鴨肉","鵝肉"];
+  const seafood = ["虱目魚","烏魚","吳郭魚","鱸魚","石斑","白帶魚","秋刀魚","竹筴魚","土魠","旗魚","鮪","紅目鰱","黑鯛","午仔","草魚","鯉魚","鯰魚","鱖魚","鮭魚","鱈魚","鯖魚","比目魚","鰻魚","鯛魚","白蝦","草蝦","斑節蝦","明蝦","龍蝦","蟹","蚵仔","牡蠣","文蛤","蛤仔","花枝","墨魚","魷魚","章魚","九孔","鮑魚","海參","扇貝","貽貝","螺"];
   for(const f of flowers) if(name.includes(f)) return "花卉";
   for(const f of fruits) if(name.includes(f)) return "水果";
+  for(const m of meats) if(name.includes(m)) return "肉類";
+  for(const s of seafood) if(name.includes(s)) return "水產";
   return "蔬菜";
 }
 
@@ -941,7 +946,7 @@ function renderRank(){
   tbody.innerHTML = rows.map((p,i)=>{
     const v = findVegByCropName(p.cropName);
     const cat = getCropCategory(p.cropName);
-    const emoji = v ? v.emoji : cat==="花卉" ? "🌸" : cat==="水果" ? "🍎" : "🌱";
+    const emoji = v ? v.emoji : cat==="花卉" ? "🌸" : cat==="水果" ? "🍎" : cat==="肉類" ? "🥩" : cat==="水產" ? "🐟" : "🌱";
     const m = getMarketInfo(p.marketName);
     return `<tr onclick="showVegDetail('${escape(p.cropName)}')">
       <td class="rank-num">${i+1}</td>
@@ -962,19 +967,22 @@ function score(veg, q){
   const Q = q.toLowerCase();
   const k = veg.key.toLowerCase();
   if(k === Q) return 100;
+  if(k.startsWith(Q)) return 90;
   if(k.includes(Q)) return 80;
   for(const a of veg.aliases){
     const al = a.toLowerCase();
-    if(al === Q) return 90;
-    if(al.includes(Q) || Q.includes(al)) return 70;
+    if(al === Q) return 95;
+    // 單字元查詢不做 alias 的部分比對，避免「冬」→「冬菇」誤帶出香菇
+    if(Q.length >= 2 && al.startsWith(Q)) return 85;
+    if(Q.length >= 2 && (al.includes(Q) || Q.includes(al))) return 70;
   }
-  // 食譜內含關鍵字也給少量分數（相關性）
-  for(const r of veg.recipes){
-    if(r.toLowerCase().includes(Q)) return 30;
-  }
-  // 中文部分字元
-  for(const ch of Q){
-    if(k.includes(ch)) return 20;
+  if(Q.length >= 2){
+    for(const r of veg.recipes){
+      if(r.toLowerCase().includes(Q)) return 30;
+    }
+    for(const ch of Q){
+      if(k.includes(ch)) return 20;
+    }
   }
   return 0;
 }
