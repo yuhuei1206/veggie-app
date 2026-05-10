@@ -1,226 +1,701 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-    <meta charset="UTF-8">
-    <title>我的 AI 聊天視窗</title>
-    <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        #chat-container { width: 100%; max-width: 480px; background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); overflow: hidden; display: flex; flex-direction: column; }
-        
-        /* 頂部控制列 */
-        .controls-area { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; padding: 12px 15px; background: #ffffff; border-bottom: 1px solid #e0e0e0; }
-        .controls-area select { padding: 8px; border-radius: 6px; border: 1px solid #ccc; font-size: 14px; outline: none; background-color: #f9f9f9; cursor: pointer; flex: 1; margin-right: 10px; }
-        .clear-btn { padding: 8px 12px; background: #ff4d4f; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; transition: background 0.2s; }
-        .clear-btn:hover { background: #d9363e; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>菜籃通 — 當季蔬菜與菜價即時查</title>
+<style>
+  :root{
+    --green:#3a7d44;
+    --green-light:#e8f3e8;
+    --green-dark:#2c5e34;
+    --bg:#fafaf5;
+    --card:#ffffff;
+    --text:#2d2d2d;
+    --muted:#7a7a7a;
+    --border:#e3e3d8;
+    --accent:#f4a261;
+    --red:#c1554a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:"PingFang TC","Microsoft JhengHei","Helvetica Neue",Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.55;
+  }
+  header{
+    background:linear-gradient(135deg,var(--green) 0%,var(--green-dark) 100%);
+    color:#fff;
+    padding:20px 16px 14px;
+    text-align:center;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+  }
+  header h1{font-size:22px;font-weight:600;letter-spacing:.5px}
+  header p{font-size:12px;opacity:.85;margin-top:4px}
+  .status-bar{
+    background:var(--green-light);
+    padding:6px 16px;
+    font-size:12px;
+    color:var(--green-dark);
+    text-align:center;
+    border-bottom:1px solid var(--border);
+  }
+  .status-bar.warn{background:#fff4e6;color:#a8580a;border-bottom-color:#f0d8b0}
 
-        /* 上傳區塊 */
-        #upload-area { display: none; padding: 10px 15px; background: #e3f2fd; border-bottom: 1px solid #bbdefb; align-items: center; gap: 10px; }
-        #upload-area input[type="file"] { flex: 1; font-size: 13px; }
-        .analyze-btn { padding: 6px 12px; background: #007bff; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; }
-        .analyze-btn:hover { background: #0056b3; }
+  nav.tabs{
+    display:flex;
+    background:#fff;
+    border-bottom:1px solid var(--border);
+    position:sticky;top:0;z-index:10;
+  }
+  nav.tabs button{
+    flex:1;
+    padding:14px 8px;
+    background:transparent;
+    border:none;
+    cursor:pointer;
+    font-size:15px;
+    font-weight:500;
+    color:var(--muted);
+    border-bottom:3px solid transparent;
+    transition:all .15s;
+    font-family:inherit;
+  }
+  nav.tabs button:hover{color:var(--green-dark);background:#f6f6f0}
+  nav.tabs button.active{
+    color:var(--green-dark);
+    border-bottom-color:var(--green);
+    background:#fff;
+  }
 
-        #messages { height: 450px; padding: 20px 15px; overflow-y: auto; background-color: #e5ddd5; display: flex; flex-direction: column; gap: 12px; }
-        
-        .message-row { display: flex; width: 100%; }
-        .message-row.user { justify-content: flex-end; }
-        .message-row.ai { justify-content: flex-start; }
-        
-        .bubble { max-width: 75%; padding: 10px 14px; border-radius: 18px; font-size: 15px; line-height: 1.4; word-wrap: break-word; position: relative; box-shadow: 0 1px 1px rgba(0,0,0,0.1); }
-        .message-row.user .bubble { background-color: #dcf8c6; border-bottom-right-radius: 4px; } 
-        .message-row.ai .bubble { background-color: #ffffff; border-bottom-left-radius: 4px; }
+  main{max-width:880px;margin:0 auto;padding:16px}
+  section.tab-panel{display:none}
+  section.tab-panel.active{display:block}
 
-        .system-msg { text-align: center; color: #555; font-size: 12px; margin: 10px 0; background: rgba(255,255,255,0.8); padding: 6px 12px; border-radius: 12px; align-self: center; font-weight: bold; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+  /* === 蔬菜索引 === */
+  .month-filter{
+    display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;
+    padding:10px;background:#fff;border-radius:10px;border:1px solid var(--border);
+  }
+  .month-filter span.label{font-size:13px;color:var(--muted);align-self:center;margin-right:4px}
+  .month-filter button{
+    padding:5px 10px;font-size:12px;border:1px solid var(--border);
+    background:#fff;border-radius:14px;cursor:pointer;font-family:inherit;
+  }
+  .month-filter button.active{background:var(--green);color:#fff;border-color:var(--green)}
 
-        .input-area { display: flex; padding: 12px 15px; background: #f0f0f0; align-items: center; gap: 10px; }
-        input[type="text"] { flex: 1; padding: 12px 15px; border: none; border-radius: 20px; outline: none; font-size: 15px; }
-        button.send-btn { padding: 10px 18px; background: #28a745; color: white; border: none; border-radius: 20px; cursor: pointer; font-weight: bold; transition: background 0.2s; }
-        button.send-btn:hover { background: #218838; }
-    </style>
+  .veg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+  .veg-card{
+    background:var(--card);border:1px solid var(--border);border-radius:12px;
+    overflow:hidden;cursor:pointer;transition:all .15s;
+  }
+  .veg-card:hover{box-shadow:0 4px 12px rgba(0,0,0,.07);transform:translateY(-2px)}
+  .veg-card-head{
+    display:flex;align-items:center;gap:12px;padding:14px;
+    background:linear-gradient(135deg,#f4faef 0%,#e8f3e8 100%);
+    border-bottom:1px solid var(--border);
+  }
+  .veg-emoji{font-size:42px;line-height:1}
+  .veg-name{font-size:18px;font-weight:600;color:var(--green-dark)}
+  .veg-tag{
+    display:inline-block;font-size:11px;background:var(--green);color:#fff;
+    padding:2px 8px;border-radius:10px;margin-top:4px;
+  }
+  .veg-tag.off{background:#bbb}
+  .veg-card-body{padding:12px 14px;display:none}
+  .veg-card.expanded .veg-card-body{display:block}
+  .veg-section{margin-top:10px}
+  .veg-section h4{
+    font-size:13px;color:var(--muted);font-weight:600;
+    margin-bottom:6px;border-left:3px solid var(--green);padding-left:6px;
+  }
+  .price-row{
+    display:flex;justify-content:space-between;font-size:13px;
+    padding:5px 0;border-bottom:1px dashed var(--border);
+  }
+  .price-row:last-child{border-bottom:none}
+  .price-row .market{flex:1}
+  .price-row .market small{display:block;color:var(--muted);font-size:11px;margin-top:1px}
+  .price-row .price{font-weight:600;color:var(--red);min-width:80px;text-align:right}
+  .recipe-list{display:flex;flex-wrap:wrap;gap:6px}
+  .recipe-chip{
+    font-size:12px;background:#fff4e6;color:#a8580a;
+    padding:4px 10px;border-radius:12px;border:1px solid #f0d8b0;
+  }
+  .month-pills{display:flex;flex-wrap:wrap;gap:4px}
+  .month-pill{
+    font-size:11px;padding:2px 7px;border-radius:8px;
+    background:#eee;color:#888;
+  }
+  .month-pill.in-season{background:var(--green);color:#fff}
+
+  /* === 菜價排行榜 === */
+  .rank-controls{
+    display:flex;gap:8px;margin-bottom:12px;align-items:center;flex-wrap:wrap;
+    background:#fff;padding:10px;border-radius:10px;border:1px solid var(--border);
+  }
+  .rank-controls label{font-size:13px;color:var(--muted)}
+  .rank-controls select,.rank-controls button{
+    padding:6px 10px;font-size:13px;border:1px solid var(--border);
+    background:#fff;border-radius:6px;font-family:inherit;cursor:pointer;
+  }
+  .rank-controls button.sort-btn.active{background:var(--green);color:#fff;border-color:var(--green)}
+
+  table.rank-table{
+    width:100%;background:#fff;border-collapse:collapse;
+    border-radius:10px;overflow:hidden;border:1px solid var(--border);
+  }
+  table.rank-table th{
+    background:var(--green-light);color:var(--green-dark);
+    padding:10px 8px;font-size:13px;text-align:left;font-weight:600;
+  }
+  table.rank-table td{padding:10px 8px;font-size:14px;border-top:1px solid var(--border)}
+  table.rank-table .rank-num{
+    width:32px;text-align:center;color:var(--muted);font-weight:600;
+  }
+  table.rank-table .price-cell{font-weight:600;color:var(--red);text-align:right}
+  table.rank-table tr:hover{background:#fafaf5}
+  .rank-emoji{margin-right:6px}
+
+  /* === 搜尋 === */
+  .search-box{
+    display:flex;gap:8px;margin-bottom:14px;
+  }
+  .search-box input{
+    flex:1;padding:12px 14px;font-size:15px;
+    border:2px solid var(--border);border-radius:10px;font-family:inherit;
+  }
+  .search-box input:focus{outline:none;border-color:var(--green)}
+  .search-hint{
+    font-size:12px;color:var(--muted);margin-bottom:10px;
+  }
+  .search-empty{
+    text-align:center;padding:40px 20px;color:var(--muted);font-size:14px;
+  }
+
+  .loading{text-align:center;padding:30px;color:var(--muted);font-size:14px}
+  footer{text-align:center;padding:20px;font-size:11px;color:var(--muted)}
+
+  @media (max-width:520px){
+    .veg-grid{grid-template-columns:1fr}
+    header h1{font-size:18px}
+  }
+</style>
 </head>
 <body>
 
-<div id="chat-container">
-    <div class="controls-area">
-        <select id="persona-select">
-            <option value="gentle" selected>☕ 溫柔樹洞 (傾聽與包容)</option>
-            <option value="ceo">👔 霸道總裁 (強勢與佔有慾)</option>
-            <option value="tsundere">😼 傲嬌系 (嘴硬心軟)</option>
-            <option value="mentor">👓 毒舌導師 (犀利與吐槽)</option>
-            <option value="yandere">🔪 病嬌系 (極度依戀)</option>
-            <option value="custom_file" style="font-weight: bold; color: #007bff;">📸/📄 模擬截圖或文字紀錄語氣</option>
-        </select>
-        <button class="clear-btn" onclick="clearMemory()">清除對話</button>
-    </div>
+<header>
+  <h1>🥬 菜籃通</h1>
+  <p>當季蔬菜・各市場菜價・料理靈感一次看</p>
+</header>
+<div class="status-bar" id="statusBar">資料載入中…</div>
 
-    <div id="upload-area">
-        <!-- 同時支援圖片與 .txt -->
-        <input type="file" id="file-upload" accept="image/*,.txt">
-        <button class="analyze-btn" onclick="uploadAndAnalyze()">🔍 分析檔案</button>
-    </div>
+<nav class="tabs">
+  <button class="tab-btn active" data-tab="index">🥗 蔬菜索引</button>
+  <button class="tab-btn" data-tab="rank">📊 菜價排行榜</button>
+  <button class="tab-btn" data-tab="search">🔍 搜尋</button>
+</nav>
 
-    <div id="messages">
-        <div class="system-msg">歡迎加入聊天！</div>
-        <div class="message-row ai">
-            <div class="bubble">你好！你可以直接跟我聊天，或是切換個性設定。如果你上傳了對話紀錄，我會盡力模仿那個人的語氣喔！</div>
-        </div>
+<main>
+  <!-- 蔬菜索引 -->
+  <section class="tab-panel active" id="tab-index">
+    <div class="month-filter" id="monthFilter">
+      <span class="label">月份：</span>
+      <button data-month="0" class="active">全部</button>
     </div>
-    
-    <div class="input-area">
-        <input type="text" id="user-input" placeholder="請輸入訊息..." onkeypress="handleKeyPress(event)">
-        <button class="send-btn" onclick="sendMessage()">傳送</button>
+    <div class="veg-grid" id="vegGrid">
+      <div class="loading">載入中…</div>
     </div>
-</div>
+  </section>
+
+  <!-- 菜價排行榜 -->
+  <section class="tab-panel" id="tab-rank">
+    <div class="rank-controls">
+      <label>市場：</label>
+      <select id="rankMarketFilter">
+        <option value="">全部市場</option>
+      </select>
+      <label>排序：</label>
+      <button class="sort-btn active" data-order="asc">最低 → 最高</button>
+      <button class="sort-btn" data-order="desc">最高 → 最低</button>
+    </div>
+    <table class="rank-table">
+      <thead>
+        <tr>
+          <th class="rank-num">#</th>
+          <th>蔬菜</th>
+          <th>市場</th>
+          <th style="text-align:right">均價 (元/公斤)</th>
+        </tr>
+      </thead>
+      <tbody id="rankTbody">
+        <tr><td colspan="4" class="loading">載入中…</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 搜尋 -->
+  <section class="tab-panel" id="tab-search">
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="輸入蔬菜名稱，例如：高麗菜、空心菜、tomato…" autocomplete="off">
+    </div>
+    <div class="search-hint">支援部分名稱、別名與相關性搜尋</div>
+    <div class="veg-grid" id="searchResults">
+      <div class="search-empty">輸入關鍵字開始搜尋</div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  資料來源：農業部農產品交易行情站 (data.moa.gov.tw) ・ 食譜推薦為示意內容
+</footer>
 
 <script>
-    // 取得使用者名稱
-    let userId = prompt("請輸入您的名字：", "訪客");
-    if (!userId) userId = "訪客";
+/* ============================================================
+   靜態資料：蔬菜詞庫（含當季月份、emoji、別名、食譜）
+   價格資料為動態，由 API 取得後合併
+   ============================================================ */
+const VEGETABLES = [
+  {key:"高麗菜", emoji:"🥬", aliases:["甘藍","捲心菜","cabbage"], months:[11,12,1,2,3,4],
+    recipes:["手撕高麗菜","高麗菜炒培根","高麗菜豬肉水餃"]},
+  {key:"大白菜", emoji:"🥬", aliases:["結球白菜","包心白菜","napa cabbage"], months:[11,12,1,2,3],
+    recipes:["白菜滷","酸白菜火鍋","開陽白菜"]},
+  {key:"小白菜", emoji:"🥬", aliases:["青菜","bok choy"], months:[1,2,3,4,5,6,7,8,9,10,11,12],
+    recipes:["蒜炒小白菜","上湯小白菜","小白菜豆腐湯"]},
+  {key:"青江菜", emoji:"🥬", aliases:["湯匙菜","上海青"], months:[1,2,3,4,5,6,7,8,9,10,11,12],
+    recipes:["蒜炒青江菜","干貝青江菜","油燜青江菜"]},
+  {key:"菠菜", emoji:"🥬", aliases:["菠薐","spinach","菠菱菜"], months:[10,11,12,1,2,3,4],
+    recipes:["蒜蓉菠菜","菠菜玉子燒","菠菜濃湯"]},
+  {key:"空心菜", emoji:"🌿", aliases:["蕹菜","通菜","water spinach","ong choy"], months:[4,5,6,7,8,9,10],
+    recipes:["沙茶空心菜","蒜炒空心菜","腐乳空心菜"]},
+  {key:"地瓜葉", emoji:"🌿", aliases:["甘藷葉","sweet potato leaf"], months:[1,2,3,4,5,6,7,8,9,10,11,12],
+    recipes:["燙地瓜葉","蒜香地瓜葉","地瓜葉味噌湯"]},
+  {key:"莧菜", emoji:"🌿", aliases:["amaranth","荇菜"], months:[4,5,6,7,8,9,10],
+    recipes:["吻仔魚莧菜","蒜炒莧菜","莧菜豆腐羹"]},
+  {key:"茼蒿", emoji:"🌿", aliases:["打某菜","crown daisy"], months:[10,11,12,1,2,3],
+    recipes:["茼蒿火鍋料","蒜炒茼蒿","茼蒿蛋花湯"]},
+  {key:"芹菜", emoji:"🥬", aliases:["香芹","celery","西芹"], months:[11,12,1,2,3,4],
+    recipes:["芹菜炒花枝","芹菜炒豆乾","芹菜雞湯"]},
+  {key:"花椰菜", emoji:"🥦", aliases:["白花菜","白花椰","cauliflower"], months:[10,11,12,1,2,3],
+    recipes:["奶油白花椰","蒜炒花椰菜","花椰菜濃湯"]},
+  {key:"青花菜", emoji:"🥦", aliases:["綠花椰","西蘭花","broccoli"], months:[10,11,12,1,2,3],
+    recipes:["蠔油青花菜","青花菜炒蝦仁","青花菜雞胸沙拉"]},
+  {key:"番茄", emoji:"🍅", aliases:["蕃茄","西紅柿","tomato"], months:[11,12,1,2,3,4],
+    recipes:["番茄炒蛋","番茄牛肉湯","蜜番茄"]},
+  {key:"小黃瓜", emoji:"🥒", aliases:["花胡瓜","cucumber"], months:[3,4,5,6,7,8,9,10],
+    recipes:["涼拌小黃瓜","小黃瓜炒蛋","小黃瓜壽司"]},
+  {key:"絲瓜", emoji:"🥒", aliases:["菜瓜","loofah","luffa"], months:[5,6,7,8,9,10],
+    recipes:["絲瓜蛤蜊湯","絲瓜麵線","絲瓜炒蛋"]},
+  {key:"苦瓜", emoji:"🥒", aliases:["涼瓜","bitter melon","bitter gourd"], months:[4,5,6,7,8,9,10],
+    recipes:["鳳梨苦瓜雞","客家小炒苦瓜","苦瓜鹹蛋"]},
+  {key:"茄子", emoji:"🍆", aliases:["紅皮菜","eggplant","aubergine"], months:[4,5,6,7,8,9,10,11],
+    recipes:["魚香茄子","紅燒茄子","和風涼拌茄子"]},
+  {key:"青椒", emoji:"🫑", aliases:["大同仔","green pepper","bell pepper"], months:[1,2,3,4,5,6,7,8,9,10,11,12],
+    recipes:["青椒牛肉","青椒炒肉絲","青椒鑲肉"]},
+  {key:"洋蔥", emoji:"🧅", aliases:["球蔥","蔥頭","onion"], months:[12,1,2,3,4],
+    recipes:["洋蔥炒牛肉","洋蔥圈","法式洋蔥湯"]},
+  {key:"紅蘿蔔", emoji:"🥕", aliases:["胡蘿蔔","carrot"], months:[11,12,1,2,3,4],
+    recipes:["紅蘿蔔炒蛋","ABC湯","紅蘿蔔燉牛肉"]},
+  {key:"白蘿蔔", emoji:"🥕", aliases:["菜頭","daikon","radish"], months:[11,12,1,2,3],
+    recipes:["蘿蔔排骨湯","紅燒蘿蔔","蘿蔔糕"]},
+  {key:"馬鈴薯", emoji:"🥔", aliases:["洋芋","土豆","potato"], months:[1,2,3,4,11,12],
+    recipes:["馬鈴薯燉肉","薯泥沙拉","醋溜馬鈴薯絲"]},
+  {key:"芋頭", emoji:"🥔", aliases:["taro"], months:[9,10,11,12],
+    recipes:["芋頭排骨","芋泥","芋頭飯"]},
+  {key:"南瓜", emoji:"🎃", aliases:["金瓜","pumpkin"], months:[5,6,7,8,9,10],
+    recipes:["南瓜濃湯","南瓜炒米粉","南瓜派"]},
+  {key:"玉米", emoji:"🌽", aliases:["玉蜀黍","corn","sweet corn"], months:[3,4,5,6,7,8,9,10,11],
+    recipes:["玉米排骨湯","奶油玉米","玉米炒蛋"]},
+  {key:"竹筍", emoji:"🎋", aliases:["綠竹筍","麻竹筍","bamboo shoot"], months:[4,5,6,7,8,9],
+    recipes:["竹筍排骨湯","涼拌綠竹筍","油燜筍"]},
+  {key:"韭菜", emoji:"🌿", aliases:["chives"], months:[1,2,3,4,5,6,7,8,9,10,11,12],
+    recipes:["韭菜炒蛋","韭菜盒子","韭菜豬肉水餃"]},
+  {key:"蔥", emoji:"🌿", aliases:["青蔥","三星蔥","spring onion","scallion"], months:[1,2,3,4,5,6,7,8,9,10,11,12],
+    recipes:["蔥油雞","蔥爆牛肉","蔥油餅"]},
+  {key:"蒜頭", emoji:"🧄", aliases:["大蒜","garlic"], months:[3,4,5,6,7,8,9,10,11,12],
+    recipes:["蒜頭雞湯","蒜泥白肉","蒜香蝦"]},
+  {key:"薑", emoji:"🫚", aliases:["生薑","老薑","ginger"], months:[1,2,3,4,5,6,7,8,9,10,11,12],
+    recipes:["薑母鴨","麻油雞","三杯雞"]},
+  {key:"山藥", emoji:"🥔", aliases:["淮山","yam"], months:[11,12,1,2],
+    recipes:["山藥排骨湯","涼拌山藥","山藥粥"]},
+  {key:"敏豆", emoji:"🫛", aliases:["四季豆","green bean","french bean"], months:[3,4,5,6,7,8,9,10,11],
+    recipes:["乾煸四季豆","四季豆炒肉末","涼拌四季豆"]},
+  {key:"豌豆", emoji:"🫛", aliases:["荷蘭豆","甜豆","snow pea","sugar pea"], months:[11,12,1,2,3,4],
+    recipes:["蝦仁炒豌豆","蒜炒甜豆","豌豆苗炒蛋"]},
+  {key:"金針菇", emoji:"🍄", aliases:["金菇","enoki","金針"], months:[1,2,3,4,5,6,7,8,9,10,11,12],
+    recipes:["金針菇捲牛肉","金針菇湯","涼拌金針菇"]},
+  {key:"香菇", emoji:"🍄", aliases:["冬菇","shiitake"], months:[1,2,3,4,5,6,7,8,9,10,11,12],
+    recipes:["香菇雞湯","香菇炒油菜","香菇鑲肉"]},
+];
 
-    const messagesDiv = document.getElementById('messages');
-    const inputField = document.getElementById('user-input');
-    const personaSelect = document.getElementById('persona-select');
-    
-    let customPersonaPrompt = "";
+/* ============================================================
+   市場資料（地址為公開資訊整理）
+   API 回傳 MarketName 會與此對應
+   ============================================================ */
+const MARKETS = {
+  "台北一":   {addr:"台北市萬華區萬大路 533 號",          short:"台北一(萬大)"},
+  "台北二":   {addr:"台北市內湖區民善街 85 號",          short:"台北二(內湖)"},
+  "三重區":   {addr:"新北市三重區中正北路 111 號",        short:"三重"},
+  "三重":     {addr:"新北市三重區中正北路 111 號",        short:"三重"},
+  "板橋區":   {addr:"新北市板橋區民生路一段 313 號",      short:"板橋"},
+  "板橋":     {addr:"新北市板橋區民生路一段 313 號",      short:"板橋"},
+  "桃園市":   {addr:"桃園市桃園區中山路 100 號",          short:"桃園"},
+  "桃　園":   {addr:"桃園市桃園區中山路 100 號",          short:"桃園"},
+  "新竹市":   {addr:"新竹市東區經國路一段 411 號",        short:"新竹"},
+  "台中市":   {addr:"台中市豐原區水源路 81 號",            short:"台中(豐原)"},
+  "豐原區":   {addr:"台中市豐原區水源路 81 號",            short:"豐原"},
+  "永靖鄉":   {addr:"彰化縣永靖鄉永福路二段 1 號",        short:"永靖"},
+  "西螺鎮":   {addr:"雲林縣西螺鎮新豐里新社 308-1 號",     short:"西螺"},
+  "嘉義市":   {addr:"嘉義市西區博愛路一段 209 號",        short:"嘉義"},
+  "台南市":   {addr:"台南市東區林森路一段 332 號",        short:"台南"},
+  "高雄市":   {addr:"高雄市三民區民族一路 100 號",        short:"高雄"},
+  "鳳山區":   {addr:"高雄市鳳山區五甲二路 481 號",        short:"鳳山"},
+  "屏東市":   {addr:"屏東縣屏東市民學路 6 號",            short:"屏東"},
+  "宜蘭市":   {addr:"宜蘭縣宜蘭市校舍路 116 號",          short:"宜蘭"},
+  "花蓮市":   {addr:"花蓮縣花蓮市進豐街 75 號",            short:"花蓮"},
+  "台東市":   {addr:"台東縣台東市更生路 596 號",          short:"台東"},
+};
+function getMarketInfo(name){
+  // 模糊比對
+  if(MARKETS[name]) return {name, ...MARKETS[name]};
+  for(const k of Object.keys(MARKETS)){
+    if(name.includes(k)||k.includes(name)) return {name, ...MARKETS[k]};
+  }
+  return {name, addr:"地址資訊待補", short:name};
+}
 
-    // 監聽選單切換
-    personaSelect.addEventListener('change', function(e) {
-        if (e.target.value === 'custom_file') {
-            document.getElementById('upload-area').style.display = 'flex';
-        } else {
-            document.getElementById('upload-area').style.display = 'none';
-            customPersonaPrompt = ""; 
-        }
+/* ============================================================
+   API：農業部農產品交易行情
+   ============================================================ */
+const API_BASE = "https://data.moa.gov.tw/Service/OpenData/FromM/AgriProductsTransType.aspx";
+let priceData = []; // { cropName, marketName, avgPrice, date }
+let dataMode = "loading"; // loading / api / fallback
+
+async function fetchPriceData(){
+  // 嘗試從 API 取得最近一日資料
+  try{
+    const res = await fetch(API_BASE,{cache:"no-store"});
+    if(!res.ok) throw new Error("HTTP "+res.status);
+    const data = await res.json();
+    if(!Array.isArray(data) || !data.length) throw new Error("empty");
+    // 標準化欄位
+    priceData = data.map(d => ({
+      cropName: d.CropName || d.作物名稱 || "",
+      marketName: d.MarketName || d.市場名稱 || "",
+      avgPrice: parseFloat(d.Avg_Price || d.平均價 || 0),
+      date: d.TransDate || d.交易日期 || ""
+    })).filter(d => d.cropName && d.marketName && d.avgPrice > 0);
+
+    if(!priceData.length) throw new Error("no valid rows");
+    dataMode = "api";
+    return;
+  }catch(e){
+    console.warn("API 取得失敗，使用內建備援價格:", e);
+    dataMode = "fallback";
+    priceData = generateFallbackPrices();
+  }
+}
+
+function generateFallbackPrices(){
+  // 根據蔬菜詞庫產生擬真備援資料（每種蔬菜 2~4 個市場）
+  const sampleMarkets = ["台北一","台北二","三重區","板橋區","台中市","高雄市","西螺鎮"];
+  const baseRange = {
+    "高麗菜":[15,40],"大白菜":[20,50],"小白菜":[25,50],"青江菜":[25,55],
+    "菠菜":[40,80],"空心菜":[20,45],"地瓜葉":[18,38],"莧菜":[25,55],
+    "茼蒿":[60,110],"芹菜":[40,90],"花椰菜":[30,70],"青花菜":[40,90],
+    "番茄":[35,75],"小黃瓜":[25,60],"絲瓜":[30,65],"苦瓜":[40,85],
+    "茄子":[25,55],"青椒":[40,80],"洋蔥":[15,35],"紅蘿蔔":[20,45],
+    "白蘿蔔":[15,35],"馬鈴薯":[25,55],"芋頭":[40,90],"南瓜":[20,50],
+    "玉米":[20,40],"竹筍":[40,110],"韭菜":[30,70],"蔥":[40,180],
+    "蒜頭":[80,180],"薑":[60,140],"山藥":[60,150],"敏豆":[45,95],
+    "豌豆":[50,120],"金針菇":[35,65],"香菇":[140,260]
+  };
+  const today = new Date().toISOString().slice(0,10);
+  const out=[];
+  for(const v of VEGETABLES){
+    const r = baseRange[v.key] || [30,80];
+    const n = 3 + Math.floor(Math.random()*2);
+    const shuffled = [...sampleMarkets].sort(()=>Math.random()-.5).slice(0,n);
+    for(const m of shuffled){
+      const p = r[0] + Math.random()*(r[1]-r[0]);
+      out.push({cropName:v.key, marketName:m, avgPrice:Math.round(p*10)/10, date:today});
+    }
+  }
+  return out;
+}
+
+/* ============================================================
+   工具：把 API 中的作物名稱對應到我們的詞庫
+   ============================================================ */
+function findVegByCropName(cropName){
+  if(!cropName) return null;
+  for(const v of VEGETABLES){
+    if(cropName === v.key) return v;
+    if(cropName.includes(v.key)) return v;
+    if(v.aliases.some(a => cropName.includes(a) || a.includes(cropName))) return v;
+  }
+  return null;
+}
+function getPricesForVeg(veg){
+  return priceData.filter(p => {
+    const matched = findVegByCropName(p.cropName);
+    return matched && matched.key === veg.key;
+  });
+}
+
+/* ============================================================
+   頁籤切換
+   ============================================================ */
+document.querySelectorAll(".tab-btn").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+    document.querySelectorAll(".tab-panel").forEach(p=>p.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById("tab-"+btn.dataset.tab).classList.add("active");
+  });
+});
+
+/* ============================================================
+   渲染：蔬菜索引
+   ============================================================ */
+let currentMonthFilter = 0; // 0 = 全部
+const CHINESE_MONTH = ["一","二","三","四","五","六","七","八","九","十","十一","十二"];
+
+function buildMonthFilter(){
+  const wrap = document.getElementById("monthFilter");
+  const thisMonth = new Date().getMonth()+1;
+  for(let m=1;m<=12;m++){
+    const b = document.createElement("button");
+    b.dataset.month = m;
+    b.textContent = m+"月";
+    if(m === thisMonth){
+      b.textContent = m+"月 (本月)";
+    }
+    wrap.appendChild(b);
+  }
+  wrap.querySelectorAll("button").forEach(b=>{
+    b.addEventListener("click",()=>{
+      wrap.querySelectorAll("button").forEach(x=>x.classList.remove("active"));
+      b.classList.add("active");
+      currentMonthFilter = parseInt(b.dataset.month,10);
+      renderIndex();
     });
+  });
+  // 預設本月
+  const cur = wrap.querySelector(`button[data-month="${thisMonth}"]`);
+  if(cur){
+    wrap.querySelectorAll("button").forEach(x=>x.classList.remove("active"));
+    cur.classList.add("active");
+    currentMonthFilter = thisMonth;
+  }
+}
 
-    function handleKeyPress(event) {
-        if (event.key === 'Enter') sendMessage();
-    }
+function renderIndex(){
+  const grid = document.getElementById("vegGrid");
+  const list = currentMonthFilter === 0
+    ? VEGETABLES
+    : VEGETABLES.filter(v => v.months.includes(currentMonthFilter));
 
-    function appendMessage(sender, text) {
-        const rowDiv = document.createElement('div');
-        rowDiv.className = `message-row ${sender}`;
-        
-        const bubbleDiv = document.createElement('div');
-        bubbleDiv.className = 'bubble';
-        bubbleDiv.innerHTML = text.replace(/\n/g, '<br>');
-        
-        rowDiv.appendChild(bubbleDiv);
-        messagesDiv.appendChild(rowDiv);
-        messagesDiv.scrollTop = messagesDiv.scrollHeight;
-    }
+  // 把當季的排在前面（即便篩選為全部時也按本月當季排序）
+  const ref = currentMonthFilter || (new Date().getMonth()+1);
+  list.sort((a,b)=>{
+    const ai = a.months.includes(ref)?0:1;
+    const bi = b.months.includes(ref)?0:1;
+    return ai-bi;
+  });
 
-    async function handleAnalysisResponse(data) {
-        if (data.status === "success") {
-            customPersonaPrompt = data.extracted_prompt;
-            messagesDiv.innerHTML += `<div class="system-msg">✅ 分析完成！已套用該對象語氣。</div>`;
-            await clearMemory(true); // 自動清除記憶以套用新 Prompt
-        } else {
-            alert("解析失敗：" + data.message);
-        }
-    }
+  if(!list.length){
+    grid.innerHTML = `<div class="search-empty">這個月沒有特別當季的蔬菜，試試其他月份。</div>`;
+    return;
+  }
+  grid.innerHTML = list.map(v => vegCardHTML(v, ref)).join("");
+  attachCardToggle(grid);
+}
 
-    // 強化版檔案讀取邏輯
-    async function uploadAndAnalyze() {
-        const fileInput = document.getElementById('file-upload');
-        if (!fileInput.files || fileInput.files.length === 0) {
-            alert("請先選擇截圖或 .txt 檔案！");
-            return;
-        }
-        
-        const file = fileInput.files[0];
-        const reader = new FileReader();
-        const fileName = file.name.toLowerCase();
-        
-        messagesDiv.innerHTML += `<div class="system-msg">⏳ 正在解析「${file.name}」...</div>`;
-        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+function vegCardHTML(v, refMonth){
+  const inSeason = v.months.includes(refMonth);
+  const prices = getPricesForVeg(v);
+  const pricesHTML = prices.length
+    ? prices.slice(0,6).map(p=>{
+        const m = getMarketInfo(p.marketName);
+        return `<div class="price-row">
+          <div class="market">${escape(m.short)}<small>📍 ${escape(m.addr)}</small></div>
+          <div class="price">$${p.avgPrice.toFixed(1)}</div>
+        </div>`;
+      }).join("")
+    : `<div class="search-empty" style="padding:14px">今日尚無此蔬菜在各市場的成交資料。</div>`;
 
-        // 判斷是否為圖片
-        if (file.type.startsWith('image/') || /\.(jpg|jpeg|png|webp|gif)$/i.test(fileName)) {
-            reader.onload = async function(e) {
-                const base64Image = e.target.result;
-                try {
-                    const response = await fetch('http://127.0.0.1:5000/analyze_screenshot', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ image: base64Image })
-                    });
-                    handleAnalysisResponse(await response.json());
-                } catch (error) {
-                    messagesDiv.innerHTML += `<div class="system-msg" style="color:red;">⚠️ 連線失敗。</div>`;
-                }
-            };
-            reader.readAsDataURL(file);
-        
-        // 判斷是否為 .txt 檔案
-        } else if (file.type === 'text/plain' || fileName.endsWith('.txt')) {
-            reader.onload = async function(e) {
-                const textContent = e.target.result;
-                try {
-                    const response = await fetch('http://127.0.0.1:5000/analyze_text', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ text: textContent })
-                    });
-                    handleAnalysisResponse(await response.json());
-                } catch (error) {
-                    messagesDiv.innerHTML += `<div class="system-msg" style="color:red;">⚠️ 連線失敗。</div>`;
-                }
-            };
-            reader.readAsText(file, 'UTF-8');
-        
-        } else {
-            alert("格式不符！請使用圖片或 .txt 檔。");
-        }
-    }
+  const monthsHTML = Array.from({length:12},(_,i)=>{
+    const m = i+1;
+    const cls = v.months.includes(m) ? "month-pill in-season" : "month-pill";
+    return `<span class="${cls}">${m}</span>`;
+  }).join("");
 
-    async function sendMessage() {
-        const message = inputField.value.trim();
-        if (!message) return;
+  return `<div class="veg-card" data-key="${escape(v.key)}">
+    <div class="veg-card-head">
+      <div class="veg-emoji">${v.emoji}</div>
+      <div>
+        <div class="veg-name">${escape(v.key)}</div>
+        <span class="veg-tag ${inSeason?"":"off"}">${inSeason?"當季":"非當季"}</span>
+      </div>
+    </div>
+    <div class="veg-card-body">
+      <div class="veg-section">
+        <h4>當季月份</h4>
+        <div class="month-pills">${monthsHTML}</div>
+      </div>
+      <div class="veg-section">
+        <h4>各市場價格 (元/公斤)</h4>
+        ${pricesHTML}
+      </div>
+      <div class="veg-section">
+        <h4>推薦料理</h4>
+        <div class="recipe-list">
+          ${v.recipes.map(r=>`<span class="recipe-chip">${escape(r)}</span>`).join("")}
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+function attachCardToggle(container){
+  container.querySelectorAll(".veg-card").forEach(card=>{
+    card.addEventListener("click",()=>card.classList.toggle("expanded"));
+  });
+}
 
-        const personaKey = personaSelect.value;
-        appendMessage('user', message);
-        inputField.value = '';
+/* ============================================================
+   渲染：菜價排行榜
+   ============================================================ */
+let rankOrder = "asc";
+let rankMarket = "";
 
-        try {
-            const response = await fetch('http://127.0.0.1:5000/chat', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    message: message,
-                    user_id: userId,
-                    persona_key: personaKey,
-                    custom_prompt: customPersonaPrompt
-                })
-            });
-            
-            const data = await response.json();
-            appendMessage('ai', data.reply);
-        } catch (error) {
-            console.error('連線出錯:', error);
-            appendMessage('ai', '⚠️ 系統連線失敗，請檢查後端。');
-        }
-    }
+function buildRankMarketOptions(){
+  const sel = document.getElementById("rankMarketFilter");
+  const seen = new Set();
+  priceData.forEach(p=>seen.add(p.marketName));
+  Array.from(seen).sort().forEach(m=>{
+    const o = document.createElement("option");
+    o.value = m;
+    const info = getMarketInfo(m);
+    o.textContent = info.short;
+    sel.appendChild(o);
+  });
+  sel.addEventListener("change",e=>{rankMarket=e.target.value;renderRank();});
+}
+document.querySelectorAll(".sort-btn").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    document.querySelectorAll(".sort-btn").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    rankOrder = btn.dataset.order;
+    renderRank();
+  });
+});
 
-    async function clearMemory(silent = false) {
-        const personaKey = personaSelect.value;
-        try {
-            await fetch('http://127.0.0.1:5000/clear', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    user_id: userId,
-                    persona_key: personaKey,
-                    custom_prompt: customPersonaPrompt
-                })
-            });
-            if (!silent) {
-                messagesDiv.innerHTML = `<div class="system-msg">🧹 記憶已重置，開啟新話題！</div>`;
-            }
-        } catch (error) {
-            if (!silent) alert("清除失敗。");
-        }
-    }
+function renderRank(){
+  const tbody = document.getElementById("rankTbody");
+  let rows = priceData.filter(p => p.avgPrice > 0);
+  if(rankMarket) rows = rows.filter(p => p.marketName === rankMarket);
+  rows.sort((a,b)=> rankOrder==="asc" ? a.avgPrice - b.avgPrice : b.avgPrice - a.avgPrice);
+  rows = rows.slice(0,80);
+
+  if(!rows.length){
+    tbody.innerHTML = `<tr><td colspan="4" class="loading">沒有資料</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = rows.map((p,i)=>{
+    const v = findVegByCropName(p.cropName);
+    const emoji = v ? v.emoji : "🌱";
+    const m = getMarketInfo(p.marketName);
+    return `<tr>
+      <td class="rank-num">${i+1}</td>
+      <td><span class="rank-emoji">${emoji}</span>${escape(p.cropName)}</td>
+      <td>${escape(m.short)}<br><small style="color:var(--muted)">📍 ${escape(m.addr)}</small></td>
+      <td class="price-cell">$${p.avgPrice.toFixed(1)}</td>
+    </tr>`;
+  }).join("");
+}
+
+/* ============================================================
+   搜尋
+   ============================================================ */
+const searchInput = document.getElementById("searchInput");
+searchInput.addEventListener("input",doSearch);
+
+function score(veg, q){
+  const Q = q.toLowerCase();
+  const k = veg.key.toLowerCase();
+  if(k === Q) return 100;
+  if(k.includes(Q)) return 80;
+  for(const a of veg.aliases){
+    const al = a.toLowerCase();
+    if(al === Q) return 90;
+    if(al.includes(Q) || Q.includes(al)) return 70;
+  }
+  // 食譜內含關鍵字也給少量分數（相關性）
+  for(const r of veg.recipes){
+    if(r.toLowerCase().includes(Q)) return 30;
+  }
+  // 中文部分字元
+  for(const ch of Q){
+    if(k.includes(ch)) return 20;
+  }
+  return 0;
+}
+
+function doSearch(){
+  const q = searchInput.value.trim();
+  const out = document.getElementById("searchResults");
+  if(!q){
+    out.innerHTML = `<div class="search-empty">輸入關鍵字開始搜尋</div>`;
+    return;
+  }
+  const scored = VEGETABLES
+    .map(v=>({v, s:score(v,q)}))
+    .filter(x=>x.s>0)
+    .sort((a,b)=>b.s-a.s);
+
+  if(!scored.length){
+    out.innerHTML = `<div class="search-empty">找不到「${escape(q)}」相關蔬菜，試試別的關鍵字？</div>`;
+    return;
+  }
+  const ref = new Date().getMonth()+1;
+  out.innerHTML = scored.map(x => vegCardHTML(x.v, ref)).join("");
+  attachCardToggle(out);
+  // 預設展開第一張
+  const first = out.querySelector(".veg-card");
+  if(first) first.classList.add("expanded");
+}
+
+/* ============================================================
+   小工具
+   ============================================================ */
+function escape(s){
+  return String(s).replace(/[&<>"']/g, c => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[c]));
+}
+
+/* ============================================================
+   初始化
+   ============================================================ */
+async function init(){
+  buildMonthFilter();
+  await fetchPriceData();
+  const bar = document.getElementById("statusBar");
+  if(dataMode === "api"){
+    const dates = [...new Set(priceData.map(p=>p.date))].slice(0,1);
+    bar.textContent = `✅ 已連線農業部行情 API ・ ${priceData.length} 筆交易紀錄 ・ ${dates[0]||""}`;
+    bar.className = "status-bar";
+  }else{
+    bar.textContent = "⚠️ 無法連線農業部 API（可能是 CORS 或網路），目前顯示為內建示範資料";
+    bar.className = "status-bar warn";
+  }
+  buildRankMarketOptions();
+  renderIndex();
+  renderRank();
+}
+init();
 </script>
-
 </body>
 </html>
