@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>我的 AI 聊天視窗</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        #chat-container { width: 100%; max-width: 480px; background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); overflow: hidden; display: flex; flex-direction: column; }
+        
+        /* 頂部控制列 */
+        .controls-area { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; padding: 12px 15px; background: #ffffff; border-bottom: 1px solid #e0e0e0; }
+        .controls-area select { padding: 8px; border-radius: 6px; border: 1px solid #ccc; font-size: 14px; outline: none; background-color: #f9f9f9; cursor: pointer; flex: 1; margin-right: 10px; }
+        .clear-btn { padding: 8px 12px; background: #ff4d4f; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; transition: background 0.2s; }
+        .clear-btn:hover { background: #d9363e; }
+
+        /* 上傳區塊 */
+        #upload-area { display: none; padding: 10px 15px; background: #e3f2fd; border-bottom: 1px solid #bbdefb; align-items: center; gap: 10px; }
+        #upload-area input[type="file"] { flex: 1; font-size: 13px; }
+        .analyze-btn { padding: 6px 12px; background: #007bff; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; }
+        .analyze-btn:hover { background: #0056b3; }
+
+        #messages { height: 450px; padding: 20px 15px; overflow-y: auto; background-color: #e5ddd5; display: flex; flex-direction: column; gap: 12px; }
+        
+        .message-row { display: flex; width: 100%; }
+        .message-row.user { justify-content: flex-end; }
+        .message-row.ai { justify-content: flex-start; }
+        
+        .bubble { max-width: 75%; padding: 10px 14px; border-radius: 18px; font-size: 15px; line-height: 1.4; word-wrap: break-word; position: relative; box-shadow: 0 1px 1px rgba(0,0,0,0.1); }
+        .message-row.user .bubble { background-color: #dcf8c6; border-bottom-right-radius: 4px; } 
+        .message-row.ai .bubble { background-color: #ffffff; border-bottom-left-radius: 4px; }
+
+        .system-msg { text-align: center; color: #555; font-size: 12px; margin: 10px 0; background: rgba(255,255,255,0.8); padding: 6px 12px; border-radius: 12px; align-self: center; font-weight: bold; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+
+        .input-area { display: flex; padding: 12px 15px; background: #f0f0f0; align-items: center; gap: 10px; }
+        input[type="text"] { flex: 1; padding: 12px 15px; border: none; border-radius: 20px; outline: none; font-size: 15px; }
+        button.send-btn { padding: 10px 18px; background: #28a745; color: white; border: none; border-radius: 20px; cursor: pointer; font-weight: bold; transition: background 0.2s; }
+        button.send-btn:hover { background: #218838; }
+    </style>
+</head>
+<body>
+
+<div id="chat-container">
+    <div class="controls-area">
+        <select id="persona-select">
+            <option value="gentle" selected>☕ 溫柔樹洞 (傾聽與包容)</option>
+            <option value="ceo">👔 霸道總裁 (強勢與佔有慾)</option>
+            <option value="tsundere">😼 傲嬌系 (嘴硬心軟)</option>
+            <option value="mentor">👓 毒舌導師 (犀利與吐槽)</option>
+            <option value="yandere">🔪 病嬌系 (極度依戀)</option>
+            <option value="custom_file" style="font-weight: bold; color: #007bff;">📸/📄 模擬截圖或文字紀錄語氣</option>
+        </select>
+        <button class="clear-btn" onclick="clearMemory()">清除對話</button>
+    </div>
+
+    <div id="upload-area">
+        <!-- 同時支援圖片與 .txt -->
+        <input type="file" id="file-upload" accept="image/*,.txt">
+        <button class="analyze-btn" onclick="uploadAndAnalyze()">🔍 分析檔案</button>
+    </div>
+
+    <div id="messages">
+        <div class="system-msg">歡迎加入聊天！</div>
+        <div class="message-row ai">
+            <div class="bubble">你好！你可以直接跟我聊天，或是切換個性設定。如果你上傳了對話紀錄，我會盡力模仿那個人的語氣喔！</div>
+        </div>
+    </div>
+    
+    <div class="input-area">
+        <input type="text" id="user-input" placeholder="請輸入訊息..." onkeypress="handleKeyPress(event)">
+        <button class="send-btn" onclick="sendMessage()">傳送</button>
+    </div>
+</div>
+
+<script>
+    // 取得使用者名稱
+    let userId = prompt("請輸入您的名字：", "訪客");
+    if (!userId) userId = "訪客";
+
+    const messagesDiv = document.getElementById('messages');
+    const inputField = document.getElementById('user-input');
+    const personaSelect = document.getElementById('persona-select');
+    
+    let customPersonaPrompt = "";
+
+    // 監聽選單切換
+    personaSelect.addEventListener('change', function(e) {
+        if (e.target.value === 'custom_file') {
+            document.getElementById('upload-area').style.display = 'flex';
+        } else {
+            document.getElementById('upload-area').style.display = 'none';
+            customPersonaPrompt = ""; 
+        }
+    });
+
+    function handleKeyPress(event) {
+        if (event.key === 'Enter') sendMessage();
+    }
+
+    function appendMessage(sender, text) {
+        const rowDiv = document.createElement('div');
+        rowDiv.className = `message-row ${sender}`;
+        
+        const bubbleDiv = document.createElement('div');
+        bubbleDiv.className = 'bubble';
+        bubbleDiv.innerHTML = text.replace(/\n/g, '<br>');
+        
+        rowDiv.appendChild(bubbleDiv);
+        messagesDiv.appendChild(rowDiv);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    async function handleAnalysisResponse(data) {
+        if (data.status === "success") {
+            customPersonaPrompt = data.extracted_prompt;
+            messagesDiv.innerHTML += `<div class="system-msg">✅ 分析完成！已套用該對象語氣。</div>`;
+            await clearMemory(true); // 自動清除記憶以套用新 Prompt
+        } else {
+            alert("解析失敗：" + data.message);
+        }
+    }
+
+    // 強化版檔案讀取邏輯
+    async function uploadAndAnalyze() {
+        const fileInput = document.getElementById('file-upload');
+        if (!fileInput.files || fileInput.files.length === 0) {
+            alert("請先選擇截圖或 .txt 檔案！");
+            return;
+        }
+        
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+        const fileName = file.name.toLowerCase();
+        
+        messagesDiv.innerHTML += `<div class="system-msg">⏳ 正在解析「${file.name}」...</div>`;
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+        // 判斷是否為圖片
+        if (file.type.startsWith('image/') || /\.(jpg|jpeg|png|webp|gif)$/i.test(fileName)) {
+            reader.onload = async function(e) {
+                const base64Image = e.target.result;
+                try {
+                    const response = await fetch('http://127.0.0.1:5000/analyze_screenshot', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ image: base64Image })
+                    });
+                    handleAnalysisResponse(await response.json());
+                } catch (error) {
+                    messagesDiv.innerHTML += `<div class="system-msg" style="color:red;">⚠️ 連線失敗。</div>`;
+                }
+            };
+            reader.readAsDataURL(file);
+        
+        // 判斷是否為 .txt 檔案
+        } else if (file.type === 'text/plain' || fileName.endsWith('.txt')) {
+            reader.onload = async function(e) {
+                const textContent = e.target.result;
+                try {
+                    const response = await fetch('http://127.0.0.1:5000/analyze_text', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ text: textContent })
+                    });
+                    handleAnalysisResponse(await response.json());
+                } catch (error) {
+                    messagesDiv.innerHTML += `<div class="system-msg" style="color:red;">⚠️ 連線失敗。</div>`;
+                }
+            };
+            reader.readAsText(file, 'UTF-8');
+        
+        } else {
+            alert("格式不符！請使用圖片或 .txt 檔。");
+        }
+    }
+
+    async function sendMessage() {
+        const message = inputField.value.trim();
+        if (!message) return;
+
+        const personaKey = personaSelect.value;
+        appendMessage('user', message);
+        inputField.value = '';
+
+        try {
+            const response = await fetch('http://127.0.0.1:5000/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    message: message,
+                    user_id: userId,
+                    persona_key: personaKey,
+                    custom_prompt: customPersonaPrompt
+                })
+            });
+            
+            const data = await response.json();
+            appendMessage('ai', data.reply);
+        } catch (error) {
+            console.error('連線出錯:', error);
+            appendMessage('ai', '⚠️ 系統連線失敗，請檢查後端。');
+        }
+    }
+
+    async function clearMemory(silent = false) {
+        const personaKey = personaSelect.value;
+        try {
+            await fetch('http://127.0.0.1:5000/clear', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    user_id: userId,
+                    persona_key: personaKey,
+                    custom_prompt: customPersonaPrompt
+                })
+            });
+            if (!silent) {
+                messagesDiv.innerHTML = `<div class="system-msg">🧹 記憶已重置，開啟新話題！</div>`;
+            }
+        } catch (error) {
+            if (!silent) alert("清除失敗。");
+        }
+    }
+</script>
+
+</body>
+</html>
