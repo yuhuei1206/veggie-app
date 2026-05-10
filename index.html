@@ -406,6 +406,16 @@ const VEGETABLES = [
     recipes:["金針菇捲牛肉","金針菇湯","涼拌金針菇"]},
   {key:"香菇", emoji:"🍄", aliases:["冬菇","shiitake"], months:[1,2,3,4,5,6,7,8,9,10,11,12],
     recipes:["香菇雞湯","香菇炒油菜","香菇鑲肉"]},
+  {key:"雪裏紅", emoji:"🥬", aliases:["雪裡紅","雪裡蕻","雪菜","芥菜醃漬","snow mustard"], months:[10,11,12,1,2,3,4],
+    recipes:["雪裡紅炒肉末","雪菜豆腐湯","雪裡紅炒筍絲"]},
+  {key:"芥藍", emoji:"🥦", aliases:["格藍菜","gailan","chinese broccoli"], months:[10,11,12,1,2,3,4],
+    recipes:["蠔油芥藍","蒜炒芥藍","芥藍牛肉"]},
+  {key:"九層塔", emoji:"🌿", aliases:["羅勒","basil","台灣九層塔"], months:[4,5,6,7,8,9,10],
+    recipes:["三杯料理","九層塔蛋","塔香茄子"]},
+  {key:"青蒜", emoji:"🌿", aliases:["蒜苗","青大蒜","green garlic"], months:[11,12,1,2,3,4],
+    recipes:["青蒜炒腊肉","青蒜炒蛋","青蒜豆腐"]},
+  {key:"芥菜", emoji:"🥬", aliases:["大芥菜","刈菜","mustard greens"], months:[10,11,12,1,2,3],
+    recipes:["芥菜雞湯","芥菜炒飯","客家鹹豬肉配芥菜"]},
 ];
 
 /* ============================================================
@@ -517,6 +527,21 @@ const RECIPE_DETAILS = {
   "香菇雞湯":{ingredients:[{n:"乾香菇",a:"8朵"},{n:"雞腿",a:"2支"},{n:"薑片",a:"3片"},{n:"米酒",a:"1大匙"},{n:"鹽",a:"適量"}],steps:["乾香菇泡發（留泡菇水），雞腿切塊汆燙。","鍋中加水、雞肉、薑片、米酒，大火煮滾。","加香菇與泡菇水，小火燉30分鐘。","以鹽調味，起鍋。"]},
   "香菇炒油菜":{ingredients:[{n:"香菇",a:"5朵"},{n:"油菜",a:"200g"},{n:"蒜頭",a:"2瓣"},{n:"醬油",a:"½大匙"},{n:"鹽",a:"適量"},{n:"油",a:"1大匙"}],steps:["香菇切片，油菜切段，蒜切末。","熱油爆香蒜末，下香菇翻炒至軟。","加油菜大火翻炒。","以醬油、鹽調味，起鍋。"]},
   "香菇鑲肉":{ingredients:[{n:"大朵鮮香菇",a:"8朵"},{n:"豬絞肉",a:"200g"},{n:"蔥末",a:"1大匙"},{n:"醬油",a:"1大匙"},{n:"太白粉",a:"1小匙"},{n:"蠔油",a:"1大匙"},{n:"太白粉水",a:"1大匙"}],steps:["絞肉加蔥末、醬油、太白粉拌勻成餡。","香菇去柄，內面抹少許太白粉，填入肉餡。","蒸鍋蒸12分鐘至熟，盛盤。","蠔油加少許水煮滾，太白粉水勾芡，淋於香菇上。"]},
+  "雪裡紅炒肉末":{ingredients:[{n:"雪裡紅（醃漬）",a:"150g"},{n:"豬絞肉",a:"100g"},{n:"蒜頭",a:"2瓣"},{n:"辣椒",a:"1條"},{n:"醬油",a:"½大匙"},{n:"糖",a:"少許"},{n:"油",a:"1大匙"}],steps:["雪裡紅沖水去除多餘鹹味，擠乾切碎。","熱油爆香蒜末、辣椒，下絞肉炒熟。","加雪裡紅翻炒均勻。","以醬油、糖調味，起鍋。"]},
+  "雪菜豆腐湯":{ingredients:[{n:"雪裡紅",a:"100g"},{n:"嫩豆腐",a:"1盒"},{n:"高湯",a:"500ml"},{n:"薑絲",a:"少許"},{n:"鹽",a:"適量"},{n:"麻油",a:"少許"}],steps:["雪裡紅沖水切段，豆腐切塊。","高湯煮滾，加薑絲與豆腐煮3分鐘。","加雪裡紅再煮1分鐘。","以鹽調味，淋麻油，起鍋。"]},
+  "雪裡紅炒筍絲":{ingredients:[{n:"雪裡紅",a:"150g"},{n:"竹筍絲",a:"150g"},{n:"辣椒",a:"1條"},{n:"糖",a:"½小匙"},{n:"油",a:"1大匙"}],steps:["雪裡紅沖水切碎，筍絲汆燙備用。","熱油爆香辣椒，下筍絲翻炒。","加雪裡紅炒勻，以糖調味。","確認入味，起鍋。"]},
+  "蠔油芥藍":{ingredients:[{n:"芥藍",a:"300g"},{n:"蒜頭",a:"3瓣"},{n:"蠔油",a:"1.5大匙"},{n:"糖",a:"少許"},{n:"太白粉水",a:"1小匙"},{n:"油",a:"1大匙"}],steps:["芥藍洗淨切段，莖部較厚可斜切。","煮滾水加少許鹽與油，燙芥藍1分鐘，撈起盛盤。","熱油爆香蒜末，加蠔油、糖、少許水煮滾。","太白粉水勾薄芡，淋於芥藍上。"]},
+  "蒜炒芥藍":{ingredients:[{n:"芥藍",a:"300g"},{n:"蒜頭",a:"4瓣"},{n:"鹽",a:"½小匙"},{n:"油",a:"1大匙"}],steps:["芥藍切段，蒜切末。","熱油爆香蒜末。","大火下芥藍翻炒2分鐘。","以鹽調味，起鍋。"]},
+  "芥藍牛肉":{ingredients:[{n:"芥藍",a:"200g"},{n:"牛肉片",a:"150g"},{n:"蒜頭",a:"2瓣"},{n:"醬油",a:"1大匙"},{n:"太白粉",a:"½小匙"},{n:"蠔油",a:"½大匙"},{n:"油",a:"1大匙"}],steps:["牛肉加醬油、太白粉醃10分鐘，芥藍燙熟備用。","熱油爆香蒜末，下牛肉大火炒至變色。","加芥藍翻炒，以蠔油調味。","起鍋。"]},
+  "三杯料理":{ingredients:[{n:"九層塔",a:"一大把"},{n:"雞肉或豆腐",a:"300g"},{n:"蒜頭",a:"10瓣"},{n:"老薑",a:"20g"},{n:"醬油",a:"1大匙"},{n:"米酒",a:"1大匙"},{n:"糖",a:"1大匙"},{n:"麻油",a:"1大匙"}],steps:["麻油爆香薑片、蒜頭。","加主食材翻炒至表面金黃。","加醬油、米酒、糖，小火燉10分鐘收汁。","起鍋前加九層塔大火翻炒至香氣溢出。"]},
+  "九層塔蛋":{ingredients:[{n:"九層塔",a:"一大把"},{n:"蛋",a:"3顆"},{n:"鹽",a:"適量"},{n:"油",a:"1大匙"}],steps:["九層塔洗淨，蛋打散加鹽拌勻。","蛋液加入九層塔拌合。","熱油下蛋液，中火煎至底部凝固後翻面。","煎至金黃，起鍋切塊。"]},
+  "塔香茄子":{ingredients:[{n:"茄子",a:"2條"},{n:"九層塔",a:"一把"},{n:"蒜頭",a:"3瓣"},{n:"醬油",a:"1大匙"},{n:"糖",a:"½小匙"},{n:"辣椒",a:"1條"},{n:"油",a:"2大匙"}],steps:["茄子切塊，下油鍋煎軟後盛起。","爆香蒜末、辣椒，加茄子回鍋。","加醬油、糖翻炒入味。","起鍋前加九層塔大火拌炒，起鍋。"]},
+  "青蒜炒腊肉":{ingredients:[{n:"青蒜（蒜苗）",a:"3根"},{n:"腊肉",a:"150g"},{n:"辣椒",a:"1條"},{n:"醬油",a:"½大匙"},{n:"油",a:"少許"}],steps:["腊肉切薄片，青蒜斜切段（白綠分開），辣椒切段。","鍋中不加油，下腊肉小火煸出油脂。","加辣椒、青蒜白段翻炒。","加青蒜綠段與醬油，大火炒勻，起鍋。"]},
+  "青蒜炒蛋":{ingredients:[{n:"青蒜",a:"2根"},{n:"蛋",a:"3顆"},{n:"鹽",a:"適量"},{n:"油",a:"1大匙"}],steps:["青蒜切段，蛋打散加鹽。","熱油下蛋液炒至半熟，盛起。","原鍋下青蒜翻炒1分鐘。","加蛋回鍋翻炒均勻，以鹽調味，起鍋。"]},
+  "青蒜豆腐":{ingredients:[{n:"青蒜",a:"2根"},{n:"板豆腐",a:"1塊"},{n:"醬油膏",a:"1大匙"},{n:"油",a:"2大匙"}],steps:["豆腐切塊，下熱油煎至兩面金黃。","加醬油膏翻炒上色。","加青蒜段大火翻炒1分鐘。","確認入味，起鍋。"]},
+  "芥菜雞湯":{ingredients:[{n:"大芥菜",a:"半顆"},{n:"雞腿",a:"2支"},{n:"薑片",a:"3片"},{n:"米酒",a:"1大匙"},{n:"鹽",a:"適量"}],steps:["雞腿切塊汆燙，芥菜切大塊。","鍋中加水、雞肉、薑片、米酒，大火煮滾。","加芥菜，轉小火燉30分鐘。","以鹽調味，起鍋。"]},
+  "芥菜炒飯":{ingredients:[{n:"芥菜",a:"100g"},{n:"白飯",a:"2碗"},{n:"蛋",a:"2顆"},{n:"醬油",a:"1大匙"},{n:"鹽",a:"適量"},{n:"油",a:"1大匙"}],steps:["芥菜切碎，蛋打散。","熱油下蛋液炒散，下白飯大火翻炒。","加芥菜翻炒均勻。","以醬油、鹽調味，起鍋。"]},
+  "客家鹹豬肉配芥菜":{ingredients:[{n:"芥菜",a:"半顆"},{n:"客家鹹豬肉",a:"200g"},{n:"蒜頭",a:"3瓣"},{n:"鹽",a:"適量"}],steps:["鹹豬肉切片，下鍋乾煎至兩面金黃，盛起。","原鍋爆香蒜末，下芥菜大火翻炒。","加少許水蓋鍋燜2分鐘至軟。","以鹽調味，盛盤後放上鹹豬肉。"]},
 };
 
 /* ============================================================
@@ -773,7 +798,8 @@ function showVegDetail(cropName){
   const v = findVegByCropName(cropName);
   const ref = new Date().getMonth()+1;
   const inSeason = v ? v.months.includes(ref) : false;
-  const emoji = v ? v.emoji : "🌱";
+  const cat = getCropCategory(cropName);
+  const emoji = v ? v.emoji : cat==="花卉" ? "🌸" : cat==="水果" ? "🍎" : "🌱";
   const displayName = v ? v.key : cropName;
   const prices = v ? getPricesForVeg(v) : priceData.filter(p=>p.cropName===cropName);
 
@@ -792,12 +818,13 @@ function showVegDetail(cropName){
     return `<span class="month-pill ${v.months.includes(m)?"in-season":""}">${m}</span>`;
   }).join("") : "";
 
-  const recipesHTML = v ? `<div class="veg-section">
-    <h4>推薦料理</h4>
-    <div class="recipe-list">
-      ${v.recipes.map(r=>`<button class="recipe-chip" onclick="showRecipe('${escape(r)}')">${escape(r)}</button>`).join("")}
-    </div>
-  </div>` : "";
+  const recipesHTML = v
+    ? `<div class="veg-section"><h4>推薦料理</h4><div class="recipe-list">
+        ${v.recipes.map(r=>`<button class="recipe-chip" onclick="showRecipe('${escape(r)}')">${escape(r)}</button>`).join("")}
+      </div></div>`
+    : `<div class="veg-section"><h4>推薦料理</h4>
+        <div style="font-size:13px;color:var(--muted);padding:6px 0">此品項食譜資料尚未收錄，歡迎持續關注。</div>
+      </div>`;
 
   document.getElementById("vegDetailContent").innerHTML = `
     <div class="veg-card-head" style="margin:-24px -24px 16px;padding:16px 20px;border-radius:14px 14px 0 0">
@@ -913,7 +940,8 @@ function renderRank(){
   }
   tbody.innerHTML = rows.map((p,i)=>{
     const v = findVegByCropName(p.cropName);
-    const emoji = v ? v.emoji : "🌱";
+    const cat = getCropCategory(p.cropName);
+    const emoji = v ? v.emoji : cat==="花卉" ? "🌸" : cat==="水果" ? "🍎" : "🌱";
     const m = getMarketInfo(p.marketName);
     return `<tr onclick="showVegDetail('${escape(p.cropName)}')">
       <td class="rank-num">${i+1}</td>
