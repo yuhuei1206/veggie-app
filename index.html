@@ -234,6 +234,90 @@
     .veg-grid{grid-template-columns:1fr}
     header h1{font-size:18px}
   }
+
+  /* === 訂閱按鈕 === */
+  .subscribe-btn{
+    display:inline-block;margin-top:8px;
+    padding:5px 14px;font-size:12px;border-radius:14px;
+    background:rgba(255,255,255,.22);color:#fff;border:1px solid rgba(255,255,255,.5);
+    cursor:pointer;font-family:inherit;transition:background .15s;
+  }
+  .subscribe-btn:hover{background:rgba(255,255,255,.35)}
+
+  /* === 訂閱 Modal === */
+  .freq-group,.method-group{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+  .freq-btn,.method-btn{
+    padding:7px 16px;font-size:13px;border:1px solid var(--border);
+    background:#fff;border-radius:16px;cursor:pointer;font-family:inherit;transition:all .15s;
+  }
+  .freq-btn.active,.method-btn.active{background:var(--green);color:#fff;border-color:var(--green)}
+  .subscribe-panel{display:none;margin-top:4px;padding:14px;background:#f9f9f5;border-radius:10px;border:1px solid var(--border)}
+  .subscribe-panel.active{display:block}
+  .subscribe-panel input[type=email]{
+    width:100%;padding:10px 12px;font-size:14px;border:1px solid var(--border);
+    border-radius:8px;font-family:inherit;margin-bottom:8px;
+  }
+  .subscribe-submit{
+    width:100%;padding:10px;background:var(--green);color:#fff;
+    border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;
+  }
+  .subscribe-submit:hover{background:var(--green-dark)}
+  .line-info-box,.ai-info-box{
+    padding:14px;background:#f0f4ff;border-radius:10px;border:1px solid #c7d8ff;font-size:13px;line-height:1.7;
+  }
+  .ai-info-box{background:#fff8ee;border-color:#ffd9a0}
+
+  /* === 新增食譜 === */
+  .add-recipe-btn{
+    display:inline-flex;align-items:center;gap:5px;
+    padding:4px 12px;font-size:12px;border:1px dashed var(--green);
+    background:#f4faef;color:var(--green-dark);border-radius:12px;cursor:pointer;
+    font-family:inherit;transition:all .15s;
+  }
+  .add-recipe-btn:hover{background:var(--green);color:#fff}
+  .user-recipe-chip{
+    font-size:12px;background:#e8f4ff;color:#1a5fa8;
+    padding:4px 10px;border-radius:12px;border:1px solid #b8d9f8;
+    cursor:pointer;font-family:inherit;
+  }
+  .user-recipe-chip:hover{background:#b8d9f8}
+  .recipe-form-field{margin-bottom:12px}
+  .recipe-form-field label{display:block;font-size:13px;font-weight:600;color:var(--muted);margin-bottom:4px}
+  .recipe-form-field input,.recipe-form-field textarea{
+    width:100%;padding:8px 10px;font-size:13px;border:1px solid var(--border);
+    border-radius:8px;font-family:inherit;
+  }
+  .recipe-form-field textarea{min-height:80px;resize:vertical}
+  .ingredient-row{display:flex;gap:6px;margin-bottom:6px}
+  .ingredient-row input{flex:1;padding:6px 8px;font-size:13px;border:1px solid var(--border);border-radius:6px;font-family:inherit}
+  .add-ing-btn{
+    padding:6px 10px;font-size:12px;border:1px solid var(--green);background:#f4faef;
+    color:var(--green-dark);border-radius:6px;cursor:pointer;white-space:nowrap;font-family:inherit;
+  }
+  .featured-recipe{
+    display:inline-block;font-size:11px;background:var(--accent);color:#fff;
+    padding:2px 7px;border-radius:8px;margin-left:6px;vertical-align:middle;
+  }
+
+  /* === 我想賣菜 === */
+  .sell-veg-bar{
+    display:flex;justify-content:flex-end;margin-bottom:10px;
+  }
+  .sell-veg-btn{
+    padding:7px 16px;font-size:13px;border:1px solid var(--accent);
+    background:#fff4e6;color:#a8580a;border-radius:16px;cursor:pointer;font-family:inherit;
+    font-weight:600;transition:all .15s;
+  }
+  .sell-veg-btn:hover{background:var(--accent);color:#fff}
+
+  /* === 肉類動物子 tab === */
+  .meat-sub-tabs{display:none;gap:6px;margin-bottom:8px;flex-wrap:wrap}
+  .meat-sub-tabs.visible{display:flex}
+  .meat-sub-tab{
+    padding:4px 12px;font-size:12px;border:1px solid var(--border);
+    background:#fff;border-radius:12px;cursor:pointer;font-family:inherit;
+  }
+  .meat-sub-tab.active{background:#c0392b;color:#fff;border-color:#c0392b}
 </style>
 </head>
 <body>
@@ -241,6 +325,7 @@
 <header>
   <h1>🥬 菜籃通</h1>
   <p>當季蔬菜・各市場菜價・料理靈感一次看</p>
+  <button class="subscribe-btn" onclick="showSubscribeModal()">🔔 訂閱菜價更新</button>
 </header>
 <div class="status-bar" id="statusBar">資料載入中…</div>
 
@@ -264,13 +349,23 @@
 
   <!-- 菜價排行榜 -->
   <section class="tab-panel" id="tab-rank">
+    <div class="sell-veg-bar">
+      <button class="sell-veg-btn" onclick="showSellVegModal()">🛒 我想賣菜</button>
+    </div>
     <div class="category-tabs" id="categoryTabs">
       <button class="category-tab active" data-cat="">全部</button>
       <button class="category-tab" data-cat="蔬菜">🥬 蔬菜</button>
       <button class="category-tab" data-cat="花卉">🌸 花卉</button>
       <button class="category-tab" data-cat="水果">🍎 水果</button>
       <button class="category-tab" data-cat="肉類">🥩 肉類</button>
+      <button class="category-tab" data-cat="家禽">🐔 家禽</button>
       <button class="category-tab" data-cat="水產">🐟 水產</button>
+    </div>
+    <div class="meat-sub-tabs" id="meatSubTabs">
+      <button class="meat-sub-tab active" data-animal="">全部肉類</button>
+      <button class="meat-sub-tab" data-animal="豬">🐷 豬</button>
+      <button class="meat-sub-tab" data-animal="牛">🐄 牛</button>
+      <button class="meat-sub-tab" data-animal="羊">🐑 羊</button>
     </div>
     <div class="rank-controls">
       <label>市場：</label>
@@ -325,6 +420,100 @@
     <table class="ingredient-table" id="modalIngredients"></table>
     <div class="modal-section-title">做法步驟</div>
     <ol class="step-list" id="modalSteps"></ol>
+  </div>
+</div>
+
+<!-- 訂閱 Modal -->
+<div class="modal-overlay" id="subscribeModal" onclick="closeSubscribeModal(event)">
+  <div class="modal-box" style="max-width:480px">
+    <button class="modal-close" onclick="closeSubscribeModal()">✕</button>
+    <div class="modal-title">🔔 訂閱菜價更新</div>
+    <div class="modal-section-title">更新頻率</div>
+    <div class="freq-group">
+      <button class="freq-btn active" data-freq="daily">每日</button>
+      <button class="freq-btn" data-freq="weekly">每週</button>
+      <button class="freq-btn" data-freq="monthly">每月</button>
+    </div>
+    <div class="modal-section-title">訂閱方式</div>
+    <div class="method-group">
+      <button class="method-btn active" data-method="email" onclick="switchMethod('email')">📧 Email</button>
+      <button class="method-btn" data-method="line" onclick="switchMethod('line')">💬 LINE</button>
+      <button class="method-btn" data-method="ai" onclick="switchMethod('ai')">🤖 AI 摘要（付費）</button>
+    </div>
+    <!-- Email panel -->
+    <div class="subscribe-panel active" id="panel-email">
+      <p style="font-size:13px;color:var(--muted);margin-bottom:10px">輸入 Email，由 Mailchimp 寄送菜價週報。免費，可隨時取消。</p>
+      <input type="email" id="subEmail" placeholder="your@email.com">
+      <button class="subscribe-submit" onclick="submitEmailSubscribe()">立即訂閱</button>
+    </div>
+    <!-- LINE panel -->
+    <div class="subscribe-panel" id="panel-line">
+      <div class="line-info-box">
+        <strong>掃描加入 LINE 官方帳號</strong><br>
+        <span style="color:var(--muted)">（LINE 帳號建置中，敬請期待）</span><br><br>
+        加入後即可依所選頻率接收最新菜價報告，並可直接以文字查詢蔬菜行情。
+      </div>
+    </div>
+    <!-- AI panel -->
+    <div class="subscribe-panel" id="panel-ai">
+      <div class="ai-info-box">
+        <strong>🤖 AI 菜價分析師（付費方案）</strong><br><br>
+        每日由 AI 自動整理當日漲跌排行、當季採購建議、食譜推薦，以個人化摘要寄到您的信箱。<br><br>
+        <strong>方案：</strong>月繳 NT$99 / 年繳 NT$899<br>
+        <span style="color:var(--muted);font-size:12px">（功能開發中，填寫候補名單優先通知）</span><br><br>
+        <input type="email" id="aiWaitlistEmail" placeholder="加入候補名單 Email" style="width:100%;padding:8px;font-size:13px;border:1px solid var(--border);border-radius:6px;font-family:inherit;margin-bottom:8px">
+        <button class="subscribe-submit" onclick="submitAIWaitlist()">加入候補名單</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 新增食譜 Modal -->
+<div class="modal-overlay" id="addRecipeModal" onclick="closeAddRecipeModal(event)">
+  <div class="modal-box" style="max-width:500px">
+    <button class="modal-close" onclick="closeAddRecipeModal()">✕</button>
+    <div class="modal-title">📝 新增食譜</div>
+    <input type="hidden" id="addRecipeVeg">
+    <div class="recipe-form-field">
+      <label>食譜名稱</label>
+      <input type="text" id="addRecipeName" placeholder="例如：媽媽的家常炒高麗菜">
+    </div>
+    <div class="recipe-form-field">
+      <label>食材與用量</label>
+      <div id="ingList">
+        <div class="ingredient-row">
+          <input type="text" placeholder="食材" class="ing-name">
+          <input type="text" placeholder="用量" class="ing-amt" style="max-width:90px">
+        </div>
+      </div>
+      <button class="add-ing-btn" onclick="addIngRow()">＋ 新增食材</button>
+    </div>
+    <div class="recipe-form-field">
+      <label>做法步驟（每行一步）</label>
+      <textarea id="addRecipeSteps" placeholder="步驟 1&#10;步驟 2&#10;步驟 3"></textarea>
+    </div>
+    <button class="subscribe-submit" onclick="saveUserRecipe()">儲存食譜</button>
+  </div>
+</div>
+
+<!-- 我想賣菜 Modal -->
+<div class="modal-overlay" id="sellVegModal" onclick="closeSellVegModal(event)">
+  <div class="modal-box" style="max-width:480px">
+    <button class="modal-close" onclick="closeSellVegModal()">✕</button>
+    <div class="modal-title">🛒 我想賣菜</div>
+    <p style="font-size:14px;color:var(--text);margin-bottom:16px;line-height:1.7">
+      讓更多消費者找到您！填寫店家基本資料，我們會將您的攤位資訊收錄到 <strong>菜籃通賣家地圖</strong>。
+    </p>
+    <div style="background:#f4faef;border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:16px;font-size:13px;line-height:1.8">
+      <strong>收集欄位：</strong><br>
+      📋 店家名稱 · 📍 攤位地址 · 📞 聯絡電話 · 📧 電子郵件<br>
+      🥬 主要販售品項 · 🕐 營業時間
+    </div>
+    <a href="https://forms.gle/PLACEHOLDER" target="_blank" rel="noopener" id="sellVegFormLink"
+       style="display:block;text-align:center;background:var(--green);color:#fff;padding:12px;border-radius:8px;font-weight:600;font-size:15px;text-decoration:none;margin-bottom:10px">
+      填寫登記表單 →
+    </a>
+    <p style="font-size:12px;color:var(--muted);text-align:center">資料由 Google 表單收集，僅用於平台展示，不作其他用途。</p>
   </div>
 </div>
 
@@ -781,7 +970,10 @@ function vegCardHTML(v, refMonth){
       <div class="veg-section">
         <h4>推薦料理</h4>
         <div class="recipe-list">
-          ${v.recipes.map(r=>`<button class="recipe-chip" onclick="showRecipe('${escape(r)}')">${escape(r)}</button>`).join("")}
+          ${buildRecipeChips(v)}
+        </div>
+        <div style="margin-top:8px">
+          <button class="add-recipe-btn" onclick="openAddRecipeModal(event,'${escape(v.key)}')">＋ 新增食譜</button>
         </div>
       </div>
     </div>
@@ -823,10 +1015,16 @@ function showVegDetail(cropName){
 
   const recipesHTML = v
     ? `<div class="veg-section"><h4>推薦料理</h4><div class="recipe-list">
-        ${v.recipes.map(r=>`<button class="recipe-chip" onclick="showRecipe('${escape(r)}')">${escape(r)}</button>`).join("")}
+        ${buildRecipeChips(v)}
+      </div>
+      <div style="margin-top:8px">
+        <button class="add-recipe-btn" onclick="openAddRecipeModal(event,'${escape(v.key)}')">＋ 新增食譜</button>
       </div></div>`
     : `<div class="veg-section"><h4>推薦料理</h4>
         <div style="font-size:13px;color:var(--muted);padding:6px 0">此品項食譜資料尚未收錄，歡迎持續關注。</div>
+        <div style="margin-top:8px">
+          <button class="add-recipe-btn" onclick="openAddRecipeModal(event,'${escape(cropName)}')">＋ 新增食譜</button>
+        </div>
       </div>`;
 
   document.getElementById("vegDetailContent").innerHTML = `
@@ -848,7 +1046,7 @@ function closeVegModal(e){
     document.getElementById("vegDetailModal").classList.remove("open");
   }
 }
-document.addEventListener("keydown",e=>{ if(e.key==="Escape"){ closeModal(); closeVegModal(); } });
+document.addEventListener("keydown",e=>{ if(e.key==="Escape"){ closeModal(); closeVegModal(); closeSubscribeModal(); closeAddRecipeModal(); closeSellVegModal(); } });
 
 /* ============================================================
    食譜 Modal
@@ -878,10 +1076,22 @@ document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeModal(); });
 /* ============================================================
    分類函式
    ============================================================ */
+function getMeatAnimal(name){
+  if(!name) return "";
+  if(name.includes("豬")||name.includes("豚")||name.includes("八斤")) return "豬";
+  if(name.includes("牛")) return "牛";
+  if(name.includes("羊")) return "羊";
+  return "";
+}
+
 function getCropCategory(name, tcType=""){
   if(tcType === "N04") return "蔬菜";
   if(tcType === "N05") return "水果";
   if(tcType === "N06") return "花卉";
+  if(tcType === "N01") return "肉類";
+  if(tcType === "N02") return "家禽";
+  if(tcType === "N03") return "蛋品";
+  if(tcType === "N08") return "水產";
   if(!name) return "蔬菜";
   const vegOverrides = ["扁蒲","梨子蒲","胡瓜","越瓜","冬瓜","節瓜","南瓜","金瓜","絲瓜","苦瓜","匏瓜","蒲瓜","稜角絲瓜"];
   for(const v of vegOverrides) if(name.includes(v)) return "蔬菜";
@@ -898,6 +1108,7 @@ function getCropCategory(name, tcType=""){
 let rankOrder = "asc";
 let rankMarket = "";
 let rankCategory = "";
+let rankMeatAnimal = "";
 
 function buildRankMarketOptions(){
   const sel = document.getElementById("rankMarketFilter");
@@ -927,6 +1138,24 @@ document.getElementById("categoryTabs").addEventListener("click",e=>{
   document.querySelectorAll(".category-tab").forEach(t=>t.classList.remove("active"));
   tab.classList.add("active");
   rankCategory = tab.dataset.cat;
+  rankMeatAnimal = "";
+  const meatTabs = document.getElementById("meatSubTabs");
+  if(rankCategory === "肉類"){
+    meatTabs.classList.add("visible");
+    meatTabs.querySelectorAll(".meat-sub-tab").forEach(t=>t.classList.remove("active"));
+    meatTabs.querySelector('[data-animal=""]').classList.add("active");
+  } else {
+    meatTabs.classList.remove("visible");
+  }
+  renderRank();
+});
+
+document.getElementById("meatSubTabs").addEventListener("click",e=>{
+  const tab = e.target.closest(".meat-sub-tab");
+  if(!tab) return;
+  document.querySelectorAll(".meat-sub-tab").forEach(t=>t.classList.remove("active"));
+  tab.classList.add("active");
+  rankMeatAnimal = tab.dataset.animal;
   renderRank();
 });
 
@@ -935,12 +1164,15 @@ function renderRank(){
   let rows = priceData.filter(p => p.avgPrice > 0);
   if(rankMarket) rows = rows.filter(p => p.marketName === rankMarket);
   if(rankCategory) rows = rows.filter(p => getCropCategory(p.cropName, p.tcType||"") === rankCategory);
+  if(rankCategory === "肉類" && rankMeatAnimal)
+    rows = rows.filter(p => getMeatAnimal(p.cropName) === rankMeatAnimal);
   rows.sort((a,b)=> rankOrder==="asc" ? a.avgPrice - b.avgPrice : b.avgPrice - a.avgPrice);
   rows = rows.slice(0,80);
 
   if(!rows.length){
-    const msg = (rankCategory==="肉類"||rankCategory==="水產")
-      ? `目前農業部 API 未提供${rankCategory}行情資料`
+    const noDataCats = ["肉類","家禽","水產","蛋品"];
+    const msg = noDataCats.includes(rankCategory)
+      ? `目前農業部 API 資料中尚無${rankCategory}行情（需重新執行工作流程以取得完整 TcType 資料）`
       : "沒有資料";
     tbody.innerHTML = `<tr><td colspan="4" class="loading">${msg}</td></tr>`;
     return;
@@ -948,7 +1180,7 @@ function renderRank(){
   tbody.innerHTML = rows.map((p,i)=>{
     const v = findVegByCropName(p.cropName);
     const cat = getCropCategory(p.cropName, p.tcType||"");
-    const emoji = v ? v.emoji : cat==="花卉" ? "🌸" : cat==="水果" ? "🍎" : "🌱";
+    const emoji = v ? v.emoji : cat==="花卉" ? "🌸" : cat==="水果" ? "🍎" : cat==="肉類" ? "🥩" : cat==="家禽" ? "🐔" : cat==="水產" ? "🐟" : "🌱";
     const m = getMarketInfo(p.marketName);
     return `<tr onclick="showVegDetail('${escape(p.cropName)}')">
       <td class="rank-num">${i+1}</td>
@@ -1011,6 +1243,136 @@ function doSearch(){
   // 預設展開第一張
   const first = out.querySelector(".veg-card");
   if(first) first.classList.add("expanded");
+}
+
+/* ============================================================
+   用戶食譜 (localStorage)
+   ============================================================ */
+function getUserRecipes(vegKey){
+  try{ return JSON.parse(localStorage.getItem("userRecipes_"+vegKey)||"[]"); }
+  catch(e){ return []; }
+}
+function saveUserRecipes(vegKey, arr){
+  localStorage.setItem("userRecipes_"+vegKey, JSON.stringify(arr));
+}
+
+function buildRecipeChips(veg){
+  const featured = getFeaturedRecipe(veg.key, veg.recipes);
+  const chips = veg.recipes.map(r=>{
+    const isFeatured = r === featured;
+    return `<button class="recipe-chip" onclick="showRecipe('${escape(r)}')">${escape(r)}${isFeatured ? '<span class="featured-recipe">今日推薦</span>' : ''}</button>`;
+  }).join("");
+  const userRecs = getUserRecipes(veg.key);
+  const userChips = userRecs.map(r=>`<button class="user-recipe-chip" onclick="showUserRecipe('${escape(veg.key)}','${escape(r.name)}')">${escape(r.name)}</button>`).join("");
+  return chips + userChips;
+}
+
+function getFeaturedRecipe(vegKey, recipes){
+  if(!recipes || !recipes.length) return "";
+  const dayKey = "featured_"+vegKey;
+  const stored = localStorage.getItem(dayKey);
+  const today = new Date().toDateString();
+  if(stored){
+    const {date, idx} = JSON.parse(stored);
+    if(date === today) return recipes[idx % recipes.length];
+  }
+  const idx = Math.floor(Math.random() * recipes.length);
+  localStorage.setItem(dayKey, JSON.stringify({date: today, idx}));
+  return recipes[idx];
+}
+
+function openAddRecipeModal(e, vegKey){
+  e.stopPropagation();
+  document.getElementById("addRecipeVeg").value = vegKey;
+  document.getElementById("addRecipeName").value = "";
+  document.getElementById("addRecipeSteps").value = "";
+  const ingList = document.getElementById("ingList");
+  ingList.innerHTML = `<div class="ingredient-row"><input type="text" placeholder="食材" class="ing-name"><input type="text" placeholder="用量" class="ing-amt" style="max-width:90px"></div>`;
+  document.getElementById("addRecipeModal").classList.add("open");
+}
+function closeAddRecipeModal(e){
+  if(!e || e.target===document.getElementById("addRecipeModal") || e.currentTarget.tagName==="BUTTON")
+    document.getElementById("addRecipeModal").classList.remove("open");
+}
+function addIngRow(){
+  const row = document.createElement("div");
+  row.className = "ingredient-row";
+  row.innerHTML = `<input type="text" placeholder="食材" class="ing-name"><input type="text" placeholder="用量" class="ing-amt" style="max-width:90px">`;
+  document.getElementById("ingList").appendChild(row);
+}
+function saveUserRecipe(){
+  const vegKey = document.getElementById("addRecipeVeg").value;
+  const name = document.getElementById("addRecipeName").value.trim();
+  if(!name){ alert("請填寫食譜名稱"); return; }
+  const ings = Array.from(document.querySelectorAll(".ingredient-row")).map(row=>({
+    n: row.querySelector(".ing-name").value.trim(),
+    a: row.querySelector(".ing-amt").value.trim()
+  })).filter(i=>i.n);
+  const stepsRaw = document.getElementById("addRecipeSteps").value.trim();
+  const steps = stepsRaw.split("\n").map(s=>s.trim()).filter(Boolean);
+  const recs = getUserRecipes(vegKey);
+  recs.push({name, ingredients: ings, steps});
+  saveUserRecipes(vegKey, recs);
+  closeAddRecipeModal();
+  alert(`食譜「${name}」已儲存！`);
+  renderIndex();
+}
+function showUserRecipe(vegKey, recipeName){
+  const recs = getUserRecipes(vegKey);
+  const r = recs.find(x=>x.name===recipeName);
+  if(!r) return;
+  document.getElementById("modalTitle").textContent = "🍳 " + recipeName + "（我的食譜）";
+  document.getElementById("modalIngredients").innerHTML = r.ingredients.map(i=>`<tr><td>${escape(i.n)}</td><td>${escape(i.a)}</td></tr>`).join("") || `<tr><td colspan="2" style="color:var(--muted)">無食材資訊</td></tr>`;
+  document.getElementById("modalSteps").innerHTML = r.steps.map((s,i)=>`<li><span class="step-num">${i+1}</span><span>${escape(s)}</span></li>`).join("") || "";
+  document.getElementById("recipeModal").classList.add("open");
+}
+
+/* ============================================================
+   訂閱 Modal
+   ============================================================ */
+function showSubscribeModal(){
+  document.getElementById("subscribeModal").classList.add("open");
+}
+function closeSubscribeModal(e){
+  if(!e || e.target===document.getElementById("subscribeModal") || e.currentTarget.tagName==="BUTTON")
+    document.getElementById("subscribeModal").classList.remove("open");
+}
+function switchMethod(method){
+  document.querySelectorAll(".method-btn").forEach(b=>b.classList.toggle("active", b.dataset.method===method));
+  document.querySelectorAll(".subscribe-panel").forEach(p=>p.classList.remove("active"));
+  document.getElementById("panel-"+method).classList.add("active");
+}
+document.querySelectorAll(".freq-btn").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    document.querySelectorAll(".freq-btn").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+  });
+});
+function submitEmailSubscribe(){
+  const email = document.getElementById("subEmail").value.trim();
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ alert("請輸入正確的 Email 格式"); return; }
+  const freq = document.querySelector(".freq-btn.active")?.dataset.freq || "weekly";
+  // 導向 Mailchimp 表單（請將 MAILCHIMP_URL 替換為你的 Mailchimp 訂閱連結）
+  const MAILCHIMP_URL = "https://mailchimp.com/PLACEHOLDER";
+  window.open(`${MAILCHIMP_URL}?EMAIL=${encodeURIComponent(email)}&FREQ=${freq}`, "_blank");
+  closeSubscribeModal();
+}
+function submitAIWaitlist(){
+  const email = document.getElementById("aiWaitlistEmail").value.trim();
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ alert("請輸入正確的 Email 格式"); return; }
+  alert(`已記錄您的候補申請（${email}），開放時我們會第一時間通知您！`);
+  closeSubscribeModal();
+}
+
+/* ============================================================
+   我想賣菜 Modal
+   ============================================================ */
+function showSellVegModal(){
+  document.getElementById("sellVegModal").classList.add("open");
+}
+function closeSellVegModal(e){
+  if(!e || e.target===document.getElementById("sellVegModal") || e.currentTarget.tagName==="BUTTON")
+    document.getElementById("sellVegModal").classList.remove("open");
 }
 
 /* ============================================================
