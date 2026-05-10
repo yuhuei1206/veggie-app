@@ -12,10 +12,6 @@ jobs:
   update:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
       - name: 抓取農業部菜價 API
         run: |
           curl -sf "https://data.moa.gov.tw/Service/OpenData/FromM/AgriProductsTransType.aspx?\$top=2000&\$format=json" \
@@ -48,11 +44,49 @@ jobs:
           print(f"寫入 {len(rows)} 筆")
           EOF
 
-      - name: Commit & push
+      - name: 上傳 prices.json 到 GitHub
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git pull --rebase origin main
-          git add prices.json
-          git diff --cached --quiet || git commit -m "chore: 更新菜價 $(date '+%Y-%m-%d')"
-          git push
+          python3 - <<'EOF'
+          import json, base64, subprocess, urllib.request, urllib.error, os
+
+          token = os.environ["GITHUB_TOKEN"]
+          repo  = os.environ["GITHUB_REPOSITORY"]
+          api   = f"https://api.github.com/repos/{repo}/contents/prices.json"
+          headers = {
+              "Authorization": f"token {token}",
+              "Accept": "application/vnd.github+json",
+              "Content-Type": "application/json",
+          }
+
+          # 讀取現有檔案 SHA（若已存在）
+          sha = None
+          try:
+              req = urllib.request.Request(api, headers=headers)
+              with urllib.request.urlopen(req) as r:
+                  sha = json.load(r).get("sha")
+          except urllib.error.HTTPError as e:
+              if e.code != 404:
+                  raise
+
+          with open("prices.json", "rb") as f:
+              content = base64.b64encode(f.read()).decode()
+
+          payload = {
+              "message": "chore: 更新菜價",
+              "content": content,
+              "committer": {
+                  "name": "github-actions[bot]",
+                  "email": "github-actions[bot]@users.noreply.github.com"
+              }
+          }
+          if sha:
+              payload["sha"] = sha
+
+          data = json.dumps(payload).encode()
+          req = urllib.request.Request(api, data=data, headers=headers, method="PUT")
+          with urllib.request.urlopen(req) as r:
+              result = json.load(r)
+              print(f"上傳成功：{result['content']['html_url']}")
+          EOF
