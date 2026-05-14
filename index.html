@@ -1353,7 +1353,7 @@ function submitEmailSubscribe(){
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ alert("請輸入正確的 Email 格式"); return; }
   const freq = document.querySelector(".freq-btn.active")?.dataset.freq || "weekly";
   // 導向 Mailchimp 表單（請將 MAILCHIMP_URL 替換為你的 Mailchimp 訂閱連結）
-  const MAILCHIMP_URL = "https://mailchimp.com/PLACEHOLDER";
+  const MAILCHIMP_URL = "http://eepurl.com/bWMaopImC_";
   window.open(`${MAILCHIMP_URL}?EMAIL=${encodeURIComponent(email)}&FREQ=${freq}`, "_blank");
   closeSubscribeModal();
 }
