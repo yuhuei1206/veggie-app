@@ -318,6 +318,55 @@
     background:#fff;border-radius:12px;cursor:pointer;font-family:inherit;
   }
   .meat-sub-tab.active{background:#c0392b;color:#fff;border-color:#c0392b}
+
+  /* === 配對食譜 tab === */
+  .combo-wrapper{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:16px}
+  .combo-col{background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px}
+  .combo-col h4{font-size:14px;font-weight:700;color:var(--green-dark);margin-bottom:10px}
+  .combo-pill-list{display:flex;flex-wrap:wrap;gap:6px}
+  .combo-pill{
+    padding:5px 12px;font-size:12px;border:1px solid var(--border);
+    background:#fff;border-radius:14px;cursor:pointer;font-family:inherit;transition:all .15s;
+  }
+  .combo-pill.selected{background:var(--green);color:#fff;border-color:var(--green)}
+  .combo-generate-btn{
+    width:100%;padding:12px;background:var(--green);color:#fff;border:none;border-radius:10px;
+    font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:16px;
+    transition:background .15s;
+  }
+  .combo-generate-btn:hover{background:var(--green-dark)}
+  .combo-result-card{
+    background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px;
+    margin-bottom:10px;cursor:pointer;transition:all .15s;
+  }
+  .combo-result-card:hover{box-shadow:0 4px 12px rgba(0,0,0,.07);transform:translateY(-1px)}
+  .combo-result-title{font-size:15px;font-weight:600;color:var(--green-dark);margin-bottom:6px}
+  .combo-match-tags{display:flex;gap:5px;flex-wrap:wrap}
+  .combo-match-tag{font-size:11px;background:#e8f3e8;color:var(--green-dark);padding:2px 8px;border-radius:8px}
+  .combo-empty{text-align:center;padding:30px;color:var(--muted);font-size:14px}
+
+  /* === 成本估算 === */
+  .cost-badge{
+    display:inline-flex;align-items:center;gap:5px;
+    font-size:12px;background:#fff4e6;color:#a8580a;
+    padding:4px 10px;border-radius:10px;border:1px solid #f0d8b0;
+    margin-top:10px;
+  }
+
+  /* === 公開食譜 === */
+  .public-toggle-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+  .public-toggle-row label{font-size:13px;cursor:pointer}
+  .community-chip{
+    font-size:12px;background:#f0e8ff;color:#6a35c4;
+    padding:4px 10px;border-radius:12px;border:1px solid #d4b8ff;
+    cursor:pointer;font-family:inherit;
+  }
+  .community-chip:hover{background:#d4b8ff}
+  .firebase-notice{
+    font-size:12px;color:var(--muted);padding:8px 10px;
+    background:#f9f9f5;border-radius:8px;border:1px solid var(--border);margin-top:8px;
+    line-height:1.6;
+  }
 </style>
 </head>
 <body>
@@ -332,6 +381,7 @@
 <nav class="tabs">
   <button class="tab-btn active" data-tab="index">🥗 蔬菜索引</button>
   <button class="tab-btn" data-tab="rank">📊 菜價排行榜</button>
+  <button class="tab-btn" data-tab="combo">🍳 配對食譜</button>
   <button class="tab-btn" data-tab="search">🔍 搜尋</button>
 </nav>
 
@@ -391,6 +441,27 @@
     </table>
   </section>
 
+  <!-- 配對食譜 -->
+  <section class="tab-panel" id="tab-combo">
+    <p style="font-size:13px;color:var(--muted);margin-bottom:14px">選擇手邊食材，系統幫你找出合適的料理！</p>
+    <div class="combo-wrapper">
+      <div class="combo-col">
+        <h4>🥬 蔬菜</h4>
+        <div class="combo-pill-list" id="comboVegList"></div>
+      </div>
+      <div class="combo-col">
+        <h4>🥩 肉類</h4>
+        <div class="combo-pill-list" id="comboMeatList"></div>
+      </div>
+      <div class="combo-col">
+        <h4>🐟 水產</h4>
+        <div class="combo-pill-list" id="comboSeafoodList"></div>
+      </div>
+    </div>
+    <button class="combo-generate-btn" onclick="findComboRecipes()">產生推薦食譜</button>
+    <div id="comboResults"></div>
+  </section>
+
   <!-- 搜尋 -->
   <section class="tab-panel" id="tab-search">
     <div class="search-box">
@@ -418,6 +489,7 @@
     <div class="modal-title" id="modalTitle"></div>
     <div class="modal-section-title">食材與用量</div>
     <table class="ingredient-table" id="modalIngredients"></table>
+    <div id="modalCost"></div>
     <div class="modal-section-title">做法步驟</div>
     <ol class="step-list" id="modalSteps"></ol>
   </div>
@@ -492,7 +564,23 @@
       <label>做法步驟（每行一步）</label>
       <textarea id="addRecipeSteps" placeholder="步驟 1&#10;步驟 2&#10;步驟 3"></textarea>
     </div>
-    <button class="subscribe-submit" onclick="saveUserRecipe()">儲存食譜</button>
+    <div style="border-top:1px solid var(--border);padding-top:12px;margin-top:4px">
+      <div class="public-toggle-row">
+        <input type="checkbox" id="addRecipePublic" onchange="togglePublicOptions()">
+        <label for="addRecipePublic">公開這個食譜，讓其他用戶也能看到</label>
+      </div>
+      <div id="publicOptions" style="display:none">
+        <div class="recipe-form-field" style="margin-bottom:8px">
+          <label>作者名稱（選填，可用筆名）</label>
+          <input type="text" id="addRecipeAuthor" placeholder="留空則顯示為「匿名」">
+        </div>
+        <div class="firebase-notice">
+          🔒 公開食譜會上傳至雲端資料庫（Firebase）。<br>
+          目前系統尚未完成設定，勾選後食譜仍會儲存在你的裝置，待設定完成後可上傳。
+        </div>
+      </div>
+    </div>
+    <button class="subscribe-submit" style="margin-top:12px" onclick="saveUserRecipe()">儲存食譜</button>
   </div>
 </div>
 
@@ -1051,6 +1139,28 @@ document.addEventListener("keydown",e=>{ if(e.key==="Escape"){ closeModal(); clo
 /* ============================================================
    食譜 Modal
    ============================================================ */
+function estimateRecipeCost(ingredients){
+  if(!ingredients || !priceData.length) return null;
+  let total = 0, counted = 0;
+  for(const ing of ingredients){
+    const kgMatch = ing.a.match(/(\d+(?:\.\d+)?)\s*g/i);
+    const kgMatch2 = ing.a.match(/(\d+(?:\.\d+)?)\s*公斤/i);
+    let kg = 0;
+    if(kgMatch) kg = parseFloat(kgMatch[1]) / 1000;
+    else if(kgMatch2) kg = parseFloat(kgMatch2[1]);
+    else continue;
+    if(kg <= 0) continue;
+    const matches = priceData.filter(p => p.avgPrice > 0 &&
+      (p.cropName.includes(ing.n) || ing.n.includes(p.cropName) ||
+       (findVegByCropName(p.cropName) && findVegByCropName(p.cropName).key === ing.n)));
+    if(!matches.length) continue;
+    const avg = matches.reduce((s,p)=>s+p.avgPrice,0) / matches.length;
+    total += avg * kg;
+    counted++;
+  }
+  return counted > 0 ? {total: Math.round(total), counted} : null;
+}
+
 function showRecipe(name){
   const modal = document.getElementById("recipeModal");
   const d = RECIPE_DETAILS[name];
@@ -1060,9 +1170,14 @@ function showRecipe(name){
       d.ingredients.map(i=>`<tr><td>${escape(i.n)}</td><td>${escape(i.a)}</td></tr>`).join("");
     document.getElementById("modalSteps").innerHTML =
       d.steps.map((s,i)=>`<li><span class="step-num">${i+1}</span><span>${escape(s)}</span></li>`).join("");
+    const cost = estimateRecipeCost(d.ingredients);
+    document.getElementById("modalCost").innerHTML = cost
+      ? `<div class="cost-badge">💰 食材成本約 NT$${cost.total}（依 ${cost.counted} 項有價格食材估算）</div>`
+      : "";
   }else{
     document.getElementById("modalIngredients").innerHTML = `<tr><td colspan="2" style="color:var(--muted)">食譜資料準備中</td></tr>`;
     document.getElementById("modalSteps").innerHTML = "";
+    document.getElementById("modalCost").innerHTML = "";
   }
   modal.classList.add("open");
 }
@@ -1269,16 +1384,16 @@ function buildRecipeChips(veg){
 
 function getFeaturedRecipe(vegKey, recipes){
   if(!recipes || !recipes.length) return "";
-  const dayKey = "featured_"+vegKey;
-  const stored = localStorage.getItem(dayKey);
   const today = new Date().toDateString();
-  if(stored){
-    const {date, idx} = JSON.parse(stored);
-    if(date === today) return recipes[idx % recipes.length];
-  }
-  const idx = Math.floor(Math.random() * recipes.length);
-  localStorage.setItem(dayKey, JSON.stringify({date: today, idx}));
-  return recipes[idx];
+  const key = "featured_"+vegKey;
+  let stored = null;
+  try{ stored = JSON.parse(localStorage.getItem(key)); }catch(e){}
+  if(stored && stored.date === today) return recipes[stored.idx % recipes.length];
+  // 每天推進一格，確保每道食譜都會輪到
+  const prevIdx = stored ? stored.idx : -1;
+  const nextIdx = (prevIdx + 1) % recipes.length;
+  try{ localStorage.setItem(key, JSON.stringify({date: today, idx: nextIdx})); }catch(e){}
+  return recipes[nextIdx];
 }
 
 function openAddRecipeModal(e, vegKey){
@@ -1300,6 +1415,10 @@ function addIngRow(){
   row.innerHTML = `<input type="text" placeholder="食材" class="ing-name"><input type="text" placeholder="用量" class="ing-amt" style="max-width:90px">`;
   document.getElementById("ingList").appendChild(row);
 }
+function togglePublicOptions(){
+  const cb = document.getElementById("addRecipePublic");
+  document.getElementById("publicOptions").style.display = cb.checked ? "block" : "none";
+}
 function saveUserRecipe(){
   const vegKey = document.getElementById("addRecipeVeg").value;
   const name = document.getElementById("addRecipeName").value.trim();
@@ -1310,11 +1429,13 @@ function saveUserRecipe(){
   })).filter(i=>i.n);
   const stepsRaw = document.getElementById("addRecipeSteps").value.trim();
   const steps = stepsRaw.split("\n").map(s=>s.trim()).filter(Boolean);
+  const isPublic = document.getElementById("addRecipePublic").checked;
+  const author = (document.getElementById("addRecipeAuthor")?.value||"").trim() || "匿名";
   const recs = getUserRecipes(vegKey);
-  recs.push({name, ingredients: ings, steps});
+  recs.push({name, ingredients: ings, steps, isPublic, author, ts: Date.now()});
   saveUserRecipes(vegKey, recs);
   closeAddRecipeModal();
-  alert(`食譜「${name}」已儲存！`);
+  alert(`食譜「${name}」已儲存！${isPublic ? '\n（公開功能尚未啟用，目前僅儲存在本機）' : ''}`);
   renderIndex();
 }
 function showUserRecipe(vegKey, recipeName){
@@ -1325,6 +1446,67 @@ function showUserRecipe(vegKey, recipeName){
   document.getElementById("modalIngredients").innerHTML = r.ingredients.map(i=>`<tr><td>${escape(i.n)}</td><td>${escape(i.a)}</td></tr>`).join("") || `<tr><td colspan="2" style="color:var(--muted)">無食材資訊</td></tr>`;
   document.getElementById("modalSteps").innerHTML = r.steps.map((s,i)=>`<li><span class="step-num">${i+1}</span><span>${escape(s)}</span></li>`).join("") || "";
   document.getElementById("recipeModal").classList.add("open");
+}
+
+/* ============================================================
+   配對食譜
+   ============================================================ */
+const COMBO_MEATS = ["豬肉","五花肉","豬里肌","豬絞肉","豬排","豬腱","牛肉","牛腱","牛腩","雞腿","雞胸肉","雞翅","雞絞肉","羊肉","鴨肉"];
+const COMBO_SEAFOOD = ["蝦仁","草蝦","花枝","透抽","蛤蜊","蚵仔","吻仔魚","鮭魚","鱸魚","虱目魚","干貝","小魚乾"];
+
+function buildComboPickers(){
+  const vegList = document.getElementById("comboVegList");
+  const meatList = document.getElementById("comboMeatList");
+  const seafoodList = document.getElementById("comboSeafoodList");
+  if(!vegList) return;
+  vegList.innerHTML = VEGETABLES.map(v=>
+    `<button class="combo-pill" data-type="veg" data-val="${escape(v.key)}" onclick="toggleComboPill(this)">${v.emoji} ${escape(v.key)}</button>`
+  ).join("");
+  meatList.innerHTML = COMBO_MEATS.map(m=>
+    `<button class="combo-pill" data-type="meat" data-val="${escape(m)}" onclick="toggleComboPill(this)">🥩 ${escape(m)}</button>`
+  ).join("");
+  seafoodList.innerHTML = COMBO_SEAFOOD.map(s=>
+    `<button class="combo-pill" data-type="seafood" data-val="${escape(s)}" onclick="toggleComboPill(this)">🐟 ${escape(s)}</button>`
+  ).join("");
+}
+
+function toggleComboPill(btn){
+  btn.classList.toggle("selected");
+}
+
+function findComboRecipes(){
+  const selected = Array.from(document.querySelectorAll(".combo-pill.selected")).map(b=>b.dataset.val);
+  const out = document.getElementById("comboResults");
+  if(!selected.length){
+    out.innerHTML = `<div class="combo-empty">請先選擇至少一種食材</div>`;
+    return;
+  }
+  // 在 RECIPE_DETAILS 中找食材交集最多的食譜
+  const results = [];
+  for(const [recipeName, detail] of Object.entries(RECIPE_DETAILS)){
+    const ingNames = detail.ingredients.map(i=>i.n);
+    const matched = selected.filter(sel =>
+      ingNames.some(ing => ing.includes(sel) || sel.includes(ing))
+    );
+    if(matched.length > 0) results.push({name: recipeName, matched, detail});
+  }
+  // 按配對數量降序排列
+  results.sort((a,b)=>b.matched.length - a.matched.length);
+  if(!results.length){
+    out.innerHTML = `<div class="combo-empty">找不到符合的食譜，試試不同的食材組合</div>`;
+    return;
+  }
+  out.innerHTML = results.slice(0,12).map(r=>{
+    const cost = estimateRecipeCost(r.detail.ingredients);
+    const costStr = cost ? ` · 約 NT$${cost.total}` : "";
+    return `<div class="combo-result-card" onclick="showRecipe('${escape(r.name)}')">
+      <div class="combo-result-title">🍳 ${escape(r.name)}</div>
+      <div class="combo-match-tags">
+        ${r.matched.map(m=>`<span class="combo-match-tag">${escape(m)}</span>`).join("")}
+        <span style="font-size:11px;color:var(--muted);margin-left:4px">配對 ${r.matched.length} 項食材${costStr}</span>
+      </div>
+    </div>`;
+  }).join("");
 }
 
 /* ============================================================
@@ -1400,6 +1582,7 @@ async function init(){
     bar.className = "status-bar warn";
   }
   buildRankMarketOptions();
+  buildComboPickers();
   renderIndex();
   renderRank();
 }
