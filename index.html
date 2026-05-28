@@ -868,7 +868,10 @@ const VEG_SVG = {
 "芥菜":`<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><path d="M14 44Q10 28 20 20Q30 14 38 22Q40 30 38 40Q40 30 44 22Q54 14 64 20Q74 28 66 44Q58 58 50 56Q44 62 40 60Q36 62 30 56Q22 58 14 44Z" fill="#88b030"/><g fill="#a0c038" opacity="0.8"><path d="M14 40Q20 26 28 26Q34 32 32 42"/><path d="M66 40Q60 26 52 26Q46 32 48 42"/><path d="M34 26Q36 14 40 10Q44 14 46 26"/></g><g fill="none" stroke="#608020" stroke-width="1.5" opacity="0.6"><path d="M20 40Q32 32 40 34Q48 32 60 40"/><path d="M22 52Q34 44 40 46Q46 44 58 52"/></g></svg>`,
 };
 function getVegSVG(key){
-  return VEG_SVG[key] || null;
+  if(VEG_SVG[key]) return VEG_SVG[key];
+  // 模糊比對：處理 API 帶後綴的名稱（如「小白菜-水耕」「南瓜-東昇」）
+  const v = findVegByCropName(key);
+  return v ? (VEG_SVG[v.key] || null) : null;
 }
 
 /* ============================================================
