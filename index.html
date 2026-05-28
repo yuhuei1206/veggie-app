@@ -261,6 +261,41 @@
   }
   .ai-info-box{background:#fff8ee;border-color:#ffd9a0}
 
+  /* === AI 分析師 === */
+  .ai-config{background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px}
+  .ai-config-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+  .ai-config-row:last-child{margin-bottom:0}
+  .ai-key-input{flex:1;padding:9px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:monospace;outline:none}
+  .ai-key-input:focus{border-color:var(--green)}
+  .ai-save-btn{padding:9px 14px;background:var(--green);color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;white-space:nowrap;font-family:inherit}
+  .ai-save-btn:hover{background:var(--green-dark)}
+  .ai-controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .ai-select{padding:8px 10px;border:1px solid var(--border);border-radius:8px;font-size:13px;background:#fff;cursor:pointer;font-family:inherit}
+  .ai-analyze-btn{padding:10px 20px;background:linear-gradient(135deg,var(--green) 0%,var(--green-dark) 100%);color:#fff;border:none;border-radius:10px;cursor:pointer;font-size:14px;font-weight:700;transition:all .15s;font-family:inherit}
+  .ai-analyze-btn:hover{opacity:.85;transform:translateY(-1px)}
+  .ai-analyze-btn:disabled{opacity:.4;cursor:default;transform:none}
+  .ai-chat{display:flex;flex-direction:column;gap:12px;margin-top:4px}
+  .ai-msg{border-radius:12px;padding:14px 16px;font-size:14px;line-height:1.75}
+  .ai-msg.user{background:var(--green-light);border:1px solid #c8e0c8;align-self:flex-end;max-width:85%;font-weight:500}
+  .ai-msg.assistant{background:#fff;border:1px solid var(--border)}
+  .ai-content h2{font-size:15px;color:var(--green-dark);margin:14px 0 6px;font-weight:700}
+  .ai-content h2:first-child{margin-top:0}
+  .ai-content h3{font-size:14px;color:var(--green-dark);margin:10px 0 4px;font-weight:600}
+  .ai-content p{margin:4px 0}
+  .ai-content ul,.ai-content ol{padding-left:20px;margin:4px 0}
+  .ai-content li{margin-bottom:3px}
+  .ai-content strong{color:var(--green-dark)}
+  .ai-content em{color:var(--red)}
+  .ai-content code{background:#f4f4f0;padding:1px 5px;border-radius:4px;font-size:13px}
+  .ai-cursor{display:inline-block;width:2px;height:1.1em;background:var(--green);margin-left:1px;animation:blink .7s steps(2,start) infinite;vertical-align:text-bottom}
+  @keyframes blink{to{opacity:0}}
+  .ai-followup{display:flex;gap:8px;margin-top:12px}
+  .ai-followup-input{flex:1;padding:10px 14px;border:1px solid var(--border);border-radius:20px;font-size:14px;font-family:inherit;outline:none}
+  .ai-followup-input:focus{border-color:var(--green)}
+  .ai-followup-btn{padding:10px 18px;background:var(--green);color:#fff;border:none;border-radius:20px;cursor:pointer;font-size:14px;font-weight:600;font-family:inherit}
+  .ai-followup-btn:disabled{opacity:.4;cursor:default}
+  @media (max-width:520px){.ai-controls{gap:6px}.ai-analyze-btn{width:100%}}
+
   /* === 新增食譜 === */
   .add-recipe-btn{
     display:inline-flex;align-items:center;gap:5px;
@@ -525,6 +560,7 @@
   <button class="tab-btn" data-tab="fridge">🧊 我的冰箱</button>
   <button class="tab-btn" data-tab="history">📖 食譜紀錄</button>
   <button class="tab-btn" data-tab="search">🔍 搜尋</button>
+  <button class="tab-btn" data-tab="ai">🤖 AI 分析師</button>
 </nav>
 
 <main>
@@ -638,6 +674,44 @@
     <div class="search-hint">支援部分名稱、別名與相關性搜尋</div>
     <div class="veg-grid" id="searchResults">
       <div class="search-empty">輸入關鍵字開始搜尋</div>
+    </div>
+  </section>
+
+  <!-- AI 分析師 -->
+  <section class="tab-panel" id="tab-ai">
+    <div class="ai-config">
+      <div class="ai-config-row">
+        <label style="font-size:13px;font-weight:600;white-space:nowrap;color:var(--green-dark)">Claude API Key：</label>
+        <input class="ai-key-input" type="password" id="aiApiKey" placeholder="sk-ant-api03-…" autocomplete="off">
+        <button class="ai-save-btn" onclick="saveAiKey()">儲存</button>
+      </div>
+      <div style="font-size:11px;color:var(--muted)">金鑰僅存於本機瀏覽器，不會傳送至任何伺服器。&nbsp;<a href="https://console.anthropic.com/" target="_blank" rel="noopener" style="color:var(--green)">取得 API Key →</a></div>
+    </div>
+    <div class="ai-config" style="padding:12px 14px">
+      <div class="ai-controls">
+        <select class="ai-select" id="aiCategory">
+          <option value="">所有品類</option>
+          <option value="蔬菜">🥬 蔬菜</option>
+          <option value="水果">🍎 水果</option>
+          <option value="花卉">🌸 花卉</option>
+          <option value="肉類">🥩 肉類</option>
+          <option value="家禽">🐔 家禽</option>
+          <option value="水產">🐟 水產</option>
+        </select>
+        <select class="ai-select" id="aiMarket"><option value="">所有市場</option></select>
+        <select class="ai-select" id="aiModel">
+          <option value="claude-haiku-4-5-20251001">⚡ 快速（Haiku）</option>
+          <option value="claude-sonnet-4-6" selected>🎯 精準（Sonnet）</option>
+        </select>
+        <button class="ai-analyze-btn" id="aiAnalyzeBtn" onclick="startAIAnalysis()">🤖 開始分析</button>
+      </div>
+    </div>
+    <div class="ai-chat" id="aiChat"></div>
+    <div class="ai-followup" id="aiFollowup" style="display:none">
+      <input class="ai-followup-input" type="text" id="aiFollowupInput"
+             placeholder="繼續追問，例如：今天哪些蔬菜最划算？"
+             onkeydown="if(event.key==='Enter')sendAIFollowup()">
+      <button class="ai-followup-btn" id="aiFollowupBtn" onclick="sendAIFollowup()">送出</button>
     </div>
   </section>
 </main>
@@ -1337,6 +1411,7 @@ document.querySelectorAll(".tab-btn").forEach(btn=>{
     document.getElementById("tab-"+btn.dataset.tab).classList.add("active");
     if(btn.dataset.tab === "fridge") renderFridge();
     if(btn.dataset.tab === "history") renderHistory();
+    if(btn.dataset.tab === "ai") initAITab();
   });
 });
 
@@ -2367,6 +2442,252 @@ function escape(s){
   return String(s).replace(/[&<>"']/g, c => ({
     "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
   }[c]));
+}
+
+/* ============================================================
+   AI 分析師
+   ============================================================ */
+let aiMessages = [];
+let aiStreaming = false;
+let aiTabInited = false;
+
+function initAITab(){
+  if(aiTabInited) return;
+  aiTabInited = true;
+  const saved = localStorage.getItem("aiApiKey") || "";
+  if(saved) document.getElementById("aiApiKey").value = saved;
+  const sel = document.getElementById("aiMarket");
+  const markets = [...new Set(priceData.map(p=>p.marketName))].sort();
+  markets.forEach(m=>{
+    const o = document.createElement("option");
+    o.value = m; o.textContent = getMarketInfo(m).short || m;
+    sel.appendChild(o);
+  });
+}
+
+function saveAiKey(){
+  const key = document.getElementById("aiApiKey").value.trim();
+  if(!key){ alert("請輸入 API Key"); return; }
+  localStorage.setItem("aiApiKey", key);
+  const btn = document.querySelector(".ai-save-btn");
+  btn.textContent = "✅ 已儲存";
+  setTimeout(()=>btn.textContent="儲存", 2000);
+}
+
+function inlineMarkdown(text){
+  return text
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+    .replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>")
+    .replace(/\*(.+?)\*/g,"<em>$1</em>")
+    .replace(/`(.+?)`/g,"<code>$1</code>");
+}
+
+function markdownToHTML(md){
+  const lines = md.split("\n");
+  let html = "", inUL = false, inOL = false;
+  const closeList = ()=>{ if(inUL){html+="</ul>";inUL=false;} if(inOL){html+="</ol>";inOL=false;} };
+  for(const raw of lines){
+    if(raw.startsWith("## ")){
+      closeList(); html+=`<h2>${inlineMarkdown(raw.slice(3))}</h2>`;
+    } else if(raw.startsWith("### ")){
+      closeList(); html+=`<h3>${inlineMarkdown(raw.slice(4))}</h3>`;
+    } else if(/^[-*] /.test(raw)){
+      if(inOL){html+="</ol>";inOL=false;} if(!inUL){html+="<ul>";inUL=true;}
+      html+=`<li>${inlineMarkdown(raw.slice(2))}</li>`;
+    } else if(/^\d+\. /.test(raw)){
+      if(inUL){html+="</ul>";inUL=false;} if(!inOL){html+="<ol>";inOL=true;}
+      html+=`<li>${inlineMarkdown(raw.replace(/^\d+\. /,""))}</li>`;
+    } else if(raw.trim()===""){
+      closeList();
+    } else {
+      closeList(); html+=`<p>${inlineMarkdown(raw)}</p>`;
+    }
+  }
+  closeList();
+  return html;
+}
+
+function appendAIMsg(role, text, streaming){
+  const chat = document.getElementById("aiChat");
+  const div = document.createElement("div");
+  div.className = `ai-msg ${role}`;
+  if(streaming){
+    div.innerHTML = `<div class="ai-content" style="white-space:pre-wrap"></div><span class="ai-cursor"></span>`;
+  } else {
+    div.innerHTML = role==="assistant"
+      ? `<div class="ai-content">${markdownToHTML(text)}</div>`
+      : inlineMarkdown(text);
+  }
+  chat.appendChild(div);
+  div.scrollIntoView({behavior:"smooth",block:"end"});
+  return div;
+}
+
+async function callClaudeStream(messages, onChunk, onDone, onError){
+  const key = localStorage.getItem("aiApiKey")||"";
+  if(!key){ alert("請先設定並儲存 Claude API Key"); return; }
+  const model = document.getElementById("aiModel").value;
+  let resp;
+  try{
+    resp = await fetch("https://api.anthropic.com/v1/messages",{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json",
+        "x-api-key": key,
+        "anthropic-version":"2023-06-01",
+        "anthropic-dangerous-direct-browser-access":"true",
+      },
+      body: JSON.stringify({model, max_tokens:2048, stream:true, messages})
+    });
+  } catch(e){ onError("網路錯誤："+e.message); return; }
+  if(!resp.ok){
+    let msg = resp.statusText;
+    try{ const j=await resp.json(); msg=j.error?.message||msg; }catch{}
+    onError(`API 錯誤 ${resp.status}：${msg}`); return;
+  }
+  const reader = resp.body.getReader();
+  const dec = new TextDecoder();
+  let buf = "";
+  while(true){
+    const {done,value} = await reader.read();
+    if(done) break;
+    buf += dec.decode(value,{stream:true});
+    const parts = buf.split("\n");
+    buf = parts.pop();
+    for(const line of parts){
+      if(!line.startsWith("data: ")) continue;
+      const raw = line.slice(6).trim();
+      if(raw==="[DONE]") break;
+      try{
+        const evt = JSON.parse(raw);
+        if(evt.type==="content_block_delta"&&evt.delta?.type==="text_delta")
+          onChunk(evt.delta.text);
+      }catch{}
+    }
+  }
+  onDone();
+}
+
+function buildAIPrompt(){
+  const cat = document.getElementById("aiCategory").value;
+  const mkt = document.getElementById("aiMarket").value;
+  const d = new Date();
+  const month = d.getMonth()+1;
+  const dateStr = `${d.getFullYear()}年${month}月${d.getDate()}日`;
+  let rows = priceData.filter(p=>p.avgPrice>0);
+  if(cat) rows = rows.filter(p=>getCropCategory(p.cropName,p.tcType||"")===cat);
+  if(mkt) rows = rows.filter(p=>p.marketName===mkt);
+  const sorted = [...rows].sort((a,b)=>a.avgPrice-b.avgPrice);
+  const cheap = sorted.slice(0,30);
+  const pricey = sorted.slice(-10).reverse();
+  const seasonal = VEGETABLES.filter(v=>v.months.includes(month)).map(v=>v.key);
+  const catLabel = cat||"所有品類";
+  const mktLabel = mkt ? getMarketInfo(mkt).short : "所有市場";
+  return `你是台灣農產品批發市場的專業分析師，請用繁體中文、Markdown 格式回答。
+
+今日日期：${dateStr}
+篩選條件：品類 = ${catLabel}，市場 = ${mktLabel}
+當季蔬菜（${month}月）：${seasonal.join("、")||"資料不足"}
+總交易紀錄：${rows.length} 筆
+
+## 今日最低價（前 ${cheap.length} 名）
+${cheap.map((p,i)=>`${i+1}. ${p.cropName}（${getMarketInfo(p.marketName).short}）：${p.avgPrice.toFixed(1)} 元/公斤`).join("\n")}
+
+## 今日最高價（前 ${pricey.length} 名）
+${pricey.map((p,i)=>`${i+1}. ${p.cropName}（${getMarketInfo(p.marketName).short}）：${p.avgPrice.toFixed(1)} 元/公斤`).join("\n")}
+
+請提供：
+## 📊 今日行情摘要
+（2–3 句總結今日市場概況）
+
+## 💡 推薦購買（3–5 項）
+（當季且性價比高的品項，說明理由與建議料理方式）
+
+## ⚠️ 價格偏高，可暫緩購買（2–3 項）
+（偏貴品項及替代建議）
+
+## 🌱 當季亮點
+（本月當季蔬菜中值得特別關注的品項）
+
+## 📝 採買小技巧
+（1–2 條實用建議）`;
+}
+
+async function startAIAnalysis(){
+  if(aiStreaming) return;
+  const key = localStorage.getItem("aiApiKey")||"";
+  if(!key){ alert("請先輸入並儲存 Claude API Key"); return; }
+  if(!priceData.length){ alert("價格資料尚未載入，請稍後再試"); return; }
+  const cat = document.getElementById("aiCategory").value;
+  const mkt = document.getElementById("aiMarket").value;
+  const label = `${cat||"所有品類"} ・ ${mkt?getMarketInfo(mkt).short:"所有市場"}`;
+  aiMessages = [{role:"user", content: buildAIPrompt()}];
+  const chat = document.getElementById("aiChat");
+  chat.innerHTML = "";
+  document.getElementById("aiFollowup").style.display = "none";
+  appendAIMsg("user", `🔍 分析請求：${label}`, false);
+  const aDiv = appendAIMsg("assistant","",true);
+  const contentEl = aDiv.querySelector(".ai-content");
+  let fullText = "";
+  const btn = document.getElementById("aiAnalyzeBtn");
+  btn.disabled = true; btn.textContent = "⏳ 分析中…";
+  aiStreaming = true;
+  await callClaudeStream(
+    aiMessages,
+    (chunk)=>{
+      fullText += chunk;
+      contentEl.textContent = fullText;
+      aDiv.scrollIntoView({behavior:"smooth",block:"end"});
+    },
+    ()=>{
+      aDiv.innerHTML = `<div class="ai-content">${markdownToHTML(fullText)}</div>`;
+      aiMessages.push({role:"assistant", content: fullText});
+      aiStreaming = false;
+      btn.disabled = false; btn.textContent = "🤖 開始分析";
+      document.getElementById("aiFollowup").style.display = "flex";
+      document.getElementById("aiFollowupInput").focus();
+    },
+    (errMsg)=>{
+      aDiv.innerHTML = `<div class="ai-content" style="color:var(--red)">❌ ${inlineMarkdown(errMsg)}</div>`;
+      aiStreaming = false;
+      btn.disabled = false; btn.textContent = "🤖 開始分析";
+    }
+  );
+}
+
+async function sendAIFollowup(){
+  if(aiStreaming) return;
+  const input = document.getElementById("aiFollowupInput");
+  const q = input.value.trim();
+  if(!q) return;
+  input.value = "";
+  aiMessages.push({role:"user", content: q});
+  appendAIMsg("user", q, false);
+  const aDiv = appendAIMsg("assistant","",true);
+  const contentEl = aDiv.querySelector(".ai-content");
+  let fullText = "";
+  const btn = document.getElementById("aiFollowupBtn");
+  btn.disabled = true;
+  aiStreaming = true;
+  await callClaudeStream(
+    aiMessages,
+    (chunk)=>{
+      fullText += chunk;
+      contentEl.textContent = fullText;
+      aDiv.scrollIntoView({behavior:"smooth",block:"end"});
+    },
+    ()=>{
+      aDiv.innerHTML = `<div class="ai-content">${markdownToHTML(fullText)}</div>`;
+      aiMessages.push({role:"assistant", content: fullText});
+      aiStreaming = false;
+      btn.disabled = false;
+    },
+    (errMsg)=>{
+      aDiv.innerHTML = `<div class="ai-content" style="color:var(--red)">❌ ${inlineMarkdown(errMsg)}</div>`;
+      aiStreaming = false;
+      btn.disabled = false;
+    }
+  );
 }
 
 /* ============================================================
