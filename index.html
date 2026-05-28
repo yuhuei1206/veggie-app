@@ -367,6 +367,151 @@
     background:#f9f9f5;border-radius:8px;border:1px solid var(--border);margin-top:8px;
     line-height:1.6;
   }
+
+  /* === 排行榜卡片 === */
+  .rank-card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px}
+  .rank-card{
+    border-radius:16px;border:1px solid var(--border);
+    padding:14px 10px 12px;text-align:center;cursor:pointer;
+    transition:all .18s;position:relative;overflow:hidden;
+  }
+  .rank-card:hover{box-shadow:0 6px 18px rgba(0,0,0,.12);transform:translateY(-3px)}
+  .rank-card-num{
+    position:absolute;top:7px;left:9px;
+    font-size:11px;font-weight:800;color:rgba(0,0,0,.3);
+  }
+  .rank-card-num.top3{color:#e67e22;font-size:13px}
+  .rank-card-emoji{font-size:46px;line-height:1;margin:6px 0 8px}
+  .rank-card-name{font-size:13px;font-weight:700;color:#333;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .rank-card-price{font-size:20px;font-weight:800;color:var(--red);line-height:1}
+  .rank-card-unit{font-size:10px;color:var(--muted)}
+  .rank-card-market{font-size:10px;color:var(--muted);margin-top:3px}
+
+  /* === 我的冰箱 === */
+  .fridge-add-row{display:flex;gap:8px;margin-bottom:14px}
+  .fridge-add-row input{flex:1;padding:10px 12px;font-size:14px;border:2px solid var(--border);border-radius:10px;font-family:inherit}
+  .fridge-add-row input:focus{outline:none;border-color:var(--green)}
+  .fridge-add-btn{padding:10px 16px;background:var(--green);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap}
+  .fridge-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;margin-bottom:16px}
+  .fridge-item{
+    background:#f4faef;border:1px solid #c8e6c9;border-radius:12px;
+    padding:10px;text-align:center;position:relative;
+  }
+  .fridge-item-emoji{font-size:28px;margin-bottom:4px}
+  .fridge-item-name{font-size:13px;font-weight:600;color:var(--green-dark)}
+  .fridge-item-date{font-size:10px;color:var(--muted);margin-top:2px}
+  .fridge-item-del{
+    position:absolute;top:4px;right:6px;font-size:14px;cursor:pointer;
+    color:var(--muted);background:none;border:none;line-height:1;
+  }
+  .fridge-item-del:hover{color:var(--red)}
+  .fridge-action-btn{
+    padding:10px 20px;background:var(--green);color:#fff;border:none;border-radius:10px;
+    font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;
+  }
+
+  /* === 食譜紀錄 === */
+  .history-controls{display:flex;gap:8px;margin-bottom:12px;align-items:center;flex-wrap:wrap}
+  .history-filter-btn{
+    padding:5px 14px;font-size:13px;border:1px solid var(--border);
+    background:#fff;border-radius:14px;cursor:pointer;font-family:inherit;
+  }
+  .history-filter-btn.active{background:var(--green);color:#fff;border-color:var(--green)}
+  .history-clear-btn{
+    margin-left:auto;padding:5px 12px;font-size:12px;border:1px solid var(--red);
+    background:#fff;color:var(--red);border-radius:14px;cursor:pointer;font-family:inherit;
+  }
+  .history-item{
+    display:flex;align-items:center;gap:12px;
+    padding:10px 12px;background:#fff;border:1px solid var(--border);
+    border-radius:10px;margin-bottom:8px;cursor:pointer;transition:background .12s;
+  }
+  .history-item:hover{background:#f6f6f0}
+  .history-item-emoji{font-size:24px;flex-shrink:0}
+  .history-item-info{flex:1;min-width:0}
+  .history-item-name{font-size:14px;font-weight:600;color:var(--text)}
+  .history-item-meta{font-size:11px;color:var(--muted);margin-top:1px}
+  .history-tried-btn{
+    padding:4px 10px;font-size:11px;border:1px solid var(--border);
+    background:#fff;border-radius:10px;cursor:pointer;font-family:inherit;white-space:nowrap;
+    transition:all .12s;flex-shrink:0;
+  }
+  .history-tried-btn.tried{background:#e8f5e9;color:var(--green-dark);border-color:var(--green)}
+  .history-empty{text-align:center;padding:40px 20px;color:var(--muted);font-size:14px}
+
+  /* === 冰箱進階 === */
+  .fridge-add-form{background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:14px}
+  .fridge-add-form .form-row{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end}
+  .fridge-field{display:flex;flex-direction:column;gap:3px;flex:1;min-width:100px}
+  .fridge-field label{font-size:11px;color:var(--muted);font-weight:600}
+  .fridge-field input{padding:9px 10px;font-size:13px;border:1px solid var(--border);border-radius:8px;font-family:inherit}
+  .fridge-field input:focus{outline:none;border-color:var(--green)}
+  .fridge-item.expiring{background:#fff8e1;border-color:#ffe082}
+  .fridge-item.expired{background:#ffebee;border-color:#ef9a9a}
+  .fridge-item-qty{font-size:11px;color:var(--green-dark);margin-top:2px;font-weight:600}
+  .fridge-empty-warn{
+    grid-column:1/-1;text-align:center;padding:24px 16px;
+    background:#fff3e0;border:2px dashed #ffb74d;border-radius:12px;
+    font-size:14px;color:#e65100;font-weight:600;
+  }
+  .fridge-stats{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+  .fridge-stat{background:#fff;border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:12px;color:var(--muted)}
+  .fridge-stat strong{color:var(--green-dark)}
+
+  /* === 收藏 / 完成 === */
+  .bookmark-btn{
+    padding:4px 10px;font-size:12px;border:1px solid var(--border);
+    background:#fff;border-radius:10px;cursor:pointer;font-family:inherit;
+    transition:all .12s;margin-left:8px;vertical-align:middle;
+  }
+  .bookmark-btn.saved{background:#fff8e1;color:#e67e22;border-color:#ffe082}
+  .history-goal-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+  .goal-card{background:#f4faef;border:1px solid #c8e6c9;border-radius:10px;padding:10px}
+  .goal-card-label{font-size:11px;color:var(--muted);margin-bottom:4px}
+  .goal-card-count{font-size:20px;font-weight:800;color:var(--green-dark);line-height:1.1}
+  .goal-progress{height:5px;background:#e0e0e0;border-radius:3px;margin:5px 0 3px}
+  .goal-progress-bar{height:100%;background:var(--green);border-radius:3px;transition:width .3s}
+  .goal-set-btn{font-size:11px;padding:2px 8px;border:1px solid var(--green);background:#fff;color:var(--green-dark);border-radius:6px;cursor:pointer;font-family:inherit;margin-top:4px}
+
+  /* === 實地菜價回報 === */
+  .report-price-btn{
+    display:inline-flex;align-items:center;gap:5px;
+    padding:5px 12px;font-size:12px;border:1px solid #1976d2;
+    background:#e3f2fd;color:#1565c0;border-radius:12px;cursor:pointer;
+    font-family:inherit;transition:all .15s;margin-top:8px;
+  }
+  .report-price-btn:hover{background:#1976d2;color:#fff}
+  .report-form-field{margin-bottom:10px}
+  .report-form-field label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:3px}
+  .report-form-field input,.report-form-field select{
+    width:100%;padding:8px 10px;font-size:13px;border:1px solid var(--border);
+    border-radius:8px;font-family:inherit;
+  }
+  .unit-radio-group{display:flex;gap:6px;flex-wrap:wrap}
+  .unit-radio-group label{
+    padding:5px 12px;font-size:12px;border:1px solid var(--border);
+    border-radius:12px;cursor:pointer;transition:all .12s;
+  }
+  .unit-radio-group input[type=radio]{display:none}
+  .unit-radio-group input[type=radio]:checked + span{background:var(--green);color:#fff}
+  .unit-radio-group label:has(input:checked){background:var(--green);color:#fff;border-color:var(--green)}
+  .user-price-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px}
+  .user-price-table th{background:#e3f2fd;color:#1565c0;padding:6px 8px;text-align:left;font-weight:600}
+  .user-price-table td{padding:6px 8px;border-top:1px solid var(--border)}
+  .api-price-col{background:#f9f9f5}
+  .user-price-col{background:#e8f4ff}
+  .price-compare-wrap{border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-top:8px}
+  .price-compare-header{display:grid;grid-template-columns:1fr 1fr;font-size:12px;font-weight:700}
+  .price-compare-header>div{padding:7px 10px}
+  .price-compare-header .api-col{background:#f4faef;color:var(--green-dark)}
+  .price-compare-header .user-col{background:#e3f2fd;color:#1565c0}
+  .price-compare-row{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--border)}
+  .price-compare-row>div{padding:7px 10px;font-size:12px}
+  .report-photo-thumb{max-width:60px;max-height:40px;cursor:pointer;border-radius:4px;margin-top:4px}
+  .report-photo-full{max-width:100%;border-radius:8px;margin-top:6px;display:none}
+  .report-filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;align-items:center;font-size:12px}
+  .report-filter-row select,.report-filter-row button{padding:4px 10px;font-size:12px;border:1px solid var(--border);border-radius:8px;background:#fff;cursor:pointer;font-family:inherit}
+  .report-filter-row button.active{background:var(--green);color:#fff;border-color:var(--green)}
 </style>
 </head>
 <body>
@@ -378,10 +523,12 @@
 </header>
 <div class="status-bar" id="statusBar">資料載入中…</div>
 
-<nav class="tabs">
+<nav class="tabs" style="flex-wrap:wrap">
   <button class="tab-btn active" data-tab="index">🥗 蔬菜索引</button>
-  <button class="tab-btn" data-tab="rank">📊 菜價排行榜</button>
+  <button class="tab-btn" data-tab="rank">📊 菜價排行</button>
   <button class="tab-btn" data-tab="combo">🍳 配對食譜</button>
+  <button class="tab-btn" data-tab="fridge">🧊 我的冰箱</button>
+  <button class="tab-btn" data-tab="history">📖 食譜紀錄</button>
   <button class="tab-btn" data-tab="search">🔍 搜尋</button>
 </nav>
 
@@ -426,19 +573,9 @@
       <button class="sort-btn active" data-order="asc">最低 → 最高</button>
       <button class="sort-btn" data-order="desc">最高 → 最低</button>
     </div>
-    <table class="rank-table">
-      <thead>
-        <tr>
-          <th class="rank-num">#</th>
-          <th>品項</th>
-          <th>市場</th>
-          <th style="text-align:right">均價 (元/公斤)</th>
-        </tr>
-      </thead>
-      <tbody id="rankTbody">
-        <tr><td colspan="4" class="loading">載入中…</td></tr>
-      </tbody>
-    </table>
+    <div class="rank-card-grid" id="rankTbody">
+      <div class="loading" style="grid-column:1/-1">載入中…</div>
+    </div>
   </section>
 
   <!-- 配對食譜 -->
@@ -460,6 +597,42 @@
     </div>
     <button class="combo-generate-btn" onclick="findComboRecipes()">產生推薦食譜</button>
     <div id="comboResults"></div>
+  </section>
+
+  <!-- 我的冰箱 -->
+  <section class="tab-panel" id="tab-fridge">
+    <div class="fridge-add-form">
+      <div class="form-row">
+        <div class="fridge-field" style="flex:2">
+          <label>食材名稱（必填）</label>
+          <input type="text" id="fridgeInput" placeholder="高麗菜、豬肉…" autocomplete="off"
+                 onkeydown="if(event.key==='Enter') addFridgeItem()">
+        </div>
+        <div class="fridge-field">
+          <label>數量（選填）</label>
+          <input type="text" id="fridgeQtyInput" placeholder="500g、1把…">
+        </div>
+        <div class="fridge-field">
+          <label>有效期限（選填）</label>
+          <input type="date" id="fridgeExpInput">
+        </div>
+        <button class="fridge-add-btn" onclick="addFridgeItem()" style="align-self:flex-end">＋ 加入</button>
+      </div>
+    </div>
+    <div class="fridge-stats" id="fridgeStats"></div>
+    <div class="fridge-grid" id="fridgeGrid"><div class="combo-empty">冰箱是空的，新增食材開始管理！</div></div>
+    <button class="fridge-action-btn" onclick="goFindFridgeRecipes()" style="margin-top:4px">🍳 用冰箱食材找食譜</button>
+  </section>
+
+  <!-- 食譜紀錄 -->
+  <section class="tab-panel" id="tab-history">
+    <div class="history-controls">
+      <button class="history-filter-btn active" data-hf="all" onclick="filterHistory('all',this)">全部收藏</button>
+      <button class="history-filter-btn" data-hf="tried" onclick="filterHistory('tried',this)">已試過 ✅</button>
+      <button class="history-clear-btn" onclick="clearRecipeHistory()">清除全部</button>
+    </div>
+    <div id="historyList"></div>
+    <div id="goalsSection"></div>
   </section>
 
   <!-- 搜尋 -->
@@ -584,6 +757,42 @@
   </div>
 </div>
 
+<!-- 實地菜價回報 Modal -->
+<div class="modal-overlay" id="reportPriceModal" onclick="closeReportPriceModal(event)">
+  <div class="modal-box" style="max-width:480px">
+    <button class="modal-close" onclick="closeReportPriceModal()">✕</button>
+    <div class="modal-title">📍 實地菜價回報</div>
+    <input type="hidden" id="reportPriceCrop">
+    <div class="report-form-field">
+      <label>市場名稱（必填）</label>
+      <input type="text" id="reportMarket" placeholder="例如：台北第一果菜市場">
+    </div>
+    <div class="report-form-field">
+      <label>店家名稱 / Google Maps 連結（選填）</label>
+      <input type="text" id="reportStore" placeholder="店家名稱或貼上 Google Maps 網址">
+    </div>
+    <div class="report-form-field">
+      <label>價格（必填，填數字）</label>
+      <input type="number" id="reportPrice" placeholder="例如：35" min="0" step="0.1">
+    </div>
+    <div class="report-form-field">
+      <label>單位（必填）</label>
+      <div class="unit-radio-group" id="reportUnitGroup">
+        <label><input type="radio" name="reportUnit" value="斤"><span>斤</span></label>
+        <label><input type="radio" name="reportUnit" value="把"><span>把</span></label>
+        <label><input type="radio" name="reportUnit" value="公斤"><span>公斤</span></label>
+        <label><input type="radio" name="reportUnit" value="克"><span>克</span></label>
+        <label><input type="radio" name="reportUnit" value="籃"><span>籃</span></label>
+      </div>
+    </div>
+    <div class="report-form-field">
+      <label>照片（選填）</label>
+      <input type="file" id="reportPhoto" accept="image/*">
+    </div>
+    <button class="subscribe-submit" style="margin-top:4px" onclick="saveReportPrice()">送出回報</button>
+  </div>
+</div>
+
 <!-- 我想賣菜 Modal -->
 <div class="modal-overlay" id="sellVegModal" onclick="closeSellVegModal(event)">
   <div class="modal-box" style="max-width:480px">
@@ -616,85 +825,85 @@
    ============================================================ */
 const VEGETABLES = [
   {key:"高麗菜", emoji:"🥬", aliases:["甘藍","捲心菜","cabbage"], months:[11,12,1,2,3,4],
-    recipes:["手撕高麗菜","高麗菜炒培根","高麗菜豬肉水餃"]},
+    recipes:["手撕高麗菜","高麗菜炒培根","高麗菜豬肉水餃","韓式炒高麗菜","高麗菜蛋炒飯","奶油燉高麗菜"]},
   {key:"大白菜", emoji:"🥬", aliases:["結球白菜","包心白菜","napa cabbage"], months:[11,12,1,2,3],
-    recipes:["白菜滷","酸白菜火鍋","開陽白菜"]},
+    recipes:["白菜滷","酸白菜火鍋","開陽白菜","白菜炒年糕","白菜粉絲煲","麻婆白菜"]},
   {key:"小白菜", emoji:"🥬", aliases:["青菜","bok choy"], months:[1,2,3,4,5,6,7,8,9,10,11,12],
-    recipes:["蒜炒小白菜","上湯小白菜","小白菜豆腐湯"]},
+    recipes:["蒜炒小白菜","上湯小白菜","小白菜豆腐湯","小白菜炒冬粉","小白菜蝦米炒","小白菜鹹蛋湯"]},
   {key:"青江菜", emoji:"🥬", aliases:["湯匙菜","上海青"], months:[1,2,3,4,5,6,7,8,9,10,11,12],
-    recipes:["蒜炒青江菜","干貝青江菜","油燜青江菜"]},
+    recipes:["蒜炒青江菜","干貝青江菜","油燜青江菜","青江菜炒蝦米","涼拌青江菜","青江菜蛋花湯"]},
   {key:"菠菜", emoji:"🥬", aliases:["菠薐","spinach","菠菱菜"], months:[10,11,12,1,2,3,4],
-    recipes:["蒜蓉菠菜","菠菜玉子燒","菠菜濃湯"]},
+    recipes:["蒜蓉菠菜","菠菜玉子燒","菠菜濃湯","菠菜炒豬肝","菠菜拌花生","菠菜雞蛋湯"]},
   {key:"空心菜", emoji:"🌿", aliases:["蕹菜","通菜","water spinach","ong choy"], months:[4,5,6,7,8,9,10],
-    recipes:["沙茶空心菜","蒜炒空心菜","腐乳空心菜"]},
+    recipes:["沙茶空心菜","蒜炒空心菜","腐乳空心菜","清炒空心菜","空心菜炒豆腐","空心菜炒蝦米"]},
   {key:"地瓜葉", emoji:"🌿", aliases:["甘藷葉","sweet potato leaf"], months:[1,2,3,4,5,6,7,8,9,10,11,12],
-    recipes:["燙地瓜葉","蒜香地瓜葉","地瓜葉味噌湯"]},
+    recipes:["燙地瓜葉","蒜香地瓜葉","地瓜葉味噌湯","麻油地瓜葉","地瓜葉炒沙丁","涼拌地瓜葉"]},
   {key:"莧菜", emoji:"🌿", aliases:["amaranth","荇菜"], months:[4,5,6,7,8,9,10],
-    recipes:["吻仔魚莧菜","蒜炒莧菜","莧菜豆腐羹"]},
+    recipes:["吻仔魚莧菜","蒜炒莧菜","莧菜豆腐羹","清炒莧菜","莧菜炒豬絞肉","莧菜木耳湯"]},
   {key:"茼蒿", emoji:"🌿", aliases:["打某菜","crown daisy"], months:[10,11,12,1,2,3],
-    recipes:["茼蒿火鍋料","蒜炒茼蒿","茼蒿蛋花湯"]},
+    recipes:["茼蒿火鍋料","蒜炒茼蒿","茼蒿蛋花湯","涼拌茼蒿","茼蒿炒肉絲","茼蒿起司炒蛋"]},
   {key:"芹菜", emoji:"🥬", aliases:["香芹","celery","西芹"], months:[11,12,1,2,3,4],
-    recipes:["芹菜炒花枝","芹菜炒豆乾","芹菜雞湯"]},
+    recipes:["芹菜炒花枝","芹菜炒豆乾","芹菜雞湯","西芹炒百合","芹菜炒蛋","芹菜炒豬絞肉"]},
   {key:"花椰菜", emoji:"🥦", aliases:["白花菜","白花椰","cauliflower"], months:[10,11,12,1,2,3],
-    recipes:["奶油白花椰","蒜炒花椰菜","花椰菜濃湯"]},
+    recipes:["奶油白花椰","蒜炒花椰菜","花椰菜濃湯","花椰菜炒蝦仁","涼拌花椰菜","醬燒花椰菜"]},
   {key:"青花菜", emoji:"🥦", aliases:["綠花椰","西蘭花","broccoli"], months:[10,11,12,1,2,3],
-    recipes:["蠔油青花菜","青花菜炒蝦仁","青花菜雞胸沙拉"]},
+    recipes:["蠔油青花菜","青花菜炒蝦仁","青花菜雞胸沙拉","清炒青花菜","青花菜培根炒","青花菜起司焗"]},
   {key:"番茄", emoji:"🍅", aliases:["蕃茄","西紅柿","tomato"], months:[11,12,1,2,3,4],
-    recipes:["番茄炒蛋","番茄牛肉湯","蜜番茄"]},
+    recipes:["番茄炒蛋","番茄牛肉湯","蜜番茄","番茄義大利麵","番茄蛋花湯","番茄炒豆腐"]},
   {key:"小黃瓜", emoji:"🥒", aliases:["花胡瓜","cucumber"], months:[3,4,5,6,7,8,9,10],
-    recipes:["涼拌小黃瓜","小黃瓜炒蛋","小黃瓜壽司"]},
+    recipes:["涼拌小黃瓜","小黃瓜炒蛋","小黃瓜壽司","小黃瓜炒木耳","韓式拌小黃瓜","小黃瓜雞柳炒"]},
   {key:"絲瓜", emoji:"🥒", aliases:["菜瓜","loofah","luffa"], months:[5,6,7,8,9,10],
-    recipes:["絲瓜蛤蜊湯","絲瓜麵線","絲瓜炒蛋"]},
+    recipes:["絲瓜蛤蜊湯","絲瓜麵線","絲瓜炒蛋","清炒絲瓜","絲瓜蝦球湯","絲瓜薑蒜炒"]},
   {key:"苦瓜", emoji:"🥒", aliases:["涼瓜","bitter melon","bitter gourd"], months:[4,5,6,7,8,9,10],
-    recipes:["鳳梨苦瓜雞","客家小炒苦瓜","苦瓜鹹蛋"]},
+    recipes:["鳳梨苦瓜雞","客家小炒苦瓜","苦瓜鹹蛋","苦瓜封肉","涼拌苦瓜絲","苦瓜木瓜排骨湯"]},
   {key:"茄子", emoji:"🍆", aliases:["紅皮菜","eggplant","aubergine"], months:[4,5,6,7,8,9,10,11],
-    recipes:["魚香茄子","紅燒茄子","和風涼拌茄子"]},
+    recipes:["魚香茄子","紅燒茄子","和風涼拌茄子","清蒸茄子","打拋茄子","茄子炒豬絞肉"]},
   {key:"青椒", emoji:"🫑", aliases:["大同仔","green pepper","bell pepper"], months:[1,2,3,4,5,6,7,8,9,10,11,12],
-    recipes:["青椒牛肉","青椒炒肉絲","青椒鑲肉"]},
+    recipes:["青椒牛肉","青椒炒肉絲","青椒鑲肉","三色椒炒肉","青椒炒花枝","青椒豆干醬炒"]},
   {key:"洋蔥", emoji:"🧅", aliases:["球蔥","蔥頭","onion"], months:[12,1,2,3,4],
-    recipes:["洋蔥炒牛肉","洋蔥圈","法式洋蔥湯"]},
+    recipes:["洋蔥炒牛肉","洋蔥圈","法式洋蔥湯","洋蔥炒豬肝","糖醋洋蔥","洋蔥雞蛋沙拉"]},
   {key:"紅蘿蔔", emoji:"🥕", aliases:["胡蘿蔔","carrot"], months:[11,12,1,2,3,4],
-    recipes:["紅蘿蔔炒蛋","ABC湯","紅蘿蔔燉牛肉"]},
+    recipes:["紅蘿蔔炒蛋","ABC湯","紅蘿蔔燉牛肉","紅蘿蔔炒肉絲","紅蘿蔔蛋炒飯","紅蘿蔔玉米湯"]},
   {key:"白蘿蔔", emoji:"🥕", aliases:["菜頭","daikon","radish"], months:[11,12,1,2,3],
-    recipes:["蘿蔔排骨湯","紅燒蘿蔔","蘿蔔糕"]},
+    recipes:["蘿蔔排骨湯","紅燒蘿蔔","蘿蔔糕","白蘿蔔燉豬腳","白蘿蔔燉牛腩","涼拌白蘿蔔絲"]},
   {key:"馬鈴薯", emoji:"🥔", aliases:["洋芋","土豆","potato"], months:[1,2,3,4,11,12],
-    recipes:["馬鈴薯燉肉","薯泥沙拉","醋溜馬鈴薯絲"]},
+    recipes:["馬鈴薯燉肉","薯泥沙拉","醋溜馬鈴薯絲","馬鈴薯燉牛肉","馬鈴薯起司濃湯","馬鈴薯炒肉末"]},
   {key:"芋頭", emoji:"🥔", aliases:["taro"], months:[9,10,11,12],
-    recipes:["芋頭排骨","芋泥","芋頭飯"]},
+    recipes:["芋頭排骨","芋泥","芋頭飯","芋泥西米露","芋頭米糕","芋頭地瓜甜湯"]},
   {key:"南瓜", emoji:"🎃", aliases:["金瓜","pumpkin"], months:[5,6,7,8,9,10],
-    recipes:["南瓜濃湯","南瓜炒米粉","南瓜派"]},
+    recipes:["南瓜濃湯","南瓜炒米粉","南瓜派","南瓜炒蛋","蜂蜜烤南瓜","南瓜米粥"]},
   {key:"玉米", emoji:"🌽", aliases:["玉蜀黍","corn","sweet corn"], months:[3,4,5,6,7,8,9,10,11],
-    recipes:["玉米排骨湯","奶油玉米","玉米炒蛋"]},
+    recipes:["玉米排骨湯","奶油玉米","玉米炒蛋","玉米奶油濃湯","玉米炒蝦仁","烤玉米"]},
   {key:"竹筍", emoji:"🎋", aliases:["綠竹筍","麻竹筍","bamboo shoot"], months:[4,5,6,7,8,9],
-    recipes:["竹筍排骨湯","涼拌綠竹筍","油燜筍"]},
+    recipes:["竹筍排骨湯","涼拌綠竹筍","油燜筍","竹筍炒肉絲","筍絲封肉","紅燒筍"]},
   {key:"韭菜", emoji:"🌿", aliases:["chives"], months:[1,2,3,4,5,6,7,8,9,10,11,12],
-    recipes:["韭菜炒蛋","韭菜盒子","韭菜豬肉水餃"]},
+    recipes:["韭菜炒蛋","韭菜盒子","韭菜豬肉水餃","韭菜炒豬血","韭菜煎餃","韭黃炒花枝"]},
   {key:"蔥", emoji:"🌿", aliases:["青蔥","三星蔥","spring onion","scallion"], months:[1,2,3,4,5,6,7,8,9,10,11,12],
-    recipes:["蔥油雞","蔥爆牛肉","蔥油餅"]},
+    recipes:["蔥油雞","蔥爆牛肉","蔥油餅","蔥花蛋","蔥燒豆腐","蔥爆羊肉"]},
   {key:"蒜頭", emoji:"🧄", aliases:["大蒜","garlic"], months:[3,4,5,6,7,8,9,10,11,12],
-    recipes:["蒜頭雞湯","蒜泥白肉","蒜香蝦"]},
+    recipes:["蒜頭雞湯","蒜泥白肉","蒜香蝦","蒜蓉炒蝦","蒜炒海瓜子","蒜香煎豬排"]},
   {key:"薑", emoji:"🫚", aliases:["生薑","老薑","ginger"], months:[1,2,3,4,5,6,7,8,9,10,11,12],
-    recipes:["薑母鴨","麻油雞","三杯雞"]},
+    recipes:["薑母鴨","麻油雞","三杯雞","薑汁地瓜湯","薑炒鮮蚵","薑蔥炒牛肉"]},
   {key:"山藥", emoji:"🥔", aliases:["淮山","yam"], months:[11,12,1,2],
-    recipes:["山藥排骨湯","涼拌山藥","山藥粥"]},
+    recipes:["山藥排骨湯","涼拌山藥","山藥粥","山藥燉雞湯","涼拌山藥泥","山藥木耳炒"]},
   {key:"敏豆", emoji:"🫛", aliases:["四季豆","green bean","french bean"], months:[3,4,5,6,7,8,9,10,11],
-    recipes:["乾煸四季豆","四季豆炒肉末","涼拌四季豆"]},
+    recipes:["乾煸四季豆","四季豆炒肉末","涼拌四季豆","敏豆炒蛋","蒜炒敏豆","敏豆炒肉末"]},
   {key:"豌豆", emoji:"🫛", aliases:["荷蘭豆","甜豆","snow pea","sugar pea"], months:[11,12,1,2,3,4],
-    recipes:["蝦仁炒豌豆","蒜炒甜豆","豌豆苗炒蛋"]},
+    recipes:["蝦仁炒豌豆","蒜炒甜豆","豌豆苗炒蛋","豌豆炒蛋","豌豆玉米羹","豌豆炒肉丁"]},
   {key:"金針菇", emoji:"🍄", aliases:["金菇","enoki","金針"], months:[1,2,3,4,5,6,7,8,9,10,11,12],
-    recipes:["金針菇捲牛肉","金針菇湯","涼拌金針菇"]},
+    recipes:["金針菇捲牛肉","金針菇湯","涼拌金針菇","金針菇炒肉片","金針菇日式拌","金針菇炒蝦仁"]},
   {key:"香菇", emoji:"🍄", aliases:["冬菇","shiitake"], months:[1,2,3,4,5,6,7,8,9,10,11,12],
-    recipes:["香菇雞湯","香菇炒油菜","香菇鑲肉"]},
+    recipes:["香菇雞湯","香菇炒油菜","香菇鑲肉","清炒香菇","香菇燒豆腐","香菇炒年糕"]},
   {key:"雪裏紅", emoji:"🥬", aliases:["雪裡紅","雪裡蕻","雪菜","芥菜醃漬","snow mustard"], months:[10,11,12,1,2,3,4],
-    recipes:["雪裡紅炒肉末","雪菜豆腐湯","雪裡紅炒筍絲"]},
+    recipes:["雪裡紅炒肉末","雪菜豆腐湯","雪裡紅炒筍絲","雪菜炒年糕","雪菜涼拌豆腐","雪菜炒蛋"]},
   {key:"芥藍", emoji:"🥦", aliases:["格藍菜","gailan","chinese broccoli"], months:[10,11,12,1,2,3,4],
-    recipes:["蠔油芥藍","蒜炒芥藍","芥藍牛肉"]},
+    recipes:["蠔油芥藍","蒜炒芥藍","芥藍牛肉","清炒芥藍","芥藍炒蝦仁","芥藍炒肉片"]},
   {key:"九層塔", emoji:"🌿", aliases:["羅勒","basil","台灣九層塔"], months:[4,5,6,7,8,9,10],
-    recipes:["三杯料理","九層塔蛋","塔香茄子"]},
+    recipes:["三杯料理","九層塔蛋","塔香茄子","九層塔炒蛤蜊","九層塔炒蝦","九層塔煎蛋"]},
   {key:"青蒜", emoji:"🌿", aliases:["蒜苗","青大蒜","green garlic"], months:[11,12,1,2,3,4],
-    recipes:["青蒜炒腊肉","青蒜炒蛋","青蒜豆腐"]},
+    recipes:["青蒜炒腊肉","青蒜炒蛋","青蒜豆腐","青蒜炒肉片","青蒜香腸炒飯","青蒜炒豆干"]},
   {key:"芥菜", emoji:"🥬", aliases:["大芥菜","刈菜","mustard greens"], months:[10,11,12,1,2,3],
-    recipes:["芥菜雞湯","芥菜炒飯","客家鹹豬肉配芥菜"]},
+    recipes:["芥菜雞湯","芥菜炒飯","客家鹹豬肉配芥菜","芥菜炒肉片","芥菜炒豆腐","芥菜蛋花湯"]},
 ];
 
 /* ============================================================
@@ -821,6 +1030,126 @@ const RECIPE_DETAILS = {
   "芥菜雞湯":{ingredients:[{n:"大芥菜",a:"半顆"},{n:"雞腿",a:"2支"},{n:"薑片",a:"3片"},{n:"米酒",a:"1大匙"},{n:"鹽",a:"適量"}],steps:["雞腿切塊汆燙，芥菜切大塊。","鍋中加水、雞肉、薑片、米酒，大火煮滾。","加芥菜，轉小火燉30分鐘。","以鹽調味，起鍋。"]},
   "芥菜炒飯":{ingredients:[{n:"芥菜",a:"100g"},{n:"白飯",a:"2碗"},{n:"蛋",a:"2顆"},{n:"醬油",a:"1大匙"},{n:"鹽",a:"適量"},{n:"油",a:"1大匙"}],steps:["芥菜切碎，蛋打散。","熱油下蛋液炒散，下白飯大火翻炒。","加芥菜翻炒均勻。","以醬油、鹽調味，起鍋。"]},
   "客家鹹豬肉配芥菜":{ingredients:[{n:"芥菜",a:"半顆"},{n:"客家鹹豬肉",a:"200g"},{n:"蒜頭",a:"3瓣"},{n:"鹽",a:"適量"}],steps:["鹹豬肉切片，下鍋乾煎至兩面金黃，盛起。","原鍋爆香蒜末，下芥菜大火翻炒。","加少許水蓋鍋燜2分鐘至軟。","以鹽調味，盛盤後放上鹹豬肉。"]},
+  "韓式炒高麗菜":{ingredients:[{n:"高麗菜",a:"300g"},{n:"韓式辣醬",a:"1大匙"},{n:"蒜末",a:"1大匙"},{n:"麻油",a:"1小匙"},{n:"醬油",a:"½大匙"}],steps:["高麗菜撕片，蒜切末。","熱油爆香蒜末，加辣醬炒香。","下高麗菜大火翻炒2分鐘。","以醬油、麻油調味，起鍋。"]},
+  "高麗菜蛋炒飯":{ingredients:[{n:"高麗菜",a:"150g"},{n:"白飯",a:"2碗"},{n:"蛋",a:"2顆"},{n:"蔥花",a:"少許"},{n:"醬油",a:"1大匙"},{n:"鹽",a:"適量"}],steps:["高麗菜切碎，蛋打散。","熱油下蛋液炒散，加白飯大火翻炒。","下高麗菜翻炒均勻。","以醬油、鹽調味，撒蔥花起鍋。"]},
+  "奶油燉高麗菜":{ingredients:[{n:"高麗菜",a:"400g"},{n:"奶油",a:"20g"},{n:"牛奶",a:"200ml"},{n:"鹽",a:"適量"},{n:"黑胡椒",a:"少許"}],steps:["高麗菜切大塊，奶油入鍋融化。","下高麗菜翻炒至稍軟。","倒入牛奶，小火燜煮8分鐘。","以鹽、黑胡椒調味，起鍋。"]},
+  "白菜炒年糕":{ingredients:[{n:"大白菜",a:"300g"},{n:"年糕",a:"200g"},{n:"豬肉絲",a:"100g"},{n:"醬油",a:"1大匙"},{n:"蠔油",a:"1大匙"},{n:"油",a:"1大匙"}],steps:["年糕切厚片，大白菜切段，豬肉絲醃醬油10分鐘。","熱油炒豬肉絲至變色，盛起。","原鍋炒大白菜，加蠔油翻炒。","加年糕、豬肉絲炒勻，加少許水蓋鍋燜3分鐘。"]},
+  "白菜粉絲煲":{ingredients:[{n:"大白菜",a:"半顆"},{n:"冬粉",a:"2把"},{n:"豬五花",a:"150g"},{n:"醬油",a:"2大匙"},{n:"高湯",a:"400ml"}],steps:["冬粉泡水軟化，大白菜切段，豬肉切片。","熱鍋下豬肉炒至出油，加醬油。","加大白菜翻炒，倒入高湯煮滾。","加冬粉燜煮5分鐘至入味，起鍋。"]},
+  "麻婆白菜":{ingredients:[{n:"大白菜",a:"400g"},{n:"豆腐",a:"1塊"},{n:"豆瓣醬",a:"1大匙"},{n:"豬絞肉",a:"80g"},{n:"花椒粉",a:"少許"},{n:"蒜末",a:"1大匙"}],steps:["豆腐切丁，大白菜切段。","熱油爆香蒜末與豆瓣醬，加豬絞肉炒熟。","下大白菜、豆腐，加少許水翻炒均勻。","以花椒粉調味，勾薄芡起鍋。"]},
+  "小白菜炒冬粉":{ingredients:[{n:"小白菜",a:"200g"},{n:"冬粉",a:"2把"},{n:"蒜頭",a:"3瓣"},{n:"醬油",a:"1大匙"},{n:"鹽",a:"適量"}],steps:["冬粉泡水軟化，小白菜切段，蒜切末。","熱油爆香蒜末，下小白菜翻炒。","加冬粉與少許水翻炒均勻。","以醬油、鹽調味，起鍋。"]},
+  "小白菜蝦米炒":{ingredients:[{n:"小白菜",a:"300g"},{n:"蝦米",a:"2大匙"},{n:"蒜頭",a:"2瓣"},{n:"鹽",a:"適量"},{n:"油",a:"1大匙"}],steps:["小白菜洗淨切段，蝦米泡水5分鐘，蒜切末。","熱油爆香蒜末，加蝦米炒香。","下小白菜大火翻炒2分鐘。","以鹽調味，起鍋。"]},
+  "小白菜鹹蛋湯":{ingredients:[{n:"小白菜",a:"200g"},{n:"鹹蛋",a:"1顆"},{n:"高湯",a:"500ml"},{n:"薑片",a:"2片"},{n:"鹽",a:"少許"}],steps:["鹹蛋切塊，小白菜洗淨切段。","高湯加薑片煮滾，下鹹蛋煮2分鐘。","加小白菜煮至軟，以鹽調整鹹度。","起鍋盛碗即可。"]},
+  "青江菜炒蝦米":{ingredients:[{n:"青江菜",a:"300g"},{n:"蝦米",a:"2大匙"},{n:"蒜頭",a:"2瓣"},{n:"鹽",a:"適量"},{n:"油",a:"1大匙"}],steps:["蝦米泡水5分鐘，青江菜洗淨對切。","熱油爆香蒜末，加蝦米炒香。","下青江菜大火翻炒2分鐘。","以鹽調味，起鍋。"]},
+  "涼拌青江菜":{ingredients:[{n:"青江菜",a:"300g"},{n:"蒜末",a:"1小匙"},{n:"醬油",a:"1大匙"},{n:"麻油",a:"1小匙"},{n:"鹽",a:"少許"}],steps:["青江菜汆燙1分鐘，泡冷水後擠乾水分。","蒜末、醬油、麻油調成醬汁。","青江菜盛盤，淋上醬汁拌勻。","冷藏10分鐘更入味後享用。"]},
+  "青江菜蛋花湯":{ingredients:[{n:"青江菜",a:"150g"},{n:"蛋",a:"2顆"},{n:"高湯",a:"500ml"},{n:"鹽",a:"適量"},{n:"麻油",a:"少許"}],steps:["高湯煮滾，加青江菜煮1分鐘。","蛋打散，以繞圈方式倒入湯中。","輕推蛋花，以鹽調味。","淋麻油起鍋。"]},
+  "菠菜炒豬肝":{ingredients:[{n:"菠菜",a:"200g"},{n:"豬肝",a:"150g"},{n:"薑片",a:"3片"},{n:"醬油",a:"1大匙"},{n:"米酒",a:"½大匙"},{n:"鹽",a:"適量"}],steps:["豬肝切片，加醬油、米酒醃10分鐘。","菠菜汆燙備用，熱油爆香薑片。","下豬肝大火翻炒至熟透。","加菠菜拌炒均勻，以鹽調味起鍋。"]},
+  "菠菜拌花生":{ingredients:[{n:"菠菜",a:"300g"},{n:"花生",a:"50g"},{n:"醬油",a:"1大匙"},{n:"醋",a:"1小匙"},{n:"麻油",a:"1小匙"},{n:"糖",a:"少許"}],steps:["花生烤熟略搗碎，菠菜汆燙後冰鎮，擠乾水分。","醬油、醋、麻油、糖調成醬汁。","菠菜與花生拌勻，淋上醬汁。","拌勻盛盤即可。"]},
+  "菠菜雞蛋湯":{ingredients:[{n:"菠菜",a:"200g"},{n:"蛋",a:"2顆"},{n:"高湯",a:"500ml"},{n:"鹽",a:"適量"},{n:"麻油",a:"少許"}],steps:["高湯煮滾，加菠菜煮1分鐘。","蛋打散，淋入湯中成蛋花。","以鹽調味，淋麻油。","起鍋即可。"]},
+  "清炒空心菜":{ingredients:[{n:"空心菜",a:"300g"},{n:"蒜頭",a:"4瓣"},{n:"鹽",a:"½小匙"},{n:"油",a:"1大匙"}],steps:["空心菜切段，蒜切末。","熱油爆香蒜末。","大火下空心菜快炒2分鐘。","加鹽調味，起鍋。"]},
+  "空心菜炒豆腐":{ingredients:[{n:"空心菜",a:"200g"},{n:"板豆腐",a:"1塊"},{n:"蒜頭",a:"2瓣"},{n:"醬油膏",a:"1大匙"},{n:"油",a:"1大匙"}],steps:["豆腐切塊下熱油煎至金黃，盛起。","原鍋爆香蒜末，下空心菜翻炒。","加豆腐、醬油膏翻炒均勻。","以鹽調整鹹度，起鍋。"]},
+  "空心菜炒蝦米":{ingredients:[{n:"空心菜",a:"300g"},{n:"蝦米",a:"2大匙"},{n:"蒜頭",a:"2瓣"},{n:"鹽",a:"適量"},{n:"油",a:"1大匙"}],steps:["蝦米泡水5分鐘，空心菜切段。","熱油爆香蒜末與蝦米。","大火下空心菜翻炒2分鐘。","以鹽調味，起鍋。"]},
+  "麻油地瓜葉":{ingredients:[{n:"地瓜葉",a:"300g"},{n:"麻油",a:"1大匙"},{n:"薑絲",a:"少許"},{n:"鹽",a:"½小匙"}],steps:["地瓜葉洗淨，薑切絲。","麻油小火爆香薑絲至微焦。","轉大火下地瓜葉快炒2分鐘。","加鹽調味，起鍋。"]},
+  "地瓜葉炒沙丁":{ingredients:[{n:"地瓜葉",a:"300g"},{n:"沙丁魚罐頭",a:"1罐"},{n:"蒜頭",a:"3瓣"},{n:"鹽",a:"適量"},{n:"油",a:"少許"}],steps:["地瓜葉洗淨，蒜切末，沙丁魚瀝油略壓碎。","熱油爆香蒜末，加沙丁魚炒香。","下地瓜葉大火翻炒2分鐘。","以鹽調味，起鍋。"]},
+  "涼拌地瓜葉":{ingredients:[{n:"地瓜葉",a:"300g"},{n:"蒜末",a:"1小匙"},{n:"醬油膏",a:"1大匙"},{n:"麻油",a:"1小匙"},{n:"辣椒",a:"少許"}],steps:["滾水加鹽，汆燙地瓜葉30秒後冰鎮。","擠乾水分盛盤。","蒜末、醬油膏、麻油、辣椒調成醬汁。","淋上醬汁拌勻即可。"]},
+  "清炒莧菜":{ingredients:[{n:"莧菜",a:"300g"},{n:"蒜頭",a:"4瓣"},{n:"鹽",a:"½小匙"},{n:"油",a:"1大匙"}],steps:["莧菜洗淨切段，蒜切末。","熱油爆香蒜末。","大火下莧菜翻炒2分鐘。","加鹽調味，起鍋。"]},
+  "莧菜炒豬絞肉":{ingredients:[{n:"莧菜",a:"200g"},{n:"豬絞肉",a:"100g"},{n:"蒜頭",a:"2瓣"},{n:"醬油",a:"1大匙"},{n:"鹽",a:"適量"}],steps:["莧菜切段，蒜切末。","熱油爆香蒜末，加豬絞肉炒熟。","下莧菜大火翻炒均勻。","以醬油、鹽調味，起鍋。"]},
+  "莧菜木耳湯":{ingredients:[{n:"莧菜",a:"200g"},{n:"木耳",a:"50g"},{n:"高湯",a:"500ml"},{n:"薑片",a:"2片"},{n:"鹽",a:"適量"}],steps:["木耳泡水切絲，莧菜切段。","高湯煮滾，加薑片、木耳煮5分鐘。","加莧菜煮至熟透。","以鹽調味，起鍋。"]},
+  "涼拌茼蒿":{ingredients:[{n:"茼蒿",a:"300g"},{n:"蒜末",a:"1小匙"},{n:"醬油",a:"1大匙"},{n:"麻油",a:"1小匙"},{n:"白芝麻",a:"少許"}],steps:["茼蒿汆燙30秒，泡冷水後擠乾。","蒜末、醬油、麻油調成醬汁。","茼蒿淋上醬汁拌勻。","撒白芝麻盛盤。"]},
+  "茼蒿炒肉絲":{ingredients:[{n:"茼蒿",a:"200g"},{n:"豬肉絲",a:"100g"},{n:"薑末",a:"½小匙"},{n:"醬油",a:"1大匙"},{n:"鹽",a:"適量"}],steps:["豬肉絲加醬油、薑末醃10分鐘。","熱油下肉絲炒至變色，盛起。","原鍋下茼蒿大火快炒1分鐘。","加肉絲拌炒，以鹽調味起鍋。"]},
+  "茼蒿起司炒蛋":{ingredients:[{n:"茼蒿",a:"150g"},{n:"蛋",a:"3顆"},{n:"起司片",a:"1片"},{n:"鹽",a:"適量"},{n:"油",a:"1大匙"}],steps:["茼蒿切段，蛋打散加鹽，起司撕碎。","熱油下蛋液炒至半熟。","加茼蒿翻炒均勻。","撒起司碎，略炒至融化，起鍋。"]},
+  "西芹炒百合":{ingredients:[{n:"芹菜",a:"200g"},{n:"鮮百合",a:"1顆"},{n:"蒜頭",a:"2瓣"},{n:"鹽",a:"½小匙"},{n:"油",a:"1大匙"}],steps:["芹菜切斜段，鮮百合剝瓣洗淨，蒜切末。","熱油爆香蒜末，下芹菜大火翻炒1分鐘。","加鮮百合快炒30秒。","以鹽調味，起鍋。"]},
+  "芹菜炒蛋":{ingredients:[{n:"芹菜",a:"150g"},{n:"蛋",a:"3顆"},{n:"蒜頭",a:"2瓣"},{n:"鹽",a:"適量"},{n:"油",a:"1大匙"}],steps:["芹菜切小段，蛋打散加鹽，蒜切末。","熱油炒蛋至半熟，盛起。","原鍋爆香蒜末，下芹菜炒1分鐘。","加蛋回鍋翻炒，以鹽調味，起鍋。"]},
+  "芹菜炒豬絞肉":{ingredients:[{n:"芹菜",a:"200g"},{n:"豬絞肉",a:"100g"},{n:"蒜頭",a:"2瓣"},{n:"醬油",a:"1大匙"},{n:"鹽",a:"適量"}],steps:["芹菜切小段，蒜切末。","熱油爆香蒜末，加豬絞肉炒熟。","下芹菜大火翻炒均勻。","以醬油、鹽調味，起鍋。"]},
+  "花椰菜炒蝦仁":{ingredients:[{n:"白花椰菜",a:"半顆"},{n:"蝦仁",a:"150g"},{n:"薑片",a:"2片"},{n:"鹽",a:"½小匙"},{n:"米酒",a:"½大匙"},{n:"油",a:"1大匙"}],steps:["蝦仁加米酒醃5分鐘，花椰菜汆燙。","熱油爆香薑片，下蝦仁炒至變紅。","加花椰菜翻炒均勻。","以鹽調味，起鍋。"]},
+  "涼拌花椰菜":{ingredients:[{n:"白花椰菜",a:"半顆"},{n:"蒜末",a:"1小匙"},{n:"醬油",a:"1大匙"},{n:"麻油",a:"1小匙"},{n:"醋",a:"½小匙"}],steps:["花椰菜切小朵，汆燙3分鐘後冰鎮。","蒜末、醬油、麻油、醋調成醬汁。","花椰菜盛盤，淋醬汁拌勻。","冷藏10分鐘更入味。"]},
+  "醬燒花椰菜":{ingredients:[{n:"白花椰菜",a:"半顆"},{n:"蒜頭",a:"2瓣"},{n:"醬油",a:"1大匙"},{n:"蠔油",a:"1大匙"},{n:"糖",a:"少許"},{n:"油",a:"1大匙"}],steps:["花椰菜切小朵，蒜切末。","熱油爆香蒜末。","下花椰菜翻炒，加醬油、蠔油、糖。","加少許水蓋鍋燜3分鐘，起鍋。"]},
+  "清炒青花菜":{ingredients:[{n:"青花菜",a:"1顆"},{n:"蒜頭",a:"3瓣"},{n:"鹽",a:"½小匙"},{n:"油",a:"1大匙"}],steps:["青花菜切小朵汆燙1分鐘，蒜切末。","熱油爆香蒜末。","下青花菜大火翻炒2分鐘。","以鹽調味，起鍋。"]},
+  "青花菜培根炒":{ingredients:[{n:"青花菜",a:"200g"},{n:"培根",a:"3片"},{n:"蒜頭",a:"2瓣"},{n:"鹽",a:"適量"},{n:"黑胡椒",a:"少許"}],steps:["青花菜汆燙，培根切段，蒜切末。","乾鍋煸培根出油，加蒜末炒香。","下青花菜翻炒均勻。","以鹽、黑胡椒調味，起鍋。"]},
+  "青花菜起司焗":{ingredients:[{n:"青花菜",a:"200g"},{n:"起司絲",a:"80g"},{n:"鮮奶油",a:"50ml"},{n:"鹽",a:"適量"},{n:"黑胡椒",a:"少許"}],steps:["青花菜汆燙後放入烤盤。","淋上鮮奶油，撒起司絲。","以黑胡椒、鹽調味。","烤箱200°C烤10分鐘至起司金黃。"]},
+  "番茄義大利麵":{ingredients:[{n:"番茄",a:"2顆"},{n:"義大利麵",a:"150g"},{n:"蒜頭",a:"3瓣"},{n:"橄欖油",a:"2大匙"},{n:"鹽",a:"適量"},{n:"羅勒",a:"少許"}],steps:["義大利麵煮熟備用，番茄切塊，蒜切末。","橄欖油爆香蒜末，加番茄翻炒出汁。","加鹽調味，倒入麵條翻拌均勻。","撒羅勒葉，起鍋。"]},
+  "番茄蛋花湯":{ingredients:[{n:"番茄",a:"2顆"},{n:"蛋",a:"2顆"},{n:"高湯",a:"500ml"},{n:"蔥花",a:"少許"},{n:"鹽",a:"適量"}],steps:["番茄切塊，蛋打散。","高湯煮滾，下番茄煮3分鐘至軟。","淋入蛋液成蛋花，以鹽調味。","撒蔥花，起鍋。"]},
+  "番茄炒豆腐":{ingredients:[{n:"番茄",a:"2顆"},{n:"豆腐",a:"1塊"},{n:"蔥",a:"1根"},{n:"醬油",a:"1大匙"},{n:"糖",a:"1小匙"},{n:"油",a:"1大匙"}],steps:["番茄切塊，豆腐切丁，蔥切段。","熱油下番茄翻炒出汁，加醬油、糖。","加豆腐輕輕翻炒至入味。","撒蔥段，起鍋。"]},
+  "小黃瓜炒木耳":{ingredients:[{n:"小黃瓜",a:"2條"},{n:"木耳",a:"100g"},{n:"蒜頭",a:"2瓣"},{n:"醬油",a:"1大匙"},{n:"鹽",a:"適量"},{n:"油",a:"1大匙"}],steps:["木耳泡發撕片，小黃瓜切片，蒜切末。","熱油爆香蒜末，下木耳翻炒1分鐘。","加小黃瓜大火快炒1分鐘。","以醬油、鹽調味，起鍋。"]},
+  "韓式拌小黃瓜":{ingredients:[{n:"小黃瓜",a:"3條"},{n:"韓式辣醬",a:"1大匙"},{n:"蒜末",a:"1小匙"},{n:"麻油",a:"1小匙"},{n:"白芝麻",a:"少許"},{n:"鹽",a:"少許"}],steps:["小黃瓜拍碎切段，加鹽醃10分鐘擠乾。","韓式辣醬、蒜末、麻油調成醬汁。","小黃瓜淋醬汁拌勻。","撒白芝麻，冷藏10分鐘後享用。"]},
+  "小黃瓜雞柳炒":{ingredients:[{n:"小黃瓜",a:"2條"},{n:"雞胸肉",a:"150g"},{n:"薑片",a:"2片"},{n:"鹽",a:"½小匙"},{n:"太白粉",a:"½小匙"},{n:"油",a:"1大匙"}],steps:["雞胸肉切條，加鹽、太白粉醃10分鐘，小黃瓜切斜片。","熱油爆香薑片，下雞柳炒至熟透，盛起。","原鍋下小黃瓜大火炒1分鐘。","加雞柳拌炒，以鹽調味，起鍋。"]},
+  "清炒絲瓜":{ingredients:[{n:"絲瓜",a:"1條"},{n:"蒜頭",a:"3瓣"},{n:"鹽",a:"½小匙"},{n:"油",a:"1大匙"}],steps:["絲瓜去皮切塊，蒜切末。","熱油爆香蒜末。","下絲瓜大火翻炒至透明。","以鹽調味，起鍋。"]},
+  "絲瓜蝦球湯":{ingredients:[{n:"絲瓜",a:"1條"},{n:"蝦仁",a:"150g"},{n:"薑絲",a:"少許"},{n:"鹽",a:"適量"},{n:"麻油",a:"少許"}],steps:["絲瓜去皮切塊，蝦仁用鹽略醃。","水煮滾加薑絲，下絲瓜煮軟。","加蝦仁煮至變紅，以鹽調味。","淋麻油，起鍋。"]},
+  "絲瓜薑蒜炒":{ingredients:[{n:"絲瓜",a:"1條"},{n:"薑",a:"1小段"},{n:"蒜頭",a:"3瓣"},{n:"鹽",a:"½小匙"},{n:"油",a:"1大匙"}],steps:["絲瓜去皮切塊，薑切絲，蒜切末。","熱油爆香薑絲與蒜末。","下絲瓜大火翻炒至透明。","以鹽調味，起鍋。"]},
+  "苦瓜封肉":{ingredients:[{n:"苦瓜",a:"1條"},{n:"豬絞肉",a:"200g"},{n:"醬油",a:"2大匙"},{n:"糖",a:"1小匙"},{n:"太白粉",a:"1小匙"},{n:"薑末",a:"½小匙"}],steps:["苦瓜切圓段去籽，絞肉加醬油、糖、薑末、太白粉拌勻。","絞肉填入苦瓜圓段中。","下油鍋煎至兩面金黃。","加少許醬油水，燜煮8分鐘至熟。"]},
+  "涼拌苦瓜絲":{ingredients:[{n:"苦瓜",a:"半條"},{n:"鹽",a:"1小匙"},{n:"糖",a:"1大匙"},{n:"醋",a:"1大匙"},{n:"麻油",a:"1小匙"},{n:"辣椒",a:"少許"}],steps:["苦瓜去籽切細絲，加鹽抓勻醃15分鐘，洗去苦水。","糖、醋、麻油調成醬汁。","苦瓜絲加辣椒圈，淋醬汁拌勻。","冷藏20分鐘更入味。"]},
+  "苦瓜木瓜排骨湯":{ingredients:[{n:"苦瓜",a:"半條"},{n:"青木瓜",a:"半顆"},{n:"排骨",a:"300g"},{n:"薑片",a:"3片"},{n:"鹽",a:"適量"}],steps:["排骨汆燙去血水，苦瓜去籽切塊，木瓜去皮切塊。","鍋中加水煮滾，加排骨、薑片。","加苦瓜、木瓜，小火燉40分鐘。","以鹽調味，起鍋。"]},
+  "清蒸茄子":{ingredients:[{n:"茄子",a:"2條"},{n:"蒜末",a:"1大匙"},{n:"醬油",a:"1大匙"},{n:"麻油",a:"1小匙"},{n:"蔥花",a:"少許"}],steps:["茄子整條放入蒸鍋，大火蒸8分鐘。","放涼後手撕成條。","蒜末、醬油、麻油調成醬汁。","淋醬汁、撒蔥花即可。"]},
+  "打拋茄子":{ingredients:[{n:"茄子",a:"2條"},{n:"豬絞肉",a:"100g"},{n:"九層塔",a:"一把"},{n:"蒜末",a:"1大匙"},{n:"魚露",a:"1大匙"},{n:"糖",a:"1小匙"},{n:"辣椒",a:"1條"}],steps:["茄子切塊下熱油炸軟，瀝油備用。","爆香蒜末、辣椒，加絞肉炒熟。","加茄子、魚露、糖翻炒均勻。","熄火前加九層塔拌炒，起鍋。"]},
+  "茄子炒豬絞肉":{ingredients:[{n:"茄子",a:"2條"},{n:"豬絞肉",a:"100g"},{n:"蒜頭",a:"2瓣"},{n:"醬油",a:"1大匙"},{n:"豆瓣醬",a:"½大匙"},{n:"油",a:"2大匙"}],steps:["茄子切條，下熱油煎軟，盛起。","爆香蒜末，加豬絞肉炒熟。","加豆瓣醬、醬油炒香，下茄子翻炒均勻。","加少許水炒至入味，起鍋。"]},
+  "三色椒炒肉":{ingredients:[{n:"青椒",a:"1顆"},{n:"紅椒",a:"1顆"},{n:"黃椒",a:"1顆"},{n:"豬肉片",a:"150g"},{n:"醬油",a:"1大匙"},{n:"鹽",a:"適量"},{n:"油",a:"1大匙"}],steps:["三色椒切片，豬肉加醬油醃10分鐘。","熱油下豬肉炒至變色，盛起。","原鍋下三色椒大火翻炒2分鐘。","加豬肉拌炒，以鹽調味，起鍋。"]},
+  "青椒炒花枝":{ingredients:[{n:"青椒",a:"2顆"},{n:"花枝",a:"200g"},{n:"薑片",a:"2片"},{n:"醬油",a:"1大匙"},{n:"鹽",a:"適量"},{n:"油",a:"1大匙"}],steps:["花枝切片劃十字刀，青椒切片。","熱油爆香薑片，下花枝炒至捲曲，盛起。","原鍋下青椒大火翻炒1分鐘。","加花枝，以醬油、鹽調味，起鍋。"]},
+  "青椒豆干醬炒":{ingredients:[{n:"青椒",a:"2顆"},{n:"豆干",a:"4塊"},{n:"蒜頭",a:"2瓣"},{n:"豆瓣醬",a:"1大匙"},{n:"醬油",a:"½大匙"},{n:"油",a:"1大匙"}],steps:["青椒切片，豆干切條，蒜切末。","熱油爆香蒜末，加豆瓣醬炒香。","下豆干翻炒至微焦，加青椒翻炒均勻。","以醬油調味，起鍋。"]},
+  "洋蔥炒豬肝":{ingredients:[{n:"洋蔥",a:"1顆"},{n:"豬肝",a:"150g"},{n:"薑片",a:"3片"},{n:"醬油",a:"1大匙"},{n:"米酒",a:"1大匙"},{n:"鹽",a:"適量"}],steps:["豬肝切片加醬油、米酒醃10分鐘，洋蔥切絲。","熱油爆香薑片，下豬肝大火炒至熟透，盛起。","原鍋炒洋蔥至透明。","加豬肝拌炒，以鹽調味，起鍋。"]},
+  "糖醋洋蔥":{ingredients:[{n:"洋蔥",a:"2顆"},{n:"糖",a:"3大匙"},{n:"白醋",a:"3大匙"},{n:"鹽",a:"1小匙"}],steps:["洋蔥切薄圈，加鹽醃20分鐘，洗去鹽分。","糖、白醋調成糖醋汁。","洋蔥圈拌入糖醋汁。","冷藏1小時，入味後享用。"]},
+  "洋蔥雞蛋沙拉":{ingredients:[{n:"洋蔥",a:"½顆"},{n:"水煮蛋",a:"3顆"},{n:"美乃滋",a:"3大匙"},{n:"鹽",a:"適量"},{n:"黑胡椒",a:"少許"}],steps:["洋蔥切末泡冰水10分鐘去辛味，瀝乾。","水煮蛋切碎。","洋蔥末、蛋碎、美乃滋拌勻。","以鹽、黑胡椒調味，冷藏後享用。"]},
+  "紅蘿蔔炒肉絲":{ingredients:[{n:"紅蘿蔔",a:"1條"},{n:"豬肉絲",a:"100g"},{n:"蒜頭",a:"2瓣"},{n:"醬油",a:"1大匙"},{n:"鹽",a:"適量"},{n:"油",a:"1大匙"}],steps:["紅蘿蔔切絲，豬肉絲加醬油醃10分鐘。","熱油爆香蒜末，下肉絲炒至變色。","加紅蘿蔔絲大火翻炒2分鐘。","以鹽調味，起鍋。"]},
+  "紅蘿蔔蛋炒飯":{ingredients:[{n:"紅蘿蔔",a:"1條"},{n:"白飯",a:"2碗"},{n:"蛋",a:"2顆"},{n:"蔥花",a:"少許"},{n:"醬油",a:"1大匙"},{n:"鹽",a:"適量"}],steps:["紅蘿蔔切丁，蛋打散。","熱油炒蛋散，加白飯大火翻炒。","下紅蘿蔔丁翻炒2分鐘。","以醬油、鹽調味，撒蔥花起鍋。"]},
+  "紅蘿蔔玉米湯":{ingredients:[{n:"紅蘿蔔",a:"1條"},{n:"玉米",a:"1根"},{n:"豬大骨",a:"300g"},{n:"薑片",a:"2片"},{n:"鹽",a:"適量"}],steps:["豬骨汆燙，紅蘿蔔切塊，玉米切段。","鍋中加水煮滾，加豬骨、薑片。","加紅蘿蔔、玉米，小火燉40分鐘。","以鹽調味，起鍋。"]},
+  "白蘿蔔燉豬腳":{ingredients:[{n:"白蘿蔔",a:"1條"},{n:"豬腳",a:"半副"},{n:"薑片",a:"5片"},{n:"醬油",a:"3大匙"},{n:"米酒",a:"2大匙"},{n:"糖",a:"1大匙"}],steps:["豬腳汆燙，白蘿蔔切大塊。","熱油炒豬腳至表面金黃，加醬油、米酒、糖炒色。","加白蘿蔔、薑片，倒入蓋過食材的水。","小火燉1.5小時至豬腳熟透入味。"]},
+  "白蘿蔔燉牛腩":{ingredients:[{n:"白蘿蔔",a:"1條"},{n:"牛腩",a:"400g"},{n:"薑片",a:"3片"},{n:"醬油",a:"2大匙"},{n:"八角",a:"1顆"},{n:"糖",a:"1小匙"}],steps:["牛腩切塊汆燙，白蘿蔔切大塊。","熱油炒香薑片，下牛腩翻炒，加醬油、糖炒色。","加白蘿蔔、八角，加水蓋過食材。","小火燉1.5小時至肉軟入味。"]},
+  "涼拌白蘿蔔絲":{ingredients:[{n:"白蘿蔔",a:"半條"},{n:"鹽",a:"1小匙"},{n:"糖",a:"1大匙"},{n:"醋",a:"1大匙"},{n:"麻油",a:"1小匙"},{n:"辣椒",a:"少許"}],steps:["白蘿蔔切細絲，加鹽醃15分鐘，擠乾水分。","糖、醋、麻油調成醬汁，加辣椒圈。","白蘿蔔絲淋醬汁拌勻。","冷藏20分鐘更入味。"]},
+  "馬鈴薯燉牛肉":{ingredients:[{n:"馬鈴薯",a:"2顆"},{n:"牛腩",a:"300g"},{n:"洋蔥",a:"1顆"},{n:"紅蘿蔔",a:"1條"},{n:"醬油",a:"2大匙"},{n:"味醂",a:"1大匙"},{n:"糖",a:"1小匙"}],steps:["牛腩切塊汆燙，蔬菜切塊。","熱油炒洋蔥至透明，加牛肉翻炒。","加馬鈴薯、紅蘿蔔，倒入醬油、味醂、糖，加水。","小火燉40分鐘至蔬菜軟透。"]},
+  "馬鈴薯起司濃湯":{ingredients:[{n:"馬鈴薯",a:"2顆"},{n:"洋蔥",a:"½顆"},{n:"牛奶",a:"300ml"},{n:"起司絲",a:"50g"},{n:"奶油",a:"15g"},{n:"鹽",a:"適量"}],steps:["馬鈴薯、洋蔥切丁，奶油炒軟洋蔥。","加馬鈴薯翻炒，倒入牛奶，小火煮15分鐘。","用調理機打成泥，回鍋加熱。","撒起司絲，以鹽調味，起鍋。"]},
+  "馬鈴薯炒肉末":{ingredients:[{n:"馬鈴薯",a:"2顆"},{n:"豬絞肉",a:"100g"},{n:"蒜頭",a:"2瓣"},{n:"醬油",a:"1大匙"},{n:"鹽",a:"適量"},{n:"油",a:"1大匙"}],steps:["馬鈴薯切丁，蒜切末。","熱油爆香蒜末，加絞肉炒熟。","下馬鈴薯丁翻炒3分鐘。","以醬油、鹽調味，加少許水燜至熟透，起鍋。"]},
+  "芋泥西米露":{ingredients:[{n:"芋頭",a:"300g"},{n:"西谷米",a:"100g"},{n:"椰漿",a:"200ml"},{n:"糖",a:"3大匙"},{n:"鹽",a:"少許"}],steps:["芋頭蒸熟壓成泥，加糖、鹽拌勻。","西谷米煮至透明，撈起泡冷水。","椰漿加糖略煮，加入西谷米。","盛碗放芋泥，淋椰漿西米露。"]},
+  "芋頭米糕":{ingredients:[{n:"芋頭",a:"200g"},{n:"糯米",a:"2杯"},{n:"香菇",a:"5朵"},{n:"蝦米",a:"2大匙"},{n:"醬油",a:"2大匙"},{n:"油蔥酥",a:"2大匙"}],steps:["糯米泡水4小時，芋頭切丁，香菇泡發切丁。","熱油爆香蝦米、香菇、油蔥酥。","加芋頭翻炒，加醬油調味。","與糯米拌勻，電鍋蒸40分鐘。"]},
+  "芋頭地瓜甜湯":{ingredients:[{n:"芋頭",a:"200g"},{n:"地瓜",a:"200g"},{n:"薑片",a:"2片"},{n:"黑糖",a:"3大匙"},{n:"水",a:"1000ml"}],steps:["芋頭、地瓜切塊。","水煮滾加薑片，下芋頭煮10分鐘。","加地瓜續煮10分鐘至軟透。","加黑糖調味，起鍋。"]},
+  "南瓜炒蛋":{ingredients:[{n:"南瓜",a:"300g"},{n:"蛋",a:"2顆"},{n:"蒜頭",a:"2瓣"},{n:"鹽",a:"適量"},{n:"油",a:"1大匙"}],steps:["南瓜去皮切片，蛋打散加鹽，蒜切末。","熱油爆香蒜末，下南瓜片翻炒3分鐘。","加蛋液炒熟。","以鹽調味，起鍋。"]},
+  "蜂蜜烤南瓜":{ingredients:[{n:"南瓜",a:"半顆"},{n:"蜂蜜",a:"2大匙"},{n:"橄欖油",a:"1大匙"},{n:"鹽",a:"少許"},{n:"黑胡椒",a:"少許"}],steps:["南瓜切月牙形厚片，鋪於烤盤。","蜂蜜、橄欖油、鹽、黑胡椒拌勻，刷在南瓜上。","烤箱預熱200°C，烤20分鐘至表面金黃。","取出盛盤即可。"]},
+  "南瓜米粥":{ingredients:[{n:"南瓜",a:"200g"},{n:"白米",a:"1杯"},{n:"薑片",a:"2片"},{n:"鹽",a:"適量"}],steps:["南瓜去皮切小塊，白米洗淨。","鍋中加水煮滾，加白米、薑片、南瓜。","小火熬煮30分鐘至成粥。","以鹽調味，起鍋。"]},
+  "玉米奶油濃湯":{ingredients:[{n:"玉米",a:"2根"},{n:"洋蔥",a:"½顆"},{n:"牛奶",a:"300ml"},{n:"奶油",a:"15g"},{n:"鹽",a:"適量"}],steps:["玉米刨下玉米粒，洋蔥切丁。","奶油炒軟洋蔥，加玉米粒翻炒。","倒入牛奶，小火煮10分鐘，用調理機打成泥。","以鹽調味，起鍋。"]},
+  "玉米炒蝦仁":{ingredients:[{n:"玉米",a:"1根"},{n:"蝦仁",a:"150g"},{n:"青豆",a:"50g"},{n:"蒜頭",a:"2瓣"},{n:"鹽",a:"½小匙"},{n:"油",a:"1大匙"}],steps:["玉米刨粒，蝦仁用鹽略醃，蒜切末。","熱油爆香蒜末，下蝦仁炒至變紅，盛起。","原鍋炒玉米粒、青豆2分鐘。","加蝦仁拌炒，以鹽調味，起鍋。"]},
+  "烤玉米":{ingredients:[{n:"玉米",a:"2根"},{n:"奶油",a:"20g"},{n:"醬油",a:"1大匙"},{n:"蜂蜜",a:"1小匙"}],steps:["玉米保留部分外皮，預熱烤箱200°C。","奶油融化後混合醬油、蜂蜜。","玉米刷上醬汁，烤箱烤20分鐘，中途翻面。","取出再刷一次醬汁，盛盤。"]},
+  "竹筍炒肉絲":{ingredients:[{n:"竹筍",a:"200g"},{n:"豬肉絲",a:"100g"},{n:"蒜頭",a:"2瓣"},{n:"醬油",a:"1大匙"},{n:"鹽",a:"適量"},{n:"油",a:"1大匙"}],steps:["竹筍切絲汆燙，豬肉絲加醬油醃10分鐘。","熱油爆香蒜末，下肉絲炒至變色。","加筍絲大火翻炒2分鐘。","以鹽調味，起鍋。"]},
+  "筍絲封肉":{ingredients:[{n:"竹筍",a:"200g"},{n:"豬五花",a:"300g"},{n:"醬油",a:"3大匙"},{n:"米酒",a:"2大匙"},{n:"糖",a:"1大匙"},{n:"薑片",a:"3片"}],steps:["豬五花切厚片，下熱油煎至兩面金黃。","加醬油、米酒、糖、薑片翻炒上色。","加筍絲與水蓋過食材，大火煮滾。","轉小火燉40分鐘至入味。"]},
+  "紅燒筍":{ingredients:[{n:"竹筍",a:"300g"},{n:"醬油",a:"2大匙"},{n:"糖",a:"1小匙"},{n:"麻油",a:"少許"},{n:"油",a:"1大匙"}],steps:["竹筍切塊汆燙，熱油下竹筍翻炒。","加醬油、糖翻炒上色。","加少許水，蓋鍋燜煮10分鐘。","淋麻油，起鍋。"]},
+  "韭菜炒豬血":{ingredients:[{n:"韭菜",a:"200g"},{n:"豬血",a:"200g"},{n:"薑片",a:"2片"},{n:"醬油",a:"1大匙"},{n:"鹽",a:"適量"},{n:"油",a:"1大匙"}],steps:["豬血切塊汆燙，韭菜切段，薑切絲。","熱油爆香薑絲，下豬血輕炒。","加韭菜大火翻炒1分鐘。","以醬油、鹽調味，起鍋。"]},
+  "韭菜煎餃":{ingredients:[{n:"韭菜",a:"200g"},{n:"豬絞肉",a:"200g"},{n:"醬油",a:"1大匙"},{n:"麻油",a:"1小匙"},{n:"鹽",a:"適量"},{n:"水餃皮",a:"30張"}],steps:["韭菜切碎，豬絞肉加醬油、麻油、鹽拌勻，加韭菜拌合。","取皮包入內餡，對折捏緊。","平底鍋下油，排入餃子煎至底部金黃。","加水至鍋半高，蓋鍋燜5分鐘至水蒸發，起鍋。"]},
+  "韭黃炒花枝":{ingredients:[{n:"韭菜",a:"200g"},{n:"花枝",a:"200g"},{n:"薑片",a:"2片"},{n:"醬油",a:"1大匙"},{n:"鹽",a:"適量"},{n:"油",a:"1大匙"}],steps:["韭菜切段，花枝切片劃花刀。","熱油爆香薑片，下花枝快炒至捲曲，盛起。","原鍋下韭菜大火炒1分鐘。","加花枝拌炒，以醬油、鹽調味，起鍋。"]},
+  "蔥花蛋":{ingredients:[{n:"蔥",a:"3根"},{n:"蛋",a:"3顆"},{n:"鹽",a:"½小匙"},{n:"油",a:"2大匙"}],steps:["蔥切蔥花，蛋打散加鹽與蔥花拌勻。","熱油至冒煙，倒入蛋液。","底部凝固後翻面，煎至兩面金黃。","起鍋切塊盛盤。"]},
+  "蔥燒豆腐":{ingredients:[{n:"蔥",a:"4根"},{n:"豆腐",a:"1塊"},{n:"醬油",a:"2大匙"},{n:"糖",a:"1小匙"},{n:"麻油",a:"少許"},{n:"油",a:"2大匙"}],steps:["豆腐切厚片，下熱油煎至兩面金黃，盛起。","蔥切段，原鍋炒香蔥段。","加醬油、糖、少許水煮滾，放入豆腐。","燜煮5分鐘至入味，淋麻油，起鍋。"]},
+  "蔥爆羊肉":{ingredients:[{n:"蔥",a:"5根"},{n:"羊肉片",a:"250g"},{n:"薑片",a:"3片"},{n:"醬油",a:"1大匙"},{n:"米酒",a:"1大匙"},{n:"麻油",a:"1小匙"}],steps:["羊肉加醬油、米酒醃10分鐘，蔥切段。","熱油爆香薑片，大火下羊肉快炒至變色，盛起。","原鍋下蔥段爆炒出香氣。","加羊肉翻炒均勻，淋麻油，起鍋。"]},
+  "蒜蓉炒蝦":{ingredients:[{n:"蒜頭",a:"5瓣"},{n:"蝦",a:"300g"},{n:"奶油",a:"15g"},{n:"鹽",a:"½小匙"},{n:"黑胡椒",a:"少許"}],steps:["蝦去殼開背去腸泥，蒜切末。","奶油加少許油，爆香蒜末至金黃。","下蝦大火翻炒2分鐘至變紅。","以鹽、黑胡椒調味，起鍋。"]},
+  "蒜炒海瓜子":{ingredients:[{n:"蒜頭",a:"4瓣"},{n:"海瓜子",a:"300g"},{n:"辣椒",a:"1條"},{n:"九層塔",a:"少許"},{n:"醬油",a:"½大匙"},{n:"油",a:"1大匙"}],steps:["海瓜子吐沙洗淨，蒜切末，辣椒切圈。","熱油爆香蒜末與辣椒，下海瓜子大火翻炒。","加醬油，蓋鍋燜至全部開口。","熄火前加九層塔拌炒，起鍋。"]},
+  "蒜香煎豬排":{ingredients:[{n:"蒜頭",a:"5瓣"},{n:"豬排",a:"2片"},{n:"醬油",a:"1大匙"},{n:"米酒",a:"½大匙"},{n:"黑胡椒",a:"少許"},{n:"油",a:"1大匙"}],steps:["豬排拍薄，加蒜末、醬油、米酒、黑胡椒醃30分鐘。","熱油下豬排，中火煎至兩面金黃。","轉小火再煎2分鐘確保熟透。","起鍋靜置3分鐘後切片盛盤。"]},
+  "薑汁地瓜湯":{ingredients:[{n:"薑",a:"50g"},{n:"地瓜",a:"300g"},{n:"黑糖",a:"3大匙"},{n:"水",a:"1000ml"}],steps:["薑切片，地瓜切塊。","水煮滾加薑片，下地瓜煮15分鐘至熟透。","加黑糖調味，攪拌至融化。","起鍋即可，可冷熱享用。"]},
+  "薑炒鮮蚵":{ingredients:[{n:"薑",a:"30g"},{n:"鮮蚵",a:"200g"},{n:"蔥段",a:"少許"},{n:"米酒",a:"1大匙"},{n:"鹽",a:"適量"},{n:"油",a:"1大匙"}],steps:["鮮蚵洗淨，薑切絲。","熱油爆香薑絲，淋入米酒提鮮。","下鮮蚵大火翻炒2分鐘至熟。","以鹽調味，撒蔥段，起鍋。"]},
+  "薑蔥炒牛肉":{ingredients:[{n:"薑",a:"30g"},{n:"蔥",a:"3根"},{n:"牛肉片",a:"200g"},{n:"醬油",a:"1大匙"},{n:"太白粉",a:"1小匙"},{n:"麻油",a:"少許"}],steps:["牛肉加醬油、太白粉醃10分鐘，薑切絲，蔥切段。","熱油大火下牛肉快炒至7分熟，盛起。","原鍋爆香薑絲，下蔥段翻炒。","加牛肉拌炒，淋麻油，起鍋。"]},
+  "山藥燉雞湯":{ingredients:[{n:"山藥",a:"300g"},{n:"雞腿",a:"2支"},{n:"薑片",a:"3片"},{n:"枸杞",a:"1大匙"},{n:"米酒",a:"1大匙"},{n:"鹽",a:"適量"}],steps:["雞腿汆燙，山藥去皮切塊。","鍋中加水煮滾，加雞腿、薑片、米酒。","加山藥，小火燉30分鐘。","加枸杞、鹽，再燉5分鐘，起鍋。"]},
+  "涼拌山藥泥":{ingredients:[{n:"山藥",a:"200g"},{n:"海苔絲",a:"少許"},{n:"醬油",a:"½大匙"},{n:"麻油",a:"½小匙"},{n:"柴魚片",a:"少許"}],steps:["山藥去皮磨成泥，盛入碗中。","淋上醬油、麻油。","撒柴魚片、海苔絲。","可拌入白飯一起食用。"]},
+  "山藥木耳炒":{ingredients:[{n:"山藥",a:"200g"},{n:"木耳",a:"100g"},{n:"蒜頭",a:"2瓣"},{n:"鹽",a:"½小匙"},{n:"油",a:"1大匙"}],steps:["山藥去皮切片，木耳泡發切片，蒜切末。","熱油爆香蒜末，下木耳翻炒1分鐘。","加山藥大火翻炒2分鐘。","以鹽調味，起鍋。"]},
+  "敏豆炒蛋":{ingredients:[{n:"敏豆",a:"200g"},{n:"蛋",a:"2顆"},{n:"蒜頭",a:"2瓣"},{n:"鹽",a:"適量"},{n:"油",a:"1大匙"}],steps:["敏豆去筋切段汆燙，蛋打散加鹽，蒜切末。","熱油炒蛋至半熟，盛起。","原鍋爆香蒜末，下敏豆翻炒2分鐘。","加蛋拌炒，以鹽調味，起鍋。"]},
+  "蒜炒敏豆":{ingredients:[{n:"敏豆",a:"300g"},{n:"蒜頭",a:"4瓣"},{n:"鹽",a:"½小匙"},{n:"油",a:"1大匙"}],steps:["敏豆去筋切段，蒜切末。","熱油爆香蒜末。","下敏豆大火翻炒3分鐘。","以鹽調味，起鍋。"]},
+  "敏豆炒肉末":{ingredients:[{n:"敏豆",a:"200g"},{n:"豬絞肉",a:"100g"},{n:"蒜頭",a:"2瓣"},{n:"醬油",a:"1大匙"},{n:"鹽",a:"適量"}],steps:["敏豆切段，蒜切末。","熱油爆香蒜末，加豬絞肉炒熟。","下敏豆大火翻炒2分鐘。","以醬油、鹽調味，起鍋。"]},
+  "豌豆炒蛋":{ingredients:[{n:"豌豆",a:"200g"},{n:"蛋",a:"2顆"},{n:"蒜頭",a:"2瓣"},{n:"鹽",a:"適量"},{n:"油",a:"1大匙"}],steps:["豌豆去筋，蛋打散加鹽，蒜切末。","熱油炒蛋至半熟，盛起。","原鍋爆香蒜末，下豌豆翻炒2分鐘。","加蛋拌炒，以鹽調味，起鍋。"]},
+  "豌豆玉米羹":{ingredients:[{n:"豌豆",a:"150g"},{n:"玉米粒",a:"100g"},{n:"高湯",a:"500ml"},{n:"太白粉水",a:"2大匙"},{n:"鹽",a:"適量"}],steps:["高湯煮滾，加玉米粒煮3分鐘。","加豌豆煮2分鐘。","以鹽調味，太白粉水勾薄芡。","起鍋盛碗。"]},
+  "豌豆炒肉丁":{ingredients:[{n:"豌豆",a:"200g"},{n:"豬肉丁",a:"100g"},{n:"蒜頭",a:"2瓣"},{n:"醬油",a:"1大匙"},{n:"鹽",a:"適量"},{n:"油",a:"1大匙"}],steps:["豬肉加醬油醃10分鐘，豌豆去筋，蒜切末。","熱油爆香蒜末，下豬肉丁炒熟，盛起。","原鍋下豌豆翻炒2分鐘。","加豬肉拌炒，以鹽調味，起鍋。"]},
+  "金針菇炒肉片":{ingredients:[{n:"金針菇",a:"200g"},{n:"豬肉片",a:"150g"},{n:"蒜頭",a:"2瓣"},{n:"醬油",a:"1大匙"},{n:"鹽",a:"適量"},{n:"油",a:"1大匙"}],steps:["金針菇切去根部撕散，豬肉加醬油醃10分鐘。","熱油爆香蒜末，下豬肉炒至變色。","加金針菇大火翻炒2分鐘。","以鹽調味，起鍋。"]},
+  "金針菇日式拌":{ingredients:[{n:"金針菇",a:"200g"},{n:"醬油",a:"1大匙"},{n:"味醂",a:"1大匙"},{n:"白芝麻",a:"少許"},{n:"蔥花",a:"少許"}],steps:["金針菇汆燙1分鐘，撈起瀝乾。","醬油、味醂調成醬汁。","金針菇淋上醬汁拌勻。","撒白芝麻、蔥花，盛盤。"]},
+  "金針菇炒蝦仁":{ingredients:[{n:"金針菇",a:"200g"},{n:"蝦仁",a:"150g"},{n:"薑片",a:"2片"},{n:"鹽",a:"½小匙"},{n:"米酒",a:"½大匙"},{n:"油",a:"1大匙"}],steps:["蝦仁加米酒、鹽醃5分鐘，金針菇切去根部。","熱油爆香薑片，下蝦仁炒至變紅，盛起。","原鍋下金針菇大火翻炒2分鐘。","加蝦仁拌炒，以鹽調味，起鍋。"]},
+  "清炒香菇":{ingredients:[{n:"香菇",a:"200g"},{n:"蒜頭",a:"3瓣"},{n:"醬油",a:"½大匙"},{n:"鹽",a:"適量"},{n:"油",a:"1大匙"}],steps:["香菇去蒂切片，蒜切末。","熱油爆香蒜末。","下香菇大火翻炒至出水。","以醬油、鹽調味，起鍋。"]},
+  "香菇燒豆腐":{ingredients:[{n:"香菇",a:"6朵"},{n:"板豆腐",a:"1塊"},{n:"蒜頭",a:"2瓣"},{n:"醬油",a:"2大匙"},{n:"糖",a:"½小匙"},{n:"油",a:"2大匙"}],steps:["豆腐切塊煎至兩面金黃，香菇泡發去蒂，蒜切末。","原鍋爆香蒜末，下香菇翻炒出香氣。","加豆腐、醬油、糖與少許水。","蓋鍋燜煮8分鐘至入味，起鍋。"]},
+  "香菇炒年糕":{ingredients:[{n:"香菇",a:"5朵"},{n:"年糕",a:"200g"},{n:"蔥段",a:"少許"},{n:"醬油",a:"1大匙"},{n:"蠔油",a:"1大匙"},{n:"油",a:"1大匙"}],steps:["香菇泡發切片，年糕切厚片汆燙至軟。","熱油爆香蔥段，下香菇翻炒出香氣。","加年糕、醬油、蠔油翻炒均勻。","加少許水炒至入味，起鍋。"]},
+  "雪菜炒年糕":{ingredients:[{n:"雪裏紅",a:"150g"},{n:"年糕",a:"200g"},{n:"豬肉絲",a:"80g"},{n:"醬油",a:"1大匙"},{n:"鹽",a:"適量"},{n:"油",a:"1大匙"}],steps:["年糕切片汆燙，豬肉絲加醬油醃10分鐘，雪菜切末。","熱油下豬肉絲炒至變色，加雪菜翻炒。","下年糕翻炒均勻。","以鹽調味，起鍋。"]},
+  "雪菜涼拌豆腐":{ingredients:[{n:"雪裏紅",a:"100g"},{n:"嫩豆腐",a:"1盒"},{n:"麻油",a:"1小匙"},{n:"醬油",a:"½大匙"}],steps:["嫩豆腐倒扣盤中，雪菜切末。","雪菜撒在豆腐上。","淋醬油、麻油。","冷藏後享用更佳。"]},
+  "雪菜炒蛋":{ingredients:[{n:"雪裏紅",a:"150g"},{n:"蛋",a:"3顆"},{n:"蒜頭",a:"2瓣"},{n:"鹽",a:"少許"},{n:"油",a:"1大匙"}],steps:["雪菜切末，蛋打散加少許鹽，蒜切末。","熱油炒蛋至半熟，盛起。","原鍋爆香蒜末，下雪菜翻炒1分鐘。","加蛋拌炒均勻，起鍋。"]},
+  "清炒芥藍":{ingredients:[{n:"芥藍",a:"300g"},{n:"蒜頭",a:"3瓣"},{n:"鹽",a:"½小匙"},{n:"油",a:"1大匙"}],steps:["芥藍切段，蒜切末。","滾水汆燙芥藍30秒，撈起。","熱油爆香蒜末，下芥藍大火翻炒2分鐘。","以鹽調味，起鍋。"]},
+  "芥藍炒蝦仁":{ingredients:[{n:"芥藍",a:"250g"},{n:"蝦仁",a:"150g"},{n:"薑片",a:"2片"},{n:"鹽",a:"½小匙"},{n:"米酒",a:"½大匙"},{n:"油",a:"1大匙"}],steps:["蝦仁加米酒醃5分鐘，芥藍切段汆燙備用。","熱油爆香薑片，下蝦仁炒至變紅，盛起。","原鍋下芥藍翻炒1分鐘。","加蝦仁拌炒，以鹽調味，起鍋。"]},
+  "芥藍炒肉片":{ingredients:[{n:"芥藍",a:"250g"},{n:"豬肉片",a:"150g"},{n:"蒜頭",a:"2瓣"},{n:"醬油",a:"1大匙"},{n:"鹽",a:"適量"},{n:"油",a:"1大匙"}],steps:["豬肉加醬油醃10分鐘，芥藍切段汆燙備用。","熱油爆香蒜末，下豬肉炒至變色。","加芥藍大火翻炒均勻。","以鹽調味，起鍋。"]},
+  "九層塔炒蛤蜊":{ingredients:[{n:"九層塔",a:"一把"},{n:"蛤蜊",a:"300g"},{n:"蒜頭",a:"3瓣"},{n:"辣椒",a:"1條"},{n:"醬油",a:"½大匙"},{n:"米酒",a:"1大匙"},{n:"油",a:"1大匙"}],steps:["蛤蜊吐沙，蒜切末，辣椒切圈。","熱油爆香蒜末與辣椒，淋入米酒。","下蛤蜊大火翻炒，蓋鍋燜至全部開口。","加醬油、九層塔拌炒，起鍋。"]},
+  "九層塔炒蝦":{ingredients:[{n:"九層塔",a:"一把"},{n:"蝦",a:"250g"},{n:"蒜頭",a:"3瓣"},{n:"辣椒",a:"1條"},{n:"醬油",a:"½大匙"},{n:"米酒",a:"1大匙"},{n:"油",a:"1大匙"}],steps:["蝦去殼開背，蒜切末，辣椒切圈。","熱油爆香蒜末辣椒，下蝦大火翻炒。","淋米酒、醬油翻炒均勻。","熄火前加九層塔拌炒，起鍋。"]},
+  "九層塔煎蛋":{ingredients:[{n:"九層塔",a:"一把"},{n:"蛋",a:"3顆"},{n:"鹽",a:"½小匙"},{n:"油",a:"2大匙"}],steps:["九層塔洗淨，蛋打散加鹽拌勻。","將九層塔加入蛋液中充分混合。","熱油至冒煙，倒入蛋液。","底部凝固後翻面，煎至兩面金黃，起鍋。"]},
+  "青蒜炒肉片":{ingredients:[{n:"青蒜",a:"3根"},{n:"豬肉片",a:"150g"},{n:"蒜頭",a:"2瓣"},{n:"醬油",a:"1大匙"},{n:"鹽",a:"適量"},{n:"油",a:"1大匙"}],steps:["青蒜切斜段，豬肉加醬油醃10分鐘。","熱油爆香蒜末，下豬肉炒至變色。","加青蒜大火翻炒均勻。","以鹽調味，起鍋。"]},
+  "青蒜香腸炒飯":{ingredients:[{n:"青蒜",a:"2根"},{n:"台灣香腸",a:"2條"},{n:"白飯",a:"2碗"},{n:"蛋",a:"1顆"},{n:"醬油",a:"1大匙"},{n:"油",a:"1大匙"}],steps:["香腸切片煎熟，青蒜切段，蛋打散。","熱油炒蛋散，加白飯大火翻炒。","加香腸、青蒜翻炒均勻。","以醬油調味，起鍋。"]},
+  "青蒜炒豆干":{ingredients:[{n:"青蒜",a:"3根"},{n:"豆干",a:"4塊"},{n:"辣椒",a:"1條"},{n:"醬油",a:"1大匙"},{n:"鹽",a:"適量"},{n:"油",a:"1大匙"}],steps:["青蒜切段，豆干切條，辣椒切圈。","熱油下豆干煎至微金黃。","加辣椒、青蒜翻炒均勻。","以醬油、鹽調味，起鍋。"]},
+  "芥菜炒肉片":{ingredients:[{n:"芥菜",a:"300g"},{n:"豬肉片",a:"150g"},{n:"蒜頭",a:"2瓣"},{n:"醬油",a:"1大匙"},{n:"鹽",a:"適量"},{n:"油",a:"1大匙"}],steps:["芥菜切段，豬肉加醬油醃10分鐘，蒜切末。","熱油爆香蒜末，下豬肉炒至變色。","加芥菜大火翻炒2分鐘。","以鹽調味，起鍋。"]},
+  "芥菜炒豆腐":{ingredients:[{n:"芥菜",a:"250g"},{n:"板豆腐",a:"1塊"},{n:"蒜頭",a:"2瓣"},{n:"醬油膏",a:"1大匙"},{n:"鹽",a:"適量"},{n:"油",a:"2大匙"}],steps:["豆腐切塊煎至金黃，芥菜切段，蒜切末。","原鍋爆香蒜末，下芥菜翻炒至軟。","加豆腐、醬油膏翻炒均勻。","以鹽調味，起鍋。"]},
+  "芥菜蛋花湯":{ingredients:[{n:"芥菜",a:"200g"},{n:"蛋",a:"2顆"},{n:"高湯",a:"500ml"},{n:"薑片",a:"2片"},{n:"鹽",a:"適量"}],steps:["高湯加薑片煮滾，下芥菜煮3分鐘至軟。","蛋打散，淋入湯中成蛋花。","以鹽調味。","起鍋盛碗。"]},
 };
 
 /* ============================================================
@@ -959,6 +1288,8 @@ document.querySelectorAll(".tab-btn").forEach(btn=>{
     document.querySelectorAll(".tab-panel").forEach(p=>p.classList.remove("active"));
     btn.classList.add("active");
     document.getElementById("tab-"+btn.dataset.tab).classList.add("active");
+    if(btn.dataset.tab === "fridge") renderFridge();
+    if(btn.dataset.tab === "history") renderHistory();
   });
 });
 
@@ -1115,6 +1446,7 @@ function showVegDetail(cropName){
         </div>
       </div>`;
 
+  const userReportsHTML = buildUserPriceReportsHTML(cropName);
   document.getElementById("vegDetailContent").innerHTML = `
     <div class="veg-card-head" style="margin:-24px -24px 16px;padding:16px 20px;border-radius:14px 14px 0 0">
       <div class="veg-emoji">${emoji}</div>
@@ -1124,7 +1456,12 @@ function showVegDetail(cropName){
       </div>
     </div>
     ${v?`<div class="veg-section"><h4>當季月份</h4><div class="month-pills">${monthsHTML}</div></div>`:""}
-    <div class="veg-section"><h4>各市場價格 (元/公斤)</h4>${pricesHTML}</div>
+    <div class="veg-section">
+      <h4>各市場行情 (元/公斤)</h4>
+      ${pricesHTML}
+      <button class="report-price-btn" onclick="openReportPriceModal('${escape(cropName)}')">📍 實地菜價回報</button>
+    </div>
+    ${userReportsHTML}
     ${recipesHTML}
   `;
   document.getElementById("vegDetailModal").classList.add("open");
@@ -1134,7 +1471,7 @@ function closeVegModal(e){
     document.getElementById("vegDetailModal").classList.remove("open");
   }
 }
-document.addEventListener("keydown",e=>{ if(e.key==="Escape"){ closeModal(); closeVegModal(); closeSubscribeModal(); closeAddRecipeModal(); closeSellVegModal(); } });
+document.addEventListener("keydown",e=>{ if(e.key==="Escape"){ closeModal(); closeVegModal(); closeSubscribeModal(); closeAddRecipeModal(); closeSellVegModal(); closeReportPriceModal(); } });
 
 /* ============================================================
    食譜 Modal
@@ -1164,7 +1501,9 @@ function estimateRecipeCost(ingredients){
 function showRecipe(name){
   const modal = document.getElementById("recipeModal");
   const d = RECIPE_DETAILS[name];
-  document.getElementById("modalTitle").textContent = "🍳 " + name;
+  const saved = isBookmarked(name);
+  document.getElementById("modalTitle").innerHTML =
+    `🍳 ${escape(name)}<button class="bookmark-btn${saved?" saved":""}" id="modalBookmarkBtn" onclick="handleBookmark('${escape(name)}',this)">${saved?"🔖 已收藏":"🔖 收藏"}</button>`;
   if(d){
     document.getElementById("modalIngredients").innerHTML =
       d.ingredients.map(i=>`<tr><td>${escape(i.n)}</td><td>${escape(i.a)}</td></tr>`).join("");
@@ -1274,6 +1613,18 @@ document.getElementById("meatSubTabs").addEventListener("click",e=>{
   renderRank();
 });
 
+function getVegCardColor(cat){
+  const map = {
+    "蔬菜":  ["#e8f5e9","#c8e6c9"],
+    "水果":  ["#fff3e0","#ffe0b2"],
+    "花卉":  ["#fce4ec","#f8bbd0"],
+    "肉類":  ["#ffebee","#ffcdd2"],
+    "家禽":  ["#fff8e1","#ffecb3"],
+    "水產":  ["#e3f2fd","#bbdefb"],
+  };
+  return map[cat] || ["#f5f5f5","#e0e0e0"];
+}
+
 function renderRank(){
   const tbody = document.getElementById("rankTbody");
   let rows = priceData.filter(p => p.avgPrice > 0);
@@ -1289,7 +1640,7 @@ function renderRank(){
     const msg = noDataCats.includes(rankCategory)
       ? `目前農業部 API 資料中尚無${rankCategory}行情（需重新執行工作流程以取得完整 TcType 資料）`
       : "沒有資料";
-    tbody.innerHTML = `<tr><td colspan="4" class="loading">${msg}</td></tr>`;
+    tbody.innerHTML = `<div style="grid-column:1/-1" class="loading">${msg}</div>`;
     return;
   }
   tbody.innerHTML = rows.map((p,i)=>{
@@ -1297,12 +1648,17 @@ function renderRank(){
     const cat = getCropCategory(p.cropName, p.tcType||"");
     const emoji = v ? v.emoji : cat==="花卉" ? "🌸" : cat==="水果" ? "🍎" : cat==="肉類" ? "🥩" : cat==="家禽" ? "🐔" : cat==="水產" ? "🐟" : "🌱";
     const m = getMarketInfo(p.marketName);
-    return `<tr onclick="showVegDetail('${escape(p.cropName)}')">
-      <td class="rank-num">${i+1}</td>
-      <td><span class="rank-emoji">${emoji}</span>${escape(p.cropName)}</td>
-      <td>${escape(m.short)}<br><small style="color:var(--muted)">📍 ${escape(m.addr)}</small></td>
-      <td class="price-cell">$${p.avgPrice.toFixed(1)}</td>
-    </tr>`;
+    const [bg1, bg2] = getVegCardColor(cat);
+    const isTop3 = i < 3;
+    return `<div class="rank-card" style="background:linear-gradient(135deg,${bg1} 0%,${bg2} 100%)"
+                 onclick="showVegDetail('${escape(p.cropName)}')">
+      <div class="rank-card-num${isTop3 ? " top3" : ""}">${isTop3 ? ["🥇","🥈","🥉"][i] : i+1}</div>
+      <div class="rank-card-emoji">${emoji}</div>
+      <div class="rank-card-name">${escape(p.cropName)}</div>
+      <div class="rank-card-price">$${p.avgPrice.toFixed(1)}</div>
+      <div class="rank-card-unit">元/公斤</div>
+      <div class="rank-card-market">${escape(m.short)}</div>
+    </div>`;
   }).join("");
 }
 
@@ -1555,6 +1911,446 @@ function showSellVegModal(){
 function closeSellVegModal(e){
   if(!e || e.target===document.getElementById("sellVegModal") || e.currentTarget.tagName==="BUTTON")
     document.getElementById("sellVegModal").classList.remove("open");
+}
+
+/* ============================================================
+   書籤（收藏）
+   ============================================================ */
+function getBookmarks(){
+  try{ return JSON.parse(localStorage.getItem("recipeBookmarks")||"[]"); }
+  catch(e){ return []; }
+}
+function saveBookmarks(b){ localStorage.setItem("recipeBookmarks", JSON.stringify(b)); }
+function isBookmarked(name){ return getBookmarks().some(b=>b.name===name); }
+function toggleBookmark(name){
+  let bm = getBookmarks();
+  const idx = bm.findIndex(b=>b.name===name);
+  if(idx>=0){ bm.splice(idx,1); saveBookmarks(bm); return false; }
+  bm.push({name, ts:Date.now()}); saveBookmarks(bm); return true;
+}
+function handleBookmark(name, btn){
+  const added = toggleBookmark(name);
+  btn.textContent = added ? "🔖 已收藏" : "🔖 收藏";
+  btn.classList.toggle("saved", added);
+}
+
+/* ============================================================
+   我的冰箱
+   ============================================================ */
+function getFridgeItems(){
+  try{ return JSON.parse(localStorage.getItem("fridgeItems")||"[]"); }
+  catch(e){ return []; }
+}
+function saveFridgeItems(items){ localStorage.setItem("fridgeItems", JSON.stringify(items)); }
+
+function addFridgeItem(){
+  const nameInput = document.getElementById("fridgeInput");
+  const qtyInput  = document.getElementById("fridgeQtyInput");
+  const expInput  = document.getElementById("fridgeExpInput");
+  const name = nameInput.value.trim();
+  if(!name){ alert("請輸入食材名稱"); return; }
+  const qty = qtyInput.value.trim();
+  const expDate = expInput.value; // YYYY-MM-DD
+  const veg = VEGETABLES.find(v=>v.key===name || (v.aliases&&v.aliases.some(a=>a===name)));
+  const emoji = veg ? veg.emoji : "🧺";
+  const items = getFridgeItems();
+  const existing = items.find(i=>i.name===name);
+  if(existing){
+    if(qty) existing.qty = qty;
+    if(expDate) existing.expDate = expDate;
+  } else {
+    items.push({name, qty, expDate, emoji, addedAt:Date.now()});
+    localStorage.setItem("fridgeEverAdded","1");
+  }
+  saveFridgeItems(items);
+  nameInput.value=""; qtyInput.value=""; expInput.value="";
+  renderFridge();
+}
+
+function deleteFridgeItem(idx){
+  const items = getFridgeItems();
+  items.splice(idx,1);
+  saveFridgeItems(items);
+  if(!items.length) localStorage.setItem("fridgeEverAdded","1");
+  renderFridge();
+}
+
+function renderFridge(){
+  const grid  = document.getElementById("fridgeGrid");
+  const stats = document.getElementById("fridgeStats");
+  if(!grid) return;
+  const items = getFridgeItems();
+
+  if(!items.length){
+    const everAdded = localStorage.getItem("fridgeEverAdded");
+    grid.innerHTML = everAdded
+      ? `<div class="fridge-empty-warn">⚠️ 冰箱是空的！是時候補貨了</div>`
+      : `<div class="combo-empty">冰箱是空的，新增食材開始管理！</div>`;
+    if(stats) stats.innerHTML = "";
+    return;
+  }
+
+  const today = new Date(); today.setHours(0,0,0,0);
+  const warn30 = new Date(today.getTime() + 30*86400000);
+  let expiring=0, expired=0;
+
+  grid.innerHTML = items.map((item,idx)=>{
+    let expHtml="", cls="";
+    if(item.expDate){
+      const exp = new Date(item.expDate); exp.setHours(0,0,0,0);
+      const diff = Math.round((exp-today)/86400000);
+      const disp = item.expDate.replace(/-/g,"/");
+      if(diff<0){
+        expHtml=`<div class="fridge-item-date" style="color:var(--red);font-weight:700">已過期</div>`;
+        cls=" expired"; expired++;
+      } else if(exp<=warn30){
+        expHtml=`<div class="fridge-item-date" style="color:#e67e22">${disp}（${diff}天）</div>`;
+        cls=" expiring"; expiring++;
+      } else {
+        expHtml=`<div class="fridge-item-date">${disp}</div>`;
+      }
+    }
+    const qtyHtml = item.qty ? `<div class="fridge-item-qty">${escape(item.qty)}</div>` : "";
+    return `<div class="fridge-item${cls}">
+      <button class="fridge-item-del" onclick="deleteFridgeItem(${idx})">✕</button>
+      <div class="fridge-item-emoji">${item.emoji}</div>
+      <div class="fridge-item-name">${escape(item.name)}</div>
+      ${qtyHtml}${expHtml}
+    </div>`;
+  }).join("");
+
+  if(stats){
+    stats.innerHTML = `
+      <div class="fridge-stat">共 <strong>${items.length}</strong> 項食材</div>
+      ${expiring?`<div class="fridge-stat" style="color:#e67e22;border-color:#ffe082">⏰ <strong>${expiring}</strong> 項即將到期</div>`:""}
+      ${expired?`<div class="fridge-stat" style="color:var(--red);border-color:#ffcdd2">❌ <strong>${expired}</strong> 項已過期</div>`:""}
+    `;
+  }
+}
+
+function goFindFridgeRecipes(){
+  const items = getFridgeItems();
+  if(!items.length){ alert("冰箱是空的！請先新增食材"); return; }
+  document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+  document.querySelectorAll(".tab-panel").forEach(p=>p.classList.remove("active"));
+  document.querySelector('[data-tab="combo"]').classList.add("active");
+  document.getElementById("tab-combo").classList.add("active");
+  document.querySelectorAll(".combo-pill").forEach(pill=>{
+    const val = pill.dataset.val;
+    const match = items.some(item=>item.name.includes(val)||val.includes(item.name));
+    pill.classList.toggle("selected", match);
+  });
+  findComboRecipes();
+}
+
+/* ============================================================
+   食譜紀錄 & 目標
+   ============================================================ */
+function getRecipeHistory(){
+  try{ return JSON.parse(localStorage.getItem("recipeHistory")||"[]"); }
+  catch(e){ return []; }
+}
+function saveRecipeHistory(h){ localStorage.setItem("recipeHistory", JSON.stringify(h)); }
+
+function renderHistory(){
+  const list = document.getElementById("historyList");
+  if(!list) return;
+  const bookmarks = getBookmarks();
+  const history   = getRecipeHistory();
+  const allKeys   = new Set([...bookmarks.map(b=>b.name),...history.map(h=>h.name)]);
+
+  if(!allKeys.size){
+    list.innerHTML = `<div class="history-empty">還沒有收藏的食譜，在食譜視窗點 🔖 收藏 加入！</div>`;
+    renderGoals();
+    return;
+  }
+
+  const currentFilter = document.querySelector(".history-filter-btn.active")?.dataset.hf || "all";
+  let entries = Array.from(allKeys).map(name=>{
+    const bm = bookmarks.find(b=>b.name===name);
+    const tried = history.filter(h=>h.name===name);
+    return {name, bm, tried, lastTried: tried.length?tried[tried.length-1]:null};
+  });
+  if(currentFilter==="tried") entries = entries.filter(e=>e.tried.length>0);
+  entries.sort((a,b)=>{
+    if(a.tried.length&&!b.tried.length) return -1;
+    if(!a.tried.length&&b.tried.length) return 1;
+    return (b.bm?.ts||0)-(a.bm?.ts||0);
+  });
+
+  if(!entries.length){
+    list.innerHTML = `<div class="history-empty">沒有已試過的食譜</div>`;
+  } else {
+    list.innerHTML = entries.map(e=>{
+      const tc = e.tried.length;
+      const lastStr = e.lastTried ? new Date(e.lastTried.ts).toLocaleDateString("zh-TW") : "";
+      return `<div class="history-item" onclick="showRecipe('${escape(e.name)}')">
+        <div class="history-item-emoji">🍳</div>
+        <div class="history-item-info">
+          <div class="history-item-name">${e.bm?"🔖 ":""}${escape(e.name)}</div>
+          <div class="history-item-meta">${tc>0?`已完成 ${tc} 次 · 最近：${lastStr}`:"尚未試做"}</div>
+        </div>
+        <button class="history-tried-btn${tc>0?" tried":""}"
+                onclick="event.stopPropagation();markRecipeTried('${escape(e.name)}')">
+          ${tc>0?"✅ 再做一次":"📅 完成！"}
+        </button>
+      </div>`;
+    }).join("");
+  }
+  renderGoals();
+}
+
+function markRecipeTried(recipeName){
+  const today = new Date().toLocaleDateString("zh-TW");
+  const servingsStr = prompt(`${today} 完成！\n這次完成幾人份？（可不填）`,"");
+  if(servingsStr === null) return;
+  const servings = servingsStr ? (parseInt(servingsStr)||null) : null;
+  const deduct = confirm("是否要扣除冰箱庫存？\n\n確定 = 扣除 ／ 取消 = 不扣除");
+  const history = getRecipeHistory();
+  history.push({name:recipeName, ts:Date.now(), date:today, servings, deducted:deduct});
+  saveRecipeHistory(history);
+  if(deduct) deductFridgeForRecipe(recipeName);
+  renderHistory();
+}
+
+function deductFridgeForRecipe(recipeName){
+  const d = RECIPE_DETAILS[recipeName];
+  if(!d) return;
+  let items = getFridgeItems();
+  const depleted = [];
+  d.ingredients.forEach(ing=>{
+    const idx = items.findIndex(item=>item.name.includes(ing.n)||ing.n.includes(item.name));
+    if(idx<0) return;
+    const ingQty = parseInt((ing.a.match(/(\d+)/)||[])[1]||0);
+    if(items[idx].qty){
+      const curQty = parseInt((items[idx].qty.match(/(\d+)/)||[])[1]||0);
+      const unit   = items[idx].qty.replace(/[\d.]+/,"").trim();
+      if(curQty>ingQty){ items[idx].qty=`${curQty-ingQty}${unit}`; }
+      else { depleted.push(items[idx].name); items.splice(idx,1); }
+    } else {
+      depleted.push(items[idx].name); items.splice(idx,1);
+    }
+  });
+  saveFridgeItems(items);
+  if(!items.length) localStorage.setItem("fridgeEverAdded","1");
+  if(depleted.length) setTimeout(()=>alert(`已從冰箱扣除：${depleted.join("、")} 已用完`),300);
+}
+
+function filterHistory(filter, btn){
+  document.querySelectorAll(".history-filter-btn").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
+  renderHistory();
+}
+
+function clearRecipeHistory(){
+  if(!confirm("確定要清除所有收藏和試做紀錄嗎？此動作無法復原。")) return;
+  localStorage.removeItem("recipeHistory");
+  localStorage.removeItem("recipeBookmarks");
+  renderHistory();
+}
+
+function getGoals(){
+  try{ return JSON.parse(localStorage.getItem("recipeGoals")||"{}"); }
+  catch(e){ return {}; }
+}
+function saveGoals(g){ localStorage.setItem("recipeGoals", JSON.stringify(g)); }
+
+function renderGoals(){
+  const sec = document.getElementById("goalsSection");
+  if(!sec) return;
+  const goals   = getGoals();
+  const history = getRecipeHistory();
+  const now     = new Date();
+  const todayStr= now.toLocaleDateString("zh-TW");
+  const todayN  = history.filter(h=>h.date===todayStr).length;
+  const weekStart= new Date(now); weekStart.setDate(now.getDate()-now.getDay()); weekStart.setHours(0,0,0,0);
+  const weekN   = history.filter(h=>new Date(h.ts)>=weekStart).length;
+  const monStart= new Date(now.getFullYear(),now.getMonth(),1);
+  const monN    = history.filter(h=>new Date(h.ts)>=monStart).length;
+  const yrStart = new Date(now.getFullYear(),0,1);
+  const yrN     = history.filter(h=>new Date(h.ts)>=yrStart).length;
+
+  const card=(label,key,count)=>{
+    const g = goals[key];
+    const pct = g ? Math.min(100,Math.round(count/g*100)) : 0;
+    return `<div class="goal-card">
+      <div class="goal-card-label">${label}目標</div>
+      ${g ? `<div class="goal-card-count">${count} / ${g}</div>
+        <div class="goal-progress"><div class="goal-progress-bar" style="width:${pct}%"></div></div>
+        <div style="font-size:11px;color:var(--muted)">${pct}% 完成</div>`
+        : `<div style="font-size:12px;color:var(--muted);margin-bottom:4px">尚未設定</div>`}
+      <button class="goal-set-btn" onclick="setGoal('${key}')">${g?"修改":"設定"}</button>
+    </div>`;
+  };
+  sec.innerHTML = `<div style="margin-top:20px">
+    <div style="font-size:14px;font-weight:700;color:var(--green-dark);margin-bottom:10px">🎯 我的料理目標</div>
+    <div class="history-goal-grid">
+      ${card("每日","daily",todayN)}
+      ${card("每週","weekly",weekN)}
+      ${card("每月","monthly",monN)}
+      ${card("每年","yearly",yrN)}
+    </div>
+  </div>`;
+}
+
+function setGoal(key){
+  const labels={daily:"每日",weekly:"每週",monthly:"每月",yearly:"每年"};
+  const cur = getGoals()[key]||"";
+  const inp = prompt(`設定${labels[key]}完成幾道菜的目標（清空=取消目標）：`,cur);
+  if(inp===null) return;
+  const g = getGoals();
+  const n = parseInt(inp);
+  if(!n||n<=0) delete g[key]; else g[key]=n;
+  saveGoals(g);
+  renderGoals();
+}
+
+/* ============================================================
+   實地菜價回報
+   ============================================================ */
+function getUserPriceReports(cropName){
+  try{ return JSON.parse(localStorage.getItem("priceReports_"+cropName)||"[]"); }
+  catch(e){ return []; }
+}
+function saveUserPriceReports(cropName, arr){
+  localStorage.setItem("priceReports_"+cropName, JSON.stringify(arr));
+}
+
+function openReportPriceModal(cropName){
+  document.getElementById("reportPriceCrop").value = cropName;
+  document.getElementById("reportMarket").value = "";
+  document.getElementById("reportStore").value  = "";
+  document.getElementById("reportPrice").value  = "";
+  document.getElementById("reportPhoto").value  = "";
+  document.querySelectorAll('input[name="reportUnit"]').forEach(r=>r.checked=false);
+  document.getElementById("reportPriceModal").classList.add("open");
+}
+function closeReportPriceModal(e){
+  if(!e||e.target===document.getElementById("reportPriceModal")||e.currentTarget.tagName==="BUTTON")
+    document.getElementById("reportPriceModal").classList.remove("open");
+}
+
+function saveReportPrice(){
+  const crop  = document.getElementById("reportPriceCrop").value;
+  const market= document.getElementById("reportMarket").value.trim();
+  const store = document.getElementById("reportStore").value.trim();
+  const price = parseFloat(document.getElementById("reportPrice").value);
+  const unit  = document.querySelector('input[name="reportUnit"]:checked')?.value;
+  if(!market){ alert("請填寫市場名稱"); return; }
+  if(!price||price<=0){ alert("請填寫正確的菜價"); return; }
+  if(!unit){ alert("請選擇單位"); return; }
+
+  const fileInput = document.getElementById("reportPhoto");
+  const file = fileInput.files[0];
+  const date = new Date().toLocaleDateString("zh-TW");
+  const ts   = Date.now();
+
+  function _save(photoDataUrl){
+    const reports = getUserPriceReports(crop);
+    reports.unshift({market, store, price, unit, photoDataUrl, date, ts});
+    saveUserPriceReports(crop, reports);
+    closeReportPriceModal();
+    showVegDetail(crop);
+  }
+
+  if(file){
+    const reader = new FileReader();
+    reader.onload = e=>_save(e.target.result);
+    reader.readAsDataURL(file);
+  } else {
+    _save(null);
+  }
+}
+
+function buildUserPriceReportsHTML(cropName){
+  const reports = getUserPriceReports(cropName);
+  if(!reports.length) return "";
+
+  // Build filter options from available markets
+  const markets = [...new Set(reports.map(r=>r.market))];
+  const marketOpts = `<option value="">全部市場</option>`+markets.map(m=>`<option>${escape(m)}</option>`).join("");
+
+  const rows = reports.map((r,i)=>{
+    const storeLink = r.store
+      ? (r.store.startsWith("http")
+          ? `<a href="${escape(r.store)}" target="_blank" rel="noopener" style="color:#1565c0;font-size:11px">📍 地圖</a>`
+          : `<span style="font-size:11px;color:var(--muted)">${escape(r.store)}</span>`)
+      : "";
+    const photoHtml = r.photoDataUrl
+      ? `<div><img src="${r.photoDataUrl}" class="report-photo-thumb" onclick="toggleReportPhoto(this)" alt="用戶照片">
+         <img src="${r.photoDataUrl}" class="report-photo-full" alt="用戶照片"></div>`
+      : "";
+    return `<div class="price-compare-row" id="rrow_${i}" data-market="${escape(r.market)}" data-price="${r.price}" data-ts="${r.ts}">
+      <div class="user-price-col">
+        <div style="font-weight:700;color:#1565c0;font-size:15px">$${r.price} <span style="font-size:11px;color:var(--muted)">/${escape(r.unit)}</span></div>
+        <div style="font-size:11px;color:var(--muted)">${escape(r.market)} ${r.date}</div>
+        ${storeLink}
+        ${photoHtml}
+      </div>
+      <div class="api-price-col" style="display:flex;flex-direction:column;justify-content:center">
+        ${getApiPriceCompareHTML(cropName, r.market)}
+      </div>
+    </div>`;
+  }).join("");
+
+  return `<div class="veg-section" id="userReportsSection_${escape(cropName)}">
+    <h4>實地回報菜價</h4>
+    <div class="report-filter-row">
+      <span style="color:var(--muted)">市場：</span>
+      <select onchange="filterReports(this,'${escape(cropName)}')">${marketOpts}</select>
+      <span style="color:var(--muted)">排序：</span>
+      <button class="active" onclick="sortReports('price','asc','${escape(cropName)}',this)">價格↑</button>
+      <button onclick="sortReports('price','desc','${escape(cropName)}',this)">價格↓</button>
+      <button onclick="sortReports('date','desc','${escape(cropName)}',this)">最新</button>
+    </div>
+    <div class="price-compare-wrap">
+      <div class="price-compare-header">
+        <div class="user-col">📍 用戶回報</div>
+        <div class="api-col">🌐 農業部均價 (元/公斤)</div>
+      </div>
+      <div id="reportRows_${escape(cropName)}">${rows}</div>
+    </div>
+  </div>`;
+}
+
+function getApiPriceCompareHTML(cropName, marketName){
+  const matches = priceData.filter(p=>p.cropName===cropName && (!marketName||p.marketName===marketName));
+  if(!matches.length){
+    const all = priceData.filter(p=>p.cropName===cropName);
+    if(!all.length) return `<span style="font-size:12px;color:var(--muted)">無 API 資料</span>`;
+    const avg = all.reduce((s,p)=>s+p.avgPrice,0)/all.length;
+    return `<div style="font-weight:700;color:var(--red);font-size:14px">$${avg.toFixed(1)}</div>
+            <div style="font-size:11px;color:var(--muted)">全市場均值</div>`;
+  }
+  const avg = matches.reduce((s,p)=>s+p.avgPrice,0)/matches.length;
+  return `<div style="font-weight:700;color:var(--red);font-size:14px">$${avg.toFixed(1)}</div>
+          <div style="font-size:11px;color:var(--muted)">${matches[0].date||""}</div>`;
+}
+
+function toggleReportPhoto(thumb){
+  const full = thumb.nextElementSibling;
+  full.style.display = full.style.display==="block" ? "none" : "block";
+}
+
+function filterReports(sel, cropName){
+  const market = sel.value;
+  document.querySelectorAll(`#reportRows_${cropName} .price-compare-row`).forEach(row=>{
+    row.style.display = (!market||row.dataset.market===market) ? "" : "none";
+  });
+}
+
+function sortReports(by, dir, cropName, btn){
+  btn.closest(".report-filter-row").querySelectorAll("button").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
+  const container = document.getElementById("reportRows_"+cropName);
+  if(!container) return;
+  const rows = Array.from(container.querySelectorAll(".price-compare-row"));
+  rows.sort((a,b)=>{
+    const va = by==="price" ? parseFloat(a.dataset.price) : parseInt(a.dataset.ts);
+    const vb = by==="price" ? parseFloat(b.dataset.price) : parseInt(b.dataset.ts);
+    return dir==="asc" ? va-vb : vb-va;
+  });
+  rows.forEach(r=>container.appendChild(r));
 }
 
 /* ============================================================
