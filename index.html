@@ -498,6 +498,21 @@
   .fridge-stats{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
   .fridge-stat{background:#fff;border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:12px;color:var(--muted)}
   .fridge-stat strong{color:var(--green-dark)}
+  .fridge-photo-section{background:#f0f7ff;border:2px dashed #90caf9;border-radius:12px;padding:13px 16px;margin-bottom:12px}
+  .fridge-photo-header{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+  .fridge-photo-title{font-size:13px;font-weight:700;color:#1565c0;flex:1}
+  .fridge-photo-label{display:inline-block;padding:6px 14px;background:#1976d2;color:#fff;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;font-family:inherit;transition:background .15s}
+  .fridge-photo-label:hover{background:#1565c0}
+  .fridge-photo-preview{max-width:100%;max-height:110px;border-radius:8px;margin-top:8px;display:none;object-fit:contain}
+  .fridge-photo-note{font-size:11px;color:var(--muted);margin-top:5px}
+  .fridge-pill-group{display:flex;gap:5px;flex-wrap:wrap;margin-top:3px}
+  .fridge-pill{padding:5px 11px;border:1px solid var(--border);background:#fff;border-radius:12px;cursor:pointer;font-size:12px;font-family:inherit;transition:all .12s;line-height:1.3}
+  .fridge-pill:hover{border-color:var(--green)}
+  .fridge-pill.active{background:var(--green);color:#fff;border-color:var(--green)}
+  .fridge-cat-badge{display:inline-block;font-size:10px;padding:1px 5px;border-radius:7px;font-weight:600;margin-left:2px;vertical-align:middle}
+  .cat-veg{background:#e8f5e9;color:#2e7d32}
+  .cat-season{background:#fff3e0;color:#e65100}
+  .cat-meat{background:#fce4ec;color:#c62828}
 
   /* === 收藏 / 完成 === */
   .bookmark-btn{
@@ -652,6 +667,17 @@
       <button class="sub-tab" data-subtab="history" data-parent="kitchen">📖 食譜紀錄</button>
     </div>
     <div class="sub-panel active" id="sub-fridge">
+      <!-- 拍照辨識 -->
+      <div class="fridge-photo-section">
+        <div class="fridge-photo-header">
+          <span class="fridge-photo-title">📸 拍照辨識食材</span>
+          <label class="fridge-photo-label" for="fridgePhotoInput">選擇照片</label>
+          <input type="file" id="fridgePhotoInput" accept="image/*" style="display:none" onchange="previewFridgePhoto(this)">
+        </div>
+        <img id="fridgePhotoPreview" class="fridge-photo-preview" alt="預覽">
+        <div class="fridge-photo-note">📌 AI 辨識功能即將上線，目前請使用下方手動輸入</div>
+      </div>
+      <!-- 手動輸入 -->
       <div class="fridge-add-form">
         <div class="form-row">
           <div class="fridge-field" style="flex:2">
@@ -659,13 +685,28 @@
             <input type="text" id="fridgeInput" placeholder="高麗菜、豬肉…" autocomplete="off"
                    onkeydown="if(event.key==='Enter') addFridgeItem()">
           </div>
-          <div class="fridge-field">
-            <label>數量（選填）</label>
-            <input type="text" id="fridgeQtyInput" placeholder="500g、1把…">
+          <div class="fridge-field" style="min-width:220px">
+            <label>類別</label>
+            <div class="fridge-pill-group" id="fridgeCatGroup">
+              <button class="fridge-pill active" data-cat="veg" onclick="selectFridgePill(this,'fridgeCatGroup')">🥦 蔬菜</button>
+              <button class="fridge-pill" data-cat="season" onclick="selectFridgePill(this,'fridgeCatGroup')">🧂 調味料</button>
+              <button class="fridge-pill" data-cat="meat" onclick="selectFridgePill(this,'fridgeCatGroup')">🥩 肉品</button>
+            </div>
           </div>
-          <div class="fridge-field">
-            <label>有效期限（選填）</label>
-            <input type="date" id="fridgeExpInput">
+        </div>
+        <div class="form-row" style="margin-top:8px">
+          <div class="fridge-field" style="flex:0;min-width:80px">
+            <label>數量</label>
+            <input type="number" id="fridgeQtyInput" placeholder="0" min="0" step="0.1">
+          </div>
+          <div class="fridge-field" style="flex:1">
+            <label>單位</label>
+            <div class="fridge-pill-group" id="fridgeUnitGroup">
+              <button class="fridge-pill active" data-unit="公克" onclick="selectFridgePill(this,'fridgeUnitGroup')">公克</button>
+              <button class="fridge-pill" data-unit="公斤" onclick="selectFridgePill(this,'fridgeUnitGroup')">公斤</button>
+              <button class="fridge-pill" data-unit="斤" onclick="selectFridgePill(this,'fridgeUnitGroup')">斤</button>
+              <button class="fridge-pill" data-unit="毫升" onclick="selectFridgePill(this,'fridgeUnitGroup')">毫升</button>
+            </div>
           </div>
           <button class="fridge-add-btn" onclick="addFridgeItem()" style="align-self:flex-end">＋ 加入</button>
         </div>
@@ -2009,27 +2050,46 @@ function getFridgeItems(){
 }
 function saveFridgeItems(items){ localStorage.setItem("fridgeItems", JSON.stringify(items)); }
 
+function selectFridgePill(btn, groupId){
+  document.querySelectorAll(`#${groupId} .fridge-pill`).forEach(p=>p.classList.remove("active"));
+  btn.classList.add("active");
+}
+
+function previewFridgePhoto(input){
+  const preview = document.getElementById("fridgePhotoPreview");
+  if(input.files && input.files[0]){
+    const reader = new FileReader();
+    reader.onload = e => { preview.src = e.target.result; preview.style.display = "block"; };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
 function addFridgeItem(){
   const nameInput = document.getElementById("fridgeInput");
   const qtyInput  = document.getElementById("fridgeQtyInput");
-  const expInput  = document.getElementById("fridgeExpInput");
   const name = nameInput.value.trim();
   if(!name){ alert("請輸入食材名稱"); return; }
-  const qty = qtyInput.value.trim();
-  const expDate = expInput.value; // YYYY-MM-DD
+
+  const catBtn  = document.querySelector("#fridgeCatGroup .fridge-pill.active");
+  const unitBtn = document.querySelector("#fridgeUnitGroup .fridge-pill.active");
+  const category = catBtn  ? catBtn.dataset.cat   : "veg";
+  const unit     = unitBtn ? unitBtn.dataset.unit : "公克";
+  const qty      = parseFloat(qtyInput.value) || 0;
+
   const veg = VEGETABLES.find(v=>v.key===name || (v.aliases&&v.aliases.some(a=>a===name)));
-  const emoji = veg ? veg.emoji : "🧺";
+  const emoji = veg ? veg.emoji : (category==="meat"?"🥩":category==="season"?"🧂":"🧺");
   const items = getFridgeItems();
   const existing = items.find(i=>i.name===name);
   if(existing){
-    if(qty) existing.qty = qty;
-    if(expDate) existing.expDate = expDate;
+    existing.category = category;
+    existing.qty  = qty;
+    existing.unit = unit;
   } else {
-    items.push({name, qty, expDate, emoji, addedAt:Date.now()});
+    items.push({name, category, qty, unit, emoji, addedAt:Date.now()});
     localStorage.setItem("fridgeEverAdded","1");
   }
   saveFridgeItems(items);
-  nameInput.value=""; qtyInput.value=""; expInput.value="";
+  nameInput.value=""; qtyInput.value="";
   renderFridge();
 }
 
@@ -2056,40 +2116,35 @@ function renderFridge(){
     return;
   }
 
-  const today = new Date(); today.setHours(0,0,0,0);
-  const warn30 = new Date(today.getTime() + 30*86400000);
-  let expiring=0, expired=0;
+  const catLabel = {veg:"蔬菜", season:"調味料", meat:"肉品"};
+  const catCls   = {veg:"cat-veg", season:"cat-season", meat:"cat-meat"};
 
   grid.innerHTML = items.map((item,idx)=>{
-    let expHtml="", cls="";
-    if(item.expDate){
-      const exp = new Date(item.expDate); exp.setHours(0,0,0,0);
-      const diff = Math.round((exp-today)/86400000);
-      const disp = item.expDate.replace(/-/g,"/");
-      if(diff<0){
-        expHtml=`<div class="fridge-item-date" style="color:var(--red);font-weight:700">已過期</div>`;
-        cls=" expired"; expired++;
-      } else if(exp<=warn30){
-        expHtml=`<div class="fridge-item-date" style="color:#e67e22">${disp}（${diff}天）</div>`;
-        cls=" expiring"; expiring++;
-      } else {
-        expHtml=`<div class="fridge-item-date">${disp}</div>`;
-      }
+    let qtyHtml = "";
+    if(item.unit && typeof item.qty === "number" && item.qty > 0){
+      qtyHtml = `<div class="fridge-item-qty">${item.qty}${item.unit}</div>`;
+    } else if(typeof item.qty === "string" && item.qty){
+      qtyHtml = `<div class="fridge-item-qty">${escape(item.qty)}</div>`;
     }
-    const qtyHtml = item.qty ? `<div class="fridge-item-qty">${escape(item.qty)}</div>` : "";
-    return `<div class="fridge-item${cls}">
+    const cat = item.category;
+    const catBadge = cat && catLabel[cat]
+      ? `<span class="fridge-cat-badge ${catCls[cat]}">${catLabel[cat]}</span>` : "";
+    return `<div class="fridge-item">
       <button class="fridge-item-del" onclick="deleteFridgeItem(${idx})">✕</button>
       <div class="fridge-item-emoji">${getVegSVG(item.name)||item.emoji}</div>
-      <div class="fridge-item-name">${escape(item.name)}</div>
-      ${qtyHtml}${expHtml}
+      <div class="fridge-item-name">${escape(item.name)}${catBadge}</div>
+      ${qtyHtml}
     </div>`;
   }).join("");
 
   if(stats){
+    const cnt = {veg:0, season:0, meat:0};
+    items.forEach(i=>{ if(cnt[i.category]!==undefined) cnt[i.category]++; });
     stats.innerHTML = `
       <div class="fridge-stat">共 <strong>${items.length}</strong> 項食材</div>
-      ${expiring?`<div class="fridge-stat" style="color:#e67e22;border-color:#ffe082">⏰ <strong>${expiring}</strong> 項即將到期</div>`:""}
-      ${expired?`<div class="fridge-stat" style="color:var(--red);border-color:#ffcdd2">❌ <strong>${expired}</strong> 項已過期</div>`:""}
+      ${cnt.veg   ?`<div class="fridge-stat" style="color:#2e7d32;border-color:#c8e6c9">🥦 蔬菜 <strong>${cnt.veg}</strong></div>`:""}
+      ${cnt.season?`<div class="fridge-stat" style="color:#e65100;border-color:#ffe0b2">🧂 調味料 <strong>${cnt.season}</strong></div>`:""}
+      ${cnt.meat  ?`<div class="fridge-stat" style="color:#c62828;border-color:#ffcdd2">🥩 肉品 <strong>${cnt.meat}</strong></div>`:""}
     `;
   }
 }
@@ -2172,33 +2227,42 @@ function renderHistory(){
 
 function markRecipeTried(recipeName){
   const today = new Date().toLocaleDateString("zh-TW");
-  const servingsStr = prompt(`${today} 完成！\n這次完成幾人份？（可不填）`,"");
+  const servingsStr = prompt(`${today} 完成！\n這次完成幾人份？（預設 2 人份）`,"2");
   if(servingsStr === null) return;
-  const servings = servingsStr ? (parseInt(servingsStr)||null) : null;
-  const deduct = confirm("是否要扣除冰箱庫存？\n\n確定 = 扣除 ／ 取消 = 不扣除");
+  const servings = parseInt(servingsStr) || 2;
+  const deduct = confirm(`是否依照 ${servings} 人份扣除冰箱庫存？\n\n確定 = 扣除 ／ 取消 = 不扣除`);
   const history = getRecipeHistory();
   history.push({name:recipeName, ts:Date.now(), date:today, servings, deducted:deduct});
   saveRecipeHistory(history);
-  if(deduct) deductFridgeForRecipe(recipeName);
+  if(deduct) deductFridgeForRecipe(recipeName, servings);
   renderHistory();
 }
 
-function deductFridgeForRecipe(recipeName){
+function deductFridgeForRecipe(recipeName, servings){
   const d = RECIPE_DETAILS[recipeName];
   if(!d) return;
+  const BASE_SERVINGS = 2;
+  const multiplier = (servings && servings > 0) ? servings / BASE_SERVINGS : 1;
   let items = getFridgeItems();
   const depleted = [];
   d.ingredients.forEach(ing=>{
     const idx = items.findIndex(item=>item.name.includes(ing.n)||ing.n.includes(item.name));
     if(idx<0) return;
-    const ingQty = parseInt((ing.a.match(/(\d+)/)||[])[1]||0);
-    if(items[idx].qty){
-      const curQty = parseInt((items[idx].qty.match(/(\d+)/)||[])[1]||0);
-      const unit   = items[idx].qty.replace(/[\d.]+/,"").trim();
-      if(curQty>ingQty){ items[idx].qty=`${curQty-ingQty}${unit}`; }
-      else { depleted.push(items[idx].name); items.splice(idx,1); }
+    const item = items[idx];
+    const ingNumMatch = ing.a.match(/(\d+(?:\.\d+)?)/);
+    const ingNum = ingNumMatch ? parseFloat(ingNumMatch[1]) * multiplier : 0;
+    if(typeof item.qty === "number" && item.qty > 0 && ingNum > 0){
+      const newQty = Math.round((item.qty - ingNum) * 10) / 10;
+      if(newQty <= 0){ depleted.push(item.name); items.splice(idx,1); }
+      else { items[idx].qty = newQty; }
+    } else if(typeof item.qty === "string" && item.qty && ingNum > 0){
+      const curNum = parseFloat((item.qty.match(/(\d+(?:\.\d+)?)/)||[])[1]||0);
+      const unit   = item.qty.replace(/[\d.]+/,"").trim();
+      const newQty = Math.round((curNum - ingNum) * 10) / 10;
+      if(newQty <= 0){ depleted.push(item.name); items.splice(idx,1); }
+      else { items[idx].qty = `${newQty}${unit}`; }
     } else {
-      depleted.push(items[idx].name); items.splice(idx,1);
+      depleted.push(item.name); items.splice(idx,1);
     }
   });
   saveFridgeItems(items);
