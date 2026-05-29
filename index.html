@@ -73,6 +73,17 @@
   section.tab-panel{display:none}
   section.tab-panel.active{display:block}
 
+  .sub-tabs{display:flex;gap:0;margin-bottom:16px;background:#f0f0ea;border-radius:10px;padding:3px}
+  .sub-tab{
+    flex:1;padding:8px 10px;border:none;background:transparent;border-radius:8px;
+    cursor:pointer;font-size:13px;font-weight:500;color:var(--muted);
+    transition:all .15s;font-family:inherit;
+  }
+  .sub-tab.active{background:#fff;color:var(--green-dark);font-weight:600;box-shadow:0 1px 4px rgba(0,0,0,.1)}
+  .sub-tab:hover:not(.active){color:var(--green-dark);background:rgba(255,255,255,.5)}
+  .sub-panel{display:none}
+  .sub-panel.active{display:block}
+
   /* === 蔬菜索引 === */
   .month-filter{
     display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;
@@ -553,165 +564,124 @@
 </header>
 <div class="status-bar" id="statusBar">資料載入中…</div>
 
-<nav class="tabs" style="flex-wrap:wrap">
-  <button class="tab-btn active" data-tab="index">🥗 蔬菜索引</button>
-  <button class="tab-btn" data-tab="rank">📊 菜價排行</button>
-  <button class="tab-btn" data-tab="combo">🍳 配對食譜</button>
-  <button class="tab-btn" data-tab="fridge">🧊 我的冰箱</button>
-  <button class="tab-btn" data-tab="history">📖 食譜紀錄</button>
+<nav class="tabs">
+  <button class="tab-btn active" data-tab="veg">🥗 蔬菜索引</button>
   <button class="tab-btn" data-tab="search">🔍 搜尋</button>
-  <button class="tab-btn" data-tab="ai">🤖 AI 分析師</button>
+  <button class="tab-btn" data-tab="kitchen">🍳 我的廚房</button>
 </nav>
 
 <main>
-  <!-- 蔬菜索引 -->
-  <section class="tab-panel active" id="tab-index">
-    <div class="month-filter" id="monthFilter">
-      <span class="label">月份：</span>
-      <button data-month="0" class="active">全部</button>
+  <!-- 蔬菜索引 + 菜價排行 -->
+  <section class="tab-panel active" id="tab-veg">
+    <div class="sub-tabs">
+      <button class="sub-tab active" data-subtab="index" data-parent="veg">🥗 蔬菜索引</button>
+      <button class="sub-tab" data-subtab="rank" data-parent="veg">📊 菜價排行</button>
     </div>
-    <div class="veg-grid" id="vegGrid">
-      <div class="loading">載入中…</div>
-    </div>
-  </section>
-
-  <!-- 菜價排行榜 -->
-  <section class="tab-panel" id="tab-rank">
-    <div class="sell-veg-bar">
-      <button class="sell-veg-btn" onclick="showSellVegModal()">🛒 我想賣菜</button>
-    </div>
-    <div class="category-tabs" id="categoryTabs">
-      <button class="category-tab active" data-cat="">全部</button>
-      <button class="category-tab" data-cat="蔬菜">🥬 蔬菜</button>
-      <button class="category-tab" data-cat="花卉">🌸 花卉</button>
-      <button class="category-tab" data-cat="水果">🍎 水果</button>
-      <button class="category-tab" data-cat="肉類">🥩 肉類</button>
-      <button class="category-tab" data-cat="家禽">🐔 家禽</button>
-      <button class="category-tab" data-cat="水產">🐟 水產</button>
-    </div>
-    <div class="meat-sub-tabs" id="meatSubTabs">
-      <button class="meat-sub-tab active" data-animal="">全部肉類</button>
-      <button class="meat-sub-tab" data-animal="豬">🐷 豬</button>
-      <button class="meat-sub-tab" data-animal="牛">🐄 牛</button>
-      <button class="meat-sub-tab" data-animal="羊">🐑 羊</button>
-    </div>
-    <div class="rank-controls">
-      <label>市場：</label>
-      <select id="rankMarketFilter">
-        <option value="">全部市場</option>
-      </select>
-      <label>排序：</label>
-      <button class="sort-btn active" data-order="asc">最低 → 最高</button>
-      <button class="sort-btn" data-order="desc">最高 → 最低</button>
-    </div>
-    <div class="rank-card-grid" id="rankTbody">
-      <div class="loading" style="grid-column:1/-1">載入中…</div>
-    </div>
-  </section>
-
-  <!-- 配對食譜 -->
-  <section class="tab-panel" id="tab-combo">
-    <p style="font-size:13px;color:var(--muted);margin-bottom:14px">選擇手邊食材，系統幫你找出合適的料理！</p>
-    <div class="combo-wrapper">
-      <div class="combo-col">
-        <h4>🥬 蔬菜</h4>
-        <div class="combo-pill-list" id="comboVegList"></div>
+    <div class="sub-panel active" id="sub-index">
+      <div class="month-filter" id="monthFilter">
+        <span class="label">月份：</span>
+        <button data-month="0" class="active">全部</button>
       </div>
-      <div class="combo-col">
-        <h4>🥩 肉類</h4>
-        <div class="combo-pill-list" id="comboMeatList"></div>
-      </div>
-      <div class="combo-col">
-        <h4>🐟 水產</h4>
-        <div class="combo-pill-list" id="comboSeafoodList"></div>
+      <div class="veg-grid" id="vegGrid">
+        <div class="loading">載入中…</div>
       </div>
     </div>
-    <button class="combo-generate-btn" onclick="findComboRecipes()">產生推薦食譜</button>
-    <div id="comboResults"></div>
-  </section>
-
-  <!-- 我的冰箱 -->
-  <section class="tab-panel" id="tab-fridge">
-    <div class="fridge-add-form">
-      <div class="form-row">
-        <div class="fridge-field" style="flex:2">
-          <label>食材名稱（必填）</label>
-          <input type="text" id="fridgeInput" placeholder="高麗菜、豬肉…" autocomplete="off"
-                 onkeydown="if(event.key==='Enter') addFridgeItem()">
-        </div>
-        <div class="fridge-field">
-          <label>數量（選填）</label>
-          <input type="text" id="fridgeQtyInput" placeholder="500g、1把…">
-        </div>
-        <div class="fridge-field">
-          <label>有效期限（選填）</label>
-          <input type="date" id="fridgeExpInput">
-        </div>
-        <button class="fridge-add-btn" onclick="addFridgeItem()" style="align-self:flex-end">＋ 加入</button>
+    <div class="sub-panel" id="sub-rank">
+      <div class="sell-veg-bar">
+        <button class="sell-veg-btn" onclick="showSellVegModal()">🛒 我想賣菜</button>
+      </div>
+      <div class="category-tabs" id="categoryTabs">
+        <button class="category-tab active" data-cat="">全部</button>
+        <button class="category-tab" data-cat="蔬菜">🥬 蔬菜</button>
+        <button class="category-tab" data-cat="花卉">🌸 花卉</button>
+        <button class="category-tab" data-cat="水果">🍎 水果</button>
+        <button class="category-tab" data-cat="肉類">🥩 肉類</button>
+        <button class="category-tab" data-cat="家禽">🐔 家禽</button>
+        <button class="category-tab" data-cat="水產">🐟 水產</button>
+      </div>
+      <div class="meat-sub-tabs" id="meatSubTabs">
+        <button class="meat-sub-tab active" data-animal="">全部肉類</button>
+        <button class="meat-sub-tab" data-animal="豬">🐷 豬</button>
+        <button class="meat-sub-tab" data-animal="牛">🐄 牛</button>
+        <button class="meat-sub-tab" data-animal="羊">🐑 羊</button>
+      </div>
+      <div class="rank-controls">
+        <label>市場：</label>
+        <select id="rankMarketFilter"><option value="">全部市場</option></select>
+        <label>排序：</label>
+        <button class="sort-btn active" data-order="asc">最低 → 最高</button>
+        <button class="sort-btn" data-order="desc">最高 → 最低</button>
+      </div>
+      <div class="rank-card-grid" id="rankTbody">
+        <div class="loading" style="grid-column:1/-1">載入中…</div>
       </div>
     </div>
-    <div class="fridge-stats" id="fridgeStats"></div>
-    <div class="fridge-grid" id="fridgeGrid"><div class="combo-empty">冰箱是空的，新增食材開始管理！</div></div>
-    <button class="fridge-action-btn" onclick="goFindFridgeRecipes()" style="margin-top:4px">🍳 用冰箱食材找食譜</button>
   </section>
 
-  <!-- 食譜紀錄 -->
-  <section class="tab-panel" id="tab-history">
-    <div class="history-controls">
-      <button class="history-filter-btn active" data-hf="all" onclick="filterHistory('all',this)">全部收藏</button>
-      <button class="history-filter-btn" data-hf="tried" onclick="filterHistory('tried',this)">已試過 ✅</button>
-      <button class="history-clear-btn" onclick="clearRecipeHistory()">清除全部</button>
-    </div>
-    <div id="historyList"></div>
-    <div id="goalsSection"></div>
-  </section>
-
-  <!-- 搜尋 -->
+  <!-- 搜尋 + 配對食譜 -->
   <section class="tab-panel" id="tab-search">
-    <div class="search-box">
-      <input type="text" id="searchInput" placeholder="輸入蔬菜名稱，例如：高麗菜、空心菜、tomato…" autocomplete="off">
+    <div class="sub-tabs">
+      <button class="sub-tab active" data-subtab="search" data-parent="search">🔍 搜尋</button>
+      <button class="sub-tab" data-subtab="combo" data-parent="search">🍳 配對食譜</button>
     </div>
-    <div class="search-hint">支援部分名稱、別名與相關性搜尋</div>
-    <div class="veg-grid" id="searchResults">
-      <div class="search-empty">輸入關鍵字開始搜尋</div>
+    <div class="sub-panel active" id="sub-search">
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="輸入蔬菜名稱，例如：高麗菜、空心菜、tomato…" autocomplete="off">
+      </div>
+      <div class="search-hint">支援部分名稱、別名與相關性搜尋</div>
+      <div class="veg-grid" id="searchResults">
+        <div class="search-empty">輸入關鍵字開始搜尋</div>
+      </div>
+    </div>
+    <div class="sub-panel" id="sub-combo">
+      <p style="font-size:13px;color:var(--muted);margin-bottom:14px">選擇手邊食材，系統幫你找出合適的料理！</p>
+      <div class="combo-wrapper">
+        <div class="combo-col"><h4>🥬 蔬菜</h4><div class="combo-pill-list" id="comboVegList"></div></div>
+        <div class="combo-col"><h4>🥩 肉類</h4><div class="combo-pill-list" id="comboMeatList"></div></div>
+        <div class="combo-col"><h4>🐟 水產</h4><div class="combo-pill-list" id="comboSeafoodList"></div></div>
+      </div>
+      <button class="combo-generate-btn" onclick="findComboRecipes()">產生推薦食譜</button>
+      <div id="comboResults"></div>
     </div>
   </section>
 
-  <!-- AI 分析師 -->
-  <section class="tab-panel" id="tab-ai">
-    <div class="ai-config">
-      <div class="ai-config-row">
-        <label style="font-size:13px;font-weight:600;white-space:nowrap;color:var(--green-dark)">Claude API Key：</label>
-        <input class="ai-key-input" type="password" id="aiApiKey" placeholder="sk-ant-api03-…" autocomplete="off">
-        <button class="ai-save-btn" onclick="saveAiKey()">儲存</button>
-      </div>
-      <div style="font-size:11px;color:var(--muted)">金鑰僅存於本機瀏覽器，不會傳送至任何伺服器。&nbsp;<a href="https://console.anthropic.com/" target="_blank" rel="noopener" style="color:var(--green)">取得 API Key →</a></div>
+  <!-- 我的廚房：冰箱 + 食譜紀錄 -->
+  <section class="tab-panel" id="tab-kitchen">
+    <div class="sub-tabs">
+      <button class="sub-tab active" data-subtab="fridge" data-parent="kitchen">🧊 我的冰箱</button>
+      <button class="sub-tab" data-subtab="history" data-parent="kitchen">📖 食譜紀錄</button>
     </div>
-    <div class="ai-config" style="padding:12px 14px">
-      <div class="ai-controls">
-        <select class="ai-select" id="aiCategory">
-          <option value="">所有品類</option>
-          <option value="蔬菜">🥬 蔬菜</option>
-          <option value="水果">🍎 水果</option>
-          <option value="花卉">🌸 花卉</option>
-          <option value="肉類">🥩 肉類</option>
-          <option value="家禽">🐔 家禽</option>
-          <option value="水產">🐟 水產</option>
-        </select>
-        <select class="ai-select" id="aiMarket"><option value="">所有市場</option></select>
-        <select class="ai-select" id="aiModel">
-          <option value="claude-haiku-4-5-20251001">⚡ 快速（Haiku）</option>
-          <option value="claude-sonnet-4-6" selected>🎯 精準（Sonnet）</option>
-        </select>
-        <button class="ai-analyze-btn" id="aiAnalyzeBtn" onclick="startAIAnalysis()">🤖 開始分析</button>
+    <div class="sub-panel active" id="sub-fridge">
+      <div class="fridge-add-form">
+        <div class="form-row">
+          <div class="fridge-field" style="flex:2">
+            <label>食材名稱（必填）</label>
+            <input type="text" id="fridgeInput" placeholder="高麗菜、豬肉…" autocomplete="off"
+                   onkeydown="if(event.key==='Enter') addFridgeItem()">
+          </div>
+          <div class="fridge-field">
+            <label>數量（選填）</label>
+            <input type="text" id="fridgeQtyInput" placeholder="500g、1把…">
+          </div>
+          <div class="fridge-field">
+            <label>有效期限（選填）</label>
+            <input type="date" id="fridgeExpInput">
+          </div>
+          <button class="fridge-add-btn" onclick="addFridgeItem()" style="align-self:flex-end">＋ 加入</button>
+        </div>
       </div>
+      <div class="fridge-stats" id="fridgeStats"></div>
+      <div class="fridge-grid" id="fridgeGrid"><div class="combo-empty">冰箱是空的，新增食材開始管理！</div></div>
+      <button class="fridge-action-btn" onclick="goFindFridgeRecipes()" style="margin-top:4px">🍳 用冰箱食材找食譜</button>
     </div>
-    <div class="ai-chat" id="aiChat"></div>
-    <div class="ai-followup" id="aiFollowup" style="display:none">
-      <input class="ai-followup-input" type="text" id="aiFollowupInput"
-             placeholder="繼續追問，例如：今天哪些蔬菜最划算？"
-             onkeydown="if(event.key==='Enter')sendAIFollowup()">
-      <button class="ai-followup-btn" id="aiFollowupBtn" onclick="sendAIFollowup()">送出</button>
+    <div class="sub-panel" id="sub-history">
+      <div class="history-controls">
+        <button class="history-filter-btn active" data-hf="all" onclick="filterHistory('all',this)">全部收藏</button>
+        <button class="history-filter-btn" data-hf="tried" onclick="filterHistory('tried',this)">已試過 ✅</button>
+        <button class="history-clear-btn" onclick="clearRecipeHistory()">清除全部</button>
+      </div>
+      <div id="historyList"></div>
+      <div id="goalsSection"></div>
     </div>
   </section>
 </main>
@@ -1409,9 +1379,23 @@ document.querySelectorAll(".tab-btn").forEach(btn=>{
     document.querySelectorAll(".tab-panel").forEach(p=>p.classList.remove("active"));
     btn.classList.add("active");
     document.getElementById("tab-"+btn.dataset.tab).classList.add("active");
-    if(btn.dataset.tab === "fridge") renderFridge();
-    if(btn.dataset.tab === "history") renderHistory();
-    if(btn.dataset.tab === "ai") initAITab();
+    if(btn.dataset.tab === "kitchen"){
+      const active = document.querySelector("#tab-kitchen .sub-tab.active");
+      if(active?.dataset.subtab === "fridge") renderFridge();
+      if(active?.dataset.subtab === "history") renderHistory();
+    }
+  });
+});
+
+document.querySelectorAll(".sub-tab").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    const section = document.getElementById("tab-"+btn.dataset.parent);
+    section.querySelectorAll(".sub-tab").forEach(b=>b.classList.remove("active"));
+    section.querySelectorAll(".sub-panel").forEach(p=>p.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById("sub-"+btn.dataset.subtab).classList.add("active");
+    if(btn.dataset.subtab === "fridge") renderFridge();
+    if(btn.dataset.subtab === "history") renderHistory();
   });
 });
 
@@ -2115,8 +2099,12 @@ function goFindFridgeRecipes(){
   if(!items.length){ alert("冰箱是空的！請先新增食材"); return; }
   document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
   document.querySelectorAll(".tab-panel").forEach(p=>p.classList.remove("active"));
-  document.querySelector('[data-tab="combo"]').classList.add("active");
-  document.getElementById("tab-combo").classList.add("active");
+  document.querySelector('[data-tab="search"]').classList.add("active");
+  document.getElementById("tab-search").classList.add("active");
+  document.querySelectorAll("#tab-search .sub-tab").forEach(b=>b.classList.remove("active"));
+  document.querySelectorAll("#tab-search .sub-panel").forEach(p=>p.classList.remove("active"));
+  document.querySelector('#tab-search [data-subtab="combo"]').classList.add("active");
+  document.getElementById("sub-combo").classList.add("active");
   document.querySelectorAll(".combo-pill").forEach(pill=>{
     const val = pill.dataset.val;
     const match = items.some(item=>item.name.includes(val)||val.includes(item.name));
